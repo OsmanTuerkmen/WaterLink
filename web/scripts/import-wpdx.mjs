@@ -2,7 +2,7 @@
 //
 //   node scripts/import-wpdx.mjs --list                    Counties with record counts
 //   node scripts/import-wpdx.mjs --county Kitui            Neighbourhood around a recent functional point
-//   node scripts/import-wpdx.mjs --county Kitui --near -1.0,38.0 --count 40
+//   node scripts/import-wpdx.mjs --county Kitui --near -1.0,38.0 --count 40 --radius 5 --walk 3
 //
 // Writes data/region.json. WPdx data is CC BY 4.0; the attribution is stored with the data.
 // Survey status is historical. WaterLink never shows it as the current operating status.
@@ -47,6 +47,11 @@ if (!Number.isInteger(count) || count < 3 || count > 400) {
   console.error("--count muss zwischen 3 und 400 liegen.");
   process.exit(1);
 }
+const radiusKm = Number(option("radius") ?? 5), walkKm = Number(option("walk") ?? 3);
+if (!(radiusKm > 0 && radiusKm <= 50) || !(walkKm > 0 && walkKm <= 10)) {
+  console.error("--radius muss zwischen 0 und 50 km liegen, --walk zwischen 0 und 10 km.");
+  process.exit(1);
+}
 let near = null;
 if (option("near")) {
   const [lat, lon] = option("near").split(",").map(Number);
@@ -69,7 +74,13 @@ if (!rows.length) {
   process.exit(1);
 }
 
-const region = buildRegion(rows, { county, count, near });
+let region;
+try {
+  region = buildRegion(rows, { county, count, near, radiusKm, walkKm });
+} catch (error) {
+  console.error(`${rows.length} Einträge geladen. ${error.message}`);
+  process.exit(1);
+}
 const out = fileURLToPath(new URL(option("out") ?? "../data/region.json", import.meta.url));
 writeFileSync(out, `${JSON.stringify(region, null, 2)}\n`);
 
@@ -79,7 +90,8 @@ const describe = (label, record) => {
   console.log(`  ${label}: ${record.waterSource || "Wasserstelle"}, ${record.adm3 || record.adm2} · Erhebung ${record.reportDate.slice(0, 10)}: ${record.statusText} · ${km} km`);
 };
 const dates = region.points.map((p) => p.reportDate).filter(Boolean).sort();
-console.log(`\n${rows.length} Einträge geladen, ${region.points.length} Wasserstellen übernommen.`);
+const functional = region.points.filter((p) => p.status === "functional").length;
+console.log(`\n${rows.length} Einträge geladen, ${region.points.length} Wasserstellen im Umkreis von ${radiusKm} km übernommen (${functional} damals funktionierend).`);
 console.log(`Region: ${region.meta.label}`);
 describe("A", find(region.demo.a));
 describe("B", find(region.demo.b));

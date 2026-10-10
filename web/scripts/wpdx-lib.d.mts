@@ -7,5 +7,7 @@ export declare function mapStatus(statusClean: unknown, statusId: unknown): Surv
 export declare function mapRecord(row: Record<string, unknown>): WpdxRecord | null;
 export declare function distanceKm(a: { lat: number; lon: number }, b: { lat: number; lon: number }): number;
 export declare function dedupe(records: WpdxRecord[]): WpdxRecord[];
-export declare function pickNeighbourhood(records: WpdxRecord[], options?: { count?: number; near?: { lat: number; lon: number } | null; radiusKm?: number }): { a: WpdxRecord; b: WpdxRecord; c: WpdxRecord; points: WpdxRecord[] };
-export declare function buildRegion(rows: Record<string, unknown>[], options?: { county?: string; count?: number; near?: { lat: number; lon: number } | null; fetchedAt?: string }): RegionData;
+export declare function isImprovedSource(record: WpdxRecord): boolean;
+export declare function isCleanFunctional(record: WpdxRecord): boolean;
+export declare function pickNeighbourhood(records: WpdxRecord[], options?: { count?: number; near?: { lat: number; lon: number } | null; radiusKm?: number; walkKm?: number }): { a: WpdxRecord; b: WpdxRecord; c: WpdxRecord; points: WpdxRecord[] };
+export declare function buildRegion(rows: Record<string, unknown>[], options?: { county?: string; count?: number; near?: { lat: number; lon: number } | null; radiusKm?: number; walkKm?: number; fetchedAt?: string }): RegionData;

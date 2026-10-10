@@ -42,6 +42,8 @@ npm run data:wpdx -- --county Kitui         # Nachbarschaft um eine zuletzt funk
 npm run data:wpdx -- --county Kitui --count 40 --near -1.05,38.01
 ```
 
+Das Skript wählt nur Nachbarschaften, in denen zwei gefasste, als „Functional“ erhobene Wasserstellen höchstens 3 km auseinanderliegen (`--walk`), und übernimmt Stellen im Umkreis von 5 km (`--radius`). Gibt ein County das nicht her (z. B. Kitui: 48 weit verstreute, meist als defekt erhobene Einträge), bricht es mit einer Meldung ab.
+
 Das Skript schreibt `data/region.json`. Danach den Entwicklungsserver neu starten (bzw. neu bauen) und unter **Demo-Werkzeuge** die Demo zurücksetzen. Mit `null` in `data/region.json` gelten wieder die fiktiven Beispieldaten.
 
 ## Prüfungen

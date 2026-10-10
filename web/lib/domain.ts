@@ -224,10 +224,10 @@ export function estimateWalkingMinutes(km: number): number {
 const text = (value: unknown, max: number): string => (typeof value === "string" ? value.trim().slice(0, max) : "");
 const finite = (value: unknown): value is number => typeof value === "number" && Number.isFinite(value);
 const WATER_SOURCE_DE: Record<string, string> = {
-  "Borehole": "Bohrloch", "Tube Well or Borehole": "Bohrloch", "Protected Shallow Well": "Geschützter Brunnen",
+  "Borehole": "Bohrloch", "Tube Well or Borehole": "Bohrloch", "Borehole/Tubewell": "Bohrloch", "Protected Well": "Geschützter Brunnen", "Protected Dug Well": "Geschützter Brunnen", "Unprotected Well": "Ungeschützter Brunnen", "Protected Shallow Well": "Geschützter Brunnen",
   "Unprotected Shallow Well": "Ungeschützter Brunnen", "Protected Spring": "Gefasste Quelle", "Unprotected Spring": "Ungefasste Quelle",
   "Rainwater Harvesting": "Regenwassertank", "Piped Water": "Leitungswasser", "Public Tapstand": "Zapfstelle", "Public tapstand": "Zapfstelle",
-  "Undefined Well": "Brunnen", "Undefined Shallow Well": "Brunnen", "Surface Water (River/Stream/Lake/Pond/Dam)": "Oberflächenwasser",
+  "Undefined Well": "Brunnen", "Undefined Shallow Well": "Brunnen", "Surface Water (River/Stream/Lake/Pond/Dam)": "Oberflächenwasser", "Piped Water Point": "Zapfstelle", "Kiosk": "Wasserkiosk", "Unprotected Dug Well": "Ungeschützter Brunnen",
   "Sand or Sub-surface Dam": "Sanddamm", "Delivered Water": "Wasserlieferung", "Packaged water": "Abgefülltes Wasser",
 };
 export function waterSourceLabel(value: string): string {

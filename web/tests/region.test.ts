@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { applyCommand, createSeedState, distanceKm, findAlternative, getNearby, getPointDisplay, parseRegion } from "../lib/domain.ts";
 import type { Actor } from "../lib/domain.ts";
-import { buildRegion, dedupe, mapRecord, mapStatus } from "../scripts/wpdx-lib.mjs";
+import { buildRegion, dedupe, isCleanFunctional, isImprovedSource, mapRecord, mapStatus } from "../scripts/wpdx-lib.mjs";
 
 const NOW = Date.parse("2026-10-10T09:00:00Z");
 const operator: Actor = { id: "op", name: "Demo-Betreiberin", role: "operator" };
@@ -103,4 +103,25 @@ test("malformed region data is rejected or cleaned instead of trusted", () => {
   const parsed = parseRegion(tampered)!;
   assert.equal(parsed.points.length, region.points.length);
   assert.equal(parseRegion({ ...region, demo: { a: region.demo.a, b: region.demo.a, c: region.demo.c } }), null);
+});
+
+test("sparse or outdated counties are rejected instead of producing far-away alternatives", () => {
+  // Shape of the real Kitui result: points tens of kilometres apart, mostly non-functional.
+  const sparse = [row(11, -1.0, 38.0), row(12, -1.3, 38.2), row(13, -1.6, 37.8, "Non-Functional"), row(14, -0.9, 38.4, "Non-Functional")];
+  assert.throws(() => buildRegion(sparse, { county: "Sparse" }), /Keine geeignete Nachbarschaft/);
+});
+
+test("demo point A is a cleanly functional improved source; B is within walking distance", () => {
+  const mixed = [
+    { ...row(21, -1.0, 38.0), water_source_clean: "Surface Water (River/Stream/Lake/Pond/Dam)" },
+    { ...row(22, -1.001, 38.0), status_clean: "Functional, not in use" },
+    row(23, -1.002, 38.001), row(24, -1.004, 38.002), row(25, -1.006, 38.0, "Non-Functional"),
+  ];
+  const region = buildRegion(mixed, { county: "Mixed" });
+  assert.ok(!["21", "22"].includes(region.demo.a), "surface water or 'not in use' is never the demo pump");
+  const a = region.points.find((p) => p.rowId === region.demo.a)!;
+  const b = region.points.find((p) => p.rowId === region.demo.b)!;
+  assert.ok(isImprovedSource(b) && isCleanFunctional(b));
+  assert.ok(distanceKm(a, b)! <= 3);
+  assert.ok(region.points.every((p) => distanceKm(a, p)! <= 5), "neighbourhood is limited to the radius");
 });

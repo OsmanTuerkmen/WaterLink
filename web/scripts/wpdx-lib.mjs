@@ -62,32 +62,49 @@ export function dedupe(records) {
 
 const byDistance = (origin) => (x, y) => distanceKm(origin, x) - distanceKm(origin, y);
 
+/** Surface water and unnamed sources are not a sensible demo pump or recommendation. */
+export function isImprovedSource(record) {
+  const source = str(record.waterSource).toLowerCase();
+  return Boolean(source) && !/surface water|river|stream|lake|pond|unprotected|delivered|packaged/.test(source);
+}
+/** Plain "Functional" only; "needs repair" or "not in use" is not a clean demo baseline. */
+export function isCleanFunctional(record) {
+  return record.status === "functional" && /^functional\.?$/i.test(str(record.statusText));
+}
+const demoReady = (record) => isImprovedSource(record) && isCleanFunctional(record);
+
 /**
- * Chooses a compact neighbourhood: a recently surveyed functional point A with nearby points,
- * the nearest functional neighbour B (demo alternative) and the next neighbour C.
+ * Chooses a compact neighbourhood within radiusKm: A is a recently surveyed, cleanly functional,
+ * improved water point in the densest cluster; B is the nearest such point within walkKm (demo
+ * alternative); C is the next nearest point. Sparse or outdated counties fail with a clear message.
  */
-export function pickNeighbourhood(records, { count = 60, near = null, radiusKm = 3 } = {}) {
+export function pickNeighbourhood(records, { count = 60, near = null, radiusKm = 5, walkKm = 3 } = {}) {
   if (records.length < 3) throw new Error("Zu wenige Wasserstellen mit Koordinaten (mindestens 3 nötig).");
+  const within = (origin, km) => records.filter((r) => r !== origin && distanceKm(origin, r) <= km);
+  const partner = (origin) => within(origin, walkKm).filter(demoReady).sort(byDistance(origin))[0];
   let a;
   if (near) {
-    a = [...records].sort(byDistance(near))[0];
+    a = records.filter((r) => demoReady(r) && partner(r)).sort(byDistance(near))[0];
   } else {
-    const candidates = records.filter((r) => r.status === "functional").sort((x, y) => y.reportDate.localeCompare(x.reportDate));
-    a = candidates.find((candidate) => {
-      const close = records.filter((r) => r !== candidate && distanceKm(candidate, r) <= radiusKm);
-      return close.length >= 3 && close.some((r) => r.status === "functional");
-    }) ?? candidates[0] ?? records[0];
+    const scored = records.filter((r) => demoReady(r) && partner(r))
+      .map((r) => ({ r, neighbours: within(r, radiusKm).length }))
+      .filter((x) => x.neighbours >= 2)
+      .sort((x, y) => y.neighbours - x.neighbours || y.r.reportDate.localeCompare(x.r.reportDate));
+    a = scored[0]?.r;
   }
-  const neighbourhood = [...records].sort(byDistance(a)).slice(0, Math.max(3, count));
-  const others = neighbourhood.filter((r) => r !== a);
-  const b = others.find((r) => r.status === "functional") ?? others[0];
-  const c = others.find((r) => r !== b);
+  if (!a) {
+    throw new Error(`Keine geeignete Nachbarschaft gefunden: Es braucht zwei gefasste, als „Functional“ erhobene Wasserstellen höchstens ${walkKm} km voneinander entfernt. Anderes County wählen (--list) oder --radius / --walk erhöhen.`);
+  }
+  const b = partner(a);
+  const neighbourhood = [a, ...within(a, radiusKm).sort(byDistance(a))].slice(0, Math.max(3, count));
+  const c = neighbourhood.find((r) => r !== a && r !== b);
+  if (!c) throw new Error("In der Nachbarschaft gibt es keine dritte Wasserstelle. --radius erhöhen.");
   return { a, b, c, points: neighbourhood };
 }
 
-export function buildRegion(rows, { county, count, near, fetchedAt = new Date().toISOString() } = {}) {
+export function buildRegion(rows, { county, count, near, radiusKm, walkKm, fetchedAt = new Date().toISOString() } = {}) {
   const records = dedupe(rows.map(mapRecord).filter(Boolean));
-  const { a, b, c, points } = pickNeighbourhood(records, { count, near });
+  const { a, b, c, points } = pickNeighbourhood(records, { count, near, radiusKm, walkKm });
   const datasets = [...new Set(points.map((p) => p.dataset).filter(Boolean))];
   const label = [a.adm3, a.adm2, a.adm1].filter(Boolean).join(", ") || county;
   return {
