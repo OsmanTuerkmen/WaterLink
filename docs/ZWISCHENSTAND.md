@@ -35,6 +35,8 @@ In dieser Arbeitsumgebung war das npm-Paketverzeichnis gesperrt. Vinext, Wrangle
 - Organisationsübersicht zeigt das Alter offener Aufträge; Verlaufseinträge haben je Ereignisart ein eigenes Symbol; die Kennzahl „Blockiert“ nennt Teile, Geld oder Personal.
 - Die Seitenleiste scrollt bei niedrigen Fensterhöhen.
 
+**Zusammengeführt:** Codex hatte nach seinem letzten Push lokal weitergearbeitet, ohne zu committen (`.gitignore` mit `.sites-publish/`, eigenes Favicon, Sprung an den Seitenanfang beim Ansichtswechsel, Text „X von 3 mit aktueller Betriebsbestätigung“, „Erneut prüfen bis …“ auf der Karte, Druckhinweis mit Tafel). Diese Änderungen sind in `claude/waterlink-mvp` übernommen. Wo beide dasselbe gebaut hatten, gilt eine Fassung: Codex' Wortlaut für Karte und Druckhinweis, dazu der Hinweis „Gültigkeit abgelaufen“ für veraltete Bestätigungen; der Druckhinweis steht im Kopf des Statusblatts.
+
 ## Als Nächstes
 
 1. Lokal mit installierten Abhängigkeiten `npm run typecheck`, `npm run build` und `npm run test:integration` gegen den echten Worker ausführen. Die Änderungen dieses Nachtrags wurden nicht mit `tsc` geprüft.
