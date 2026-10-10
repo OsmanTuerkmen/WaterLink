@@ -26,6 +26,14 @@ Bestätigungszeit, Synchronisationszeit und Auftragsfortschritt sind getrennt. D
 
 Die vorläufige Gültigkeit von Status- und Zugangsbestätigungen beträgt zwölf Stunden. Alternatives Wasserholen setzt eine frische, konfliktfreie Betriebsbestätigung, geprüfte Wege-/Zugangsangaben sowie passende Öffnungszeiten einschließlich Gehzeit voraus. Die Demo verwendet für die Öffnungszeiten `Africa/Nairobi`.
 
+## Echte Wasserstellen aus Kenia (WPdx)
+
+Die Orte können aus der Water Point Data Exchange (WPdx) kommen, einer offenen Sammlung von Erhebungen zu Wasserstellen (Lizenz CC BY 4.0). `web/scripts/import-wpdx.mjs` lädt die Einträge eines Countys, wählt eine kompakte Nachbarschaft um eine zuletzt als funktionierend erhobene Stelle und schreibt `web/data/region.json`. Die Datei wird versioniert, damit Build und Bereitstellung keinen Netzzugriff brauchen. Enthält sie `null`, verwendet die App weiter die drei fiktiven Wasserstellen.
+
+Erhebungsdaten sind historisch. Sie werden als „Erhebung MM.JJJJ: funktionierte damals“ angezeigt und erzeugen nie einen aktuellen Betriebszustand; jede erfasste Stelle startet als „unbestätigt“. Für den Demo-Ablauf erhalten die drei Stellen A, B und C eine ausdrücklich als simuliert gekennzeichnete Bestätigung beziehungsweise Weg-/Zugangsangabe. Gehzeiten sind aus der Luftlinie geschätzt (Faktor 1,3, 4,5 km/h) und so beschriftet. Für andere Stellen zeigt die Karte höchstens die nächsten erfassten Stellen nach Luftlinie, ausdrücklich ohne Empfehlung. Eine Meldung oder Bestätigung zu einer erfassten Stelle nimmt sie in die Betreuung auf.
+
+Die Regionsdaten werden beim Laden erneut geprüft; fehlerhafte Einträge werden verworfen. Die importierte Nachbarschaft ist auf höchstens 400 Stellen begrenzt (Standard 60), weil der Demo-Datensatz weiterhin als ein zusammenhängender Datensatz gespeichert und alle drei Sekunden abgefragt wird. Eine landesweite Darstellung bräuchte normalisierte Tabellen, serverseitige Filter und eine Karte.
+
 ## Bewusst nicht angeschlossen
 
 Keine SMS, Sensorik, automatische Defekterkennung, KI-Sprachverarbeitung, Bezahlung oder Live-Karte. Diese Integrationen werden auch nicht als funktionierend dargestellt. Der manuelle Kernablauf ist unabhängig davon vollständig nutzbar.

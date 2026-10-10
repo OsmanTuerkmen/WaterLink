@@ -1,5 +1,6 @@
 import { applyCommand, createSeedState, type Actor, type Command, type State } from "./domain";
 import { HttpError, isRecord } from "./http";
+import { REGION } from "./region";
 import { sha256 } from "./session";
 
 export type MutationCommand = Command | { type: "reset" };
@@ -73,7 +74,7 @@ function decodeRow(row: StateRow): StoredEnvelope {
 async function loadEnvelope(db: D1Database, now: Date): Promise<StoredEnvelope> {
   let row = await db.prepare("SELECT revision, payload FROM demo_state WHERE id = ?").bind("demo").first<StateRow>();
   if (!row) {
-    const seed: StoredEnvelope = { state: createSeedState(now), receipts: [] };
+    const seed: StoredEnvelope = { state: createSeedState(now, REGION), receipts: [] };
     await db.prepare("INSERT OR IGNORE INTO demo_state (id, revision, payload) VALUES (?, ?, ?)")
       .bind("demo", seed.state.revision, JSON.stringify(seed)).run();
     // A second initializer may have won. Always read the committed aggregate.
@@ -116,7 +117,7 @@ export async function mutateState(
   let next: State;
   if (command.type === "reset") {
     if (actor.role !== "coordinator") throw new HttpError(403, "Nur die Demo-Koordination darf die Demo zurücksetzen.", "forbidden");
-    next = createSeedState(now);
+    next = createSeedState(now, REGION);
     next.revision = envelope.state.revision + 1;
     next.events = [{
       id: `event-reset-${next.revision}`, pointId: null, jobId: null, type: "reset",

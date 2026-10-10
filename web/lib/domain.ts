@@ -10,6 +10,34 @@ export type JobStatus = "open" | "claimed" | "in_progress" | "awaiting_confirmat
 export type Blocker = "parts" | "funding" | "staff" | null;
 
 export interface Actor { id: string; name: string; role: Role }
+/** Historical survey record from the Water Point Data Exchange. Never a current confirmation. */
+export interface Survey {
+  source: "WPdx";
+  rowId: string;
+  dataset: string;
+  reportDate: string;
+  status: "functional" | "non_functional" | "unknown";
+  statusText: string;
+  waterSource: string;
+  technology: string;
+  adm1: string;
+  adm2: string;
+  adm3: string;
+}
+export interface RegionMeta {
+  label: string;
+  county: string;
+  fetchedAt: string;
+  attribution: string;
+  pointCount: number;
+  meetingPoint: { lat: number; lon: number; label: string };
+}
+/** Output of scripts/import-wpdx.mjs; validated again before use. */
+export interface RegionData {
+  meta: Omit<RegionMeta, "pointCount">;
+  demo: { a: string; b: string; c: string };
+  points: (Survey & { lat: number; lon: number })[];
+}
 export interface WaterPoint {
   id: string;
   name: string;
@@ -27,6 +55,11 @@ export interface WaterPoint {
   opensAt: string;
   closesAt: string;
   allDay: boolean;
+  /** Part of the WaterLink programme: shown as a card and kept up to date by operators. */
+  tracked?: boolean;
+  lat?: number | null;
+  lon?: number | null;
+  survey?: Survey | null;
 }
 export interface Job {
   id: string;
@@ -51,7 +84,7 @@ export interface Event {
   actorName: string;
   at: string;
 }
-export interface State { points: WaterPoint[]; jobs: Job[]; events: Event[]; revision: number }
+export interface State { points: WaterPoint[]; jobs: Job[]; events: Event[]; revision: number; region?: RegionMeta | null }
 export type WaterLinkState = State;
 export type Command =
   | { type: "report"; pointId: string; status: "down" | "limited"; note: string }
@@ -163,12 +196,135 @@ export function findAlternative(points: WaterPoint[], sourceId: string, now: Tim
   return getAlternatives(points, sourceId, now, offline)[0] ?? null;
 }
 
-export function createSeedState(now: Time = Date.now()): State {
+const EARTH_KM = 6371;
+export function distanceKm(a: { lat?: number | null; lon?: number | null }, b: { lat?: number | null; lon?: number | null }): number | null {
+  if (![a.lat, a.lon, b.lat, b.lon].every((v) => typeof v === "number" && Number.isFinite(v))) return null;
+  const rad = (v: number) => (v * Math.PI) / 180;
+  const dLat = rad(b.lat! - a.lat!), dLon = rad(b.lon! - a.lon!);
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(rad(a.lat!)) * Math.cos(rad(b.lat!)) * Math.sin(dLon / 2) ** 2;
+  return 2 * EARTH_KM * Math.asin(Math.min(1, Math.sqrt(h)));
+}
+
+/** Nearest recorded points by straight-line distance. Not a recommendation: route and status are unverified. */
+export function getNearby(points: WaterPoint[], sourceId: string, limit = 2): { point: WaterPoint; km: number }[] {
+  const source = points.find((point) => point.id === sourceId);
+  if (!source) return [];
+  return points.flatMap((point) => {
+    if (point.id === sourceId) return [];
+    const km = distanceKm(source, point);
+    return km === null ? [] : [{ point, km }];
+  }).sort((a, b) => a.km - b.km).slice(0, limit);
+}
+
+/** Rough walking estimate: straight line × 1.3 detour at 4.5 km/h. Labelled as an estimate in the UI. */
+export function estimateWalkingMinutes(km: number): number {
+  return Math.max(1, Math.round((km * 1.3 / 4.5) * 60));
+}
+
+const text = (value: unknown, max: number): string => (typeof value === "string" ? value.trim().slice(0, max) : "");
+const finite = (value: unknown): value is number => typeof value === "number" && Number.isFinite(value);
+const WATER_SOURCE_DE: Record<string, string> = {
+  "Borehole": "Bohrloch", "Tube Well or Borehole": "Bohrloch", "Protected Shallow Well": "Geschützter Brunnen",
+  "Unprotected Shallow Well": "Ungeschützter Brunnen", "Protected Spring": "Gefasste Quelle", "Unprotected Spring": "Ungefasste Quelle",
+  "Rainwater Harvesting": "Regenwassertank", "Piped Water": "Leitungswasser", "Public Tapstand": "Zapfstelle", "Public tapstand": "Zapfstelle",
+  "Undefined Well": "Brunnen", "Undefined Shallow Well": "Brunnen", "Surface Water (River/Stream/Lake/Pond/Dam)": "Oberflächenwasser",
+  "Sand or Sub-surface Dam": "Sanddamm", "Delivered Water": "Wasserlieferung", "Packaged water": "Abgefülltes Wasser",
+};
+export function waterSourceLabel(value: string): string {
+  return WATER_SOURCE_DE[value] ?? (value || "Wasserstelle");
+}
+
+/** Validates imported data; malformed entries are dropped rather than trusted. */
+export function parseRegion(value: unknown): RegionData | null {
+  if (!value || typeof value !== "object") return null;
+  const raw = value as Record<string, any>;
+  const meta = raw.meta, demo = raw.demo;
+  if (!meta || !demo || !Array.isArray(raw.points)) return null;
+  const meeting = meta.meetingPoint;
+  if (!meeting || !finite(meeting.lat) || !finite(meeting.lon)) return null;
+  const seen = new Set<string>();
+  const points = (raw.points as any[]).flatMap((item) => {
+    const rowId = text(item?.rowId, 40);
+    if (!/^[0-9A-Za-z_-]{1,40}$/.test(rowId) || seen.has(rowId) || !finite(item.lat) || !finite(item.lon)
+      || Math.abs(item.lat) > 90 || Math.abs(item.lon) > 180) return [];
+    const status = ["functional", "non_functional", "unknown"].includes(item.status) ? item.status : "unknown";
+    const reportDate = Number.isFinite(Date.parse(item.reportDate)) ? new Date(item.reportDate).toISOString() : "";
+    seen.add(rowId);
+    return [{
+      source: "WPdx" as const, rowId, dataset: text(item.dataset, 120), reportDate, status, statusText: text(item.statusText, 80),
+      waterSource: text(item.waterSource, 80), technology: text(item.technology, 80),
+      adm1: text(item.adm1, 80), adm2: text(item.adm2, 80), adm3: text(item.adm3, 80), lat: item.lat, lon: item.lon,
+    }];
+  }).slice(0, 400);
+  const ids = [text(demo.a, 40), text(demo.b, 40), text(demo.c, 40)];
+  if (new Set(ids).size !== 3 || !ids.every((id) => seen.has(id))) return null;
+  return {
+    meta: {
+      label: text(meta.label, 120) || "Region in Kenia", county: text(meta.county, 80), fetchedAt: text(meta.fetchedAt, 40),
+      attribution: text(meta.attribution, 400) || "Water Point Data Exchange (WPdx), CC BY 4.0",
+      meetingPoint: { lat: meeting.lat, lon: meeting.lon, label: text(meeting.label, 120) || "Demo-Treffpunkt" },
+    },
+    demo: { a: ids[0], b: ids[1], c: ids[2] },
+    points,
+  };
+}
+
+/**
+ * Real recorded water points. WaterLink confirmations on the three demo points are simulated
+ * and labelled as such; every other point starts unconfirmed with only its historical survey.
+ */
+function createRegionSeed(region: RegionData, time: number): State {
+  const ago = (minutes: number) => new Date(time - minutes * 60_000).toISOString();
+  const { a, b, c } = region.demo;
+  const role = new Map([[a, "a"], [b, "b"], [c, "c"]]);
+  const names = new Map<string, number>();
+  const points: WaterPoint[] = region.points.map((record) => {
+    const { lat, lon, ...survey } = record;
+    const base = `${waterSourceLabel(survey.waterSource)} ${survey.adm3 || survey.adm2}`.trim();
+    const count = (names.get(base) ?? 0) + 1;
+    names.set(base, count);
+    const id = role.get(record.rowId) ?? `wpdx-${record.rowId}`;
+    const km = distanceKm({ lat, lon }, region.meta.meetingPoint) ?? 0;
+    const demoConfirmed = id === "a" || id === "b";
+    return {
+      id, name: count > 1 ? `${base} (${count})` : base,
+      status: demoConfirmed ? "working" : "unknown",
+      confirmedAt: id === "a" ? ago(18) : id === "b" ? ago(32) : null,
+      confirmedBy: demoConfirmed ? "Demo-Betreiberin (simuliert)" : null,
+      conflict: false,
+      note: demoConfirmed ? "Simulierte Demo-Bestätigung; nicht vor Ort geprüft." : "Keine WaterLink-Bestätigung. Nur historische Erhebungsdaten.",
+      location: [survey.adm3, survey.adm2].filter(Boolean).join(", ") || survey.adm1,
+      landmark: `Lage laut Erhebung: ${survey.adm3 || survey.adm2 || survey.adm1}. Keine geprüfte Wegbeschreibung; Koordinaten in den Details.`,
+      walkingMinutes: estimateWalkingMinutes(km),
+      accessVerified: id === "b", routeVerified: id === "b", accessConfirmedAt: id === "b" ? ago(35) : null,
+      opensAt: "", closesAt: "", allDay: id === "b",
+      tracked: role.has(record.rowId), lat, lon, survey,
+    };
+  });
+  const order = (p: WaterPoint) => (p.tracked ? p.id.charCodeAt(0) : 1000);
+  points.sort((x, y) => order(x) - order(y) || x.walkingMinutes - y.walkingMinutes);
+  return {
+    revision: 0,
+    region: { ...region.meta, pointCount: points.length },
+    points,
+    jobs: [],
+    events: [{ id: "event-seed", pointId: null, jobId: null, type: "seed",
+      message: `Demo gestartet mit ${points.length} erfassten Wasserstellen (${region.meta.label}, Quelle WPdx). Bestätigungen, Wege und Personen sind simuliert.`,
+      actorId: "demo", actorName: "WaterLink Demo", at: ago(35) }],
+  };
+}
+
+export function createSeedState(now: Time = Date.now(), region: RegionData | null = null): State {
+  if (region) return createRegionSeed(region, toMs(now));
+  return createFictionalSeed(now);
+}
+
+function createFictionalSeed(now: Time = Date.now()): State {
   const time = toMs(now);
   const ago = (minutes: number) => new Date(time - minutes * 60_000).toISOString();
   const shared = {
     conflict: false, accessVerified: true, routeVerified: true, accessConfirmedAt: ago(35),
-    opensAt: "06:00", closesAt: "20:00", allDay: true,
+    opensAt: "06:00", closesAt: "20:00", allDay: true, tracked: true,
   };
   return {
     revision: 0,
@@ -211,6 +367,7 @@ export function applyCommand(state: State, command: Command, actor: Actor, now: 
   const next: State = {
     points: state.points.map((point) => ({ ...point })), jobs: state.jobs.map((job) => ({ ...job })),
     events: state.events.map((event) => ({ ...event })), revision: state.revision + 1,
+    ...(state.region !== undefined ? { region: state.region } : {}),
   };
   const pointById = (id: string) => {
     const point = next.points.find((item) => item.id === id);
@@ -251,6 +408,7 @@ export function applyCommand(state: State, command: Command, actor: Actor, now: 
       point.status = command.status;
       point.confirmedAt = at;
       point.confirmedBy = actor.name;
+      point.tracked = true;
       // An additional report cannot resolve an existing contradiction; confirm does.
       point.note = note;
       const existing = activeJob(point.id);
@@ -321,6 +479,7 @@ export function applyCommand(state: State, command: Command, actor: Actor, now: 
       point.confirmedAt = at;
       point.confirmedBy = actor.name;
       point.conflict = false;
+      point.tracked = true;
       point.note = note;
       if (command.status === "working" && job) {
         job.status = "closed";

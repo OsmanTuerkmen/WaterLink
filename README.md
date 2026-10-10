@@ -2,11 +2,11 @@
 
 **Funktioniert unsere Wasserstelle heute?**
 
-WaterLink verbindet eine öffentliche Statusanzeige für Haushalte mit dem Ablauf von der Störungsmeldung bis zur ausdrücklich bestätigten Reparatur. Alle Wasserstellen und Personen im Prototyp sind fiktive Beispieldaten. „Funktioniert“ beschreibt den Betrieb, keine geprüfte Trinkwasserqualität.
+WaterLink verbindet eine öffentliche Statusanzeige für Haushalte mit dem Ablauf von der Störungsmeldung bis zur ausdrücklich bestätigten Reparatur. Personen, Bestätigungen und Aufträge im Prototyp sind simuliert. Die Wasserstellen sind entweder fiktiv oder stammen aus echten Erhebungen der [Water Point Data Exchange](https://www.waterpointdata.org/) (CC BY 4.0); deren Erhebungsstatus ist historisch und nie ein aktueller Zustand. „Funktioniert“ beschreibt den Betrieb, keine geprüfte Trinkwasserqualität.
 
 ## Zwischenstand vom 10. Oktober 2026
 
-Der implementierte MVP liegt in `web/` auf dem Branch `codex/waterlink-mvp`. Eine gehostete Demo ist noch nicht bereitgestellt.
+Der aktuelle Stand liegt in `web/` auf dem Branch `claude/waterlink-mvp` (aufbauend auf `codex/waterlink-mvp`). Eine gehostete Demo ist noch nicht bereitgestellt.
 
 - Responsive Weboberfläche und separate öffentliche Anzeige (`?view=display`).
 - Gemeinsamer, serverseitig gespeicherter Datenstand mit automatischer Aktualisierung.
@@ -15,6 +15,7 @@ Der implementierte MVP liegt in `web/` auf dem Branch `codex/waterlink-mvp`. Ein
 - Alternativen berücksichtigen Bestätigungsalter, Zugänglichkeit, geprüften Weg und Öffnungszeiten.
 - Rollenprüfung, Änderungshistorie, Schutz vor doppelten Anfragen und konkurrierenden Änderungen.
 - Demo-Werkzeuge für Sonderfälle und Zurücksetzen des Beispieldatensatzes.
+- Optional echte Wasserstellen einer Region in Kenia aus WPdx, mit Erhebungsdatum, Quelle und Suchliste.
 
 Die Rollen sind für die private Demo frei wechselbar. Eine echte lokale Berechtigungsverwaltung, SMS, Sensoren und KI-Spracherkennung sind nicht angebunden. Pilotregion und Wirksamkeit sind ungeprüft.
 
@@ -30,6 +31,18 @@ npm run dev
 ```
 
 Den Datenbankbefehl einmalig bei einer neuen lokalen Datenbank ausführen. Die Vorschau läuft standardmäßig auf `http://127.0.0.1:5173/`. Über die Anmeldeschaltfläche ist lokal eine simulierte Anmeldung möglich. Auf einer späteren privaten Sites-Bereitstellung übernimmt die Plattform die Anmeldung.
+
+## Echte Wasserstellen laden
+
+Im Verzeichnis `web/` (unter Windows in PowerShell `npm.cmd` statt `npm`):
+
+```sh
+npm run data:wpdx -- --list                 # Counties mit Anzahl der Einträge
+npm run data:wpdx -- --county Kitui         # Nachbarschaft um eine zuletzt funktionierende Stelle
+npm run data:wpdx -- --county Kitui --count 40 --near -1.05,38.01
+```
+
+Das Skript schreibt `data/region.json`. Danach den Entwicklungsserver neu starten (bzw. neu bauen) und unter **Demo-Werkzeuge** die Demo zurücksetzen. Mit `null` in `data/region.json` gelten wieder die fiktiven Beispieldaten.
 
 ## Prüfungen
 

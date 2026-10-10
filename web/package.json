@@ -14,7 +14,8 @@
     "db:generate": "drizzle-kit generate",
     "test": "node --experimental-strip-types --test tests/*.test.ts",
     "typecheck": "tsc --noEmit",
-    "test:integration": "node scripts/check-flow.mjs"
+    "test:integration": "node scripts/check-flow.mjs",
+    "data:wpdx": "node scripts/import-wpdx.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

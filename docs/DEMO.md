@@ -1,11 +1,11 @@
 # WaterLink in drei Minuten
 
-Alle Personen, Orte, Meldungen und Wegangaben sind fiktive Beispieldaten. Der Prototyp wurde nicht in Kenia validiert. „Funktioniert“ beschreibt den Betrieb, nicht die Trinkwasserqualität.
+Alle Personen, Meldungen, Bestätigungen und Wegangaben sind simuliert. Die Orte sind fiktiv oder stammen aus WPdx-Erhebungen; deren Status ist historisch. Der Prototyp wurde nicht in Kenia validiert. „Funktioniert“ beschreibt den Betrieb, nicht die Trinkwasserqualität.
 
 ## Vorbereitung
 
 1. Hauptansicht öffnen und für die Demo anmelden. Die Rollen sind simuliert; die erlaubten Aktionen werden trotzdem auf dem Server geprüft.
-2. Unter **Demo** die Rolle **Koordination** wählen und die Beispieldaten zurücksetzen.
+2. Unter **Demo** die Rolle **Koordination** wählen und die Beispieldaten zurücksetzen. Bei echten Regionsdaten: Die simulierte Demo-Bestätigung von A und B gilt 12 Stunden, also kurz vor dem Pitch zurücksetzen.
 3. **Öffentliche Anzeige öffnen** auswählen. Dieses zweite Fenster als öffentliche Anzeige sichtbar lassen. Alternativ dieselbe URL mit `?view=display` auf einem zweiten Gerät öffnen. Die private bereitgestellte Demo verlangt auf beiden Geräten den berechtigten ChatGPT-Zugang.
 4. Eine stabile Verbindung sicherstellen. Der lokale Entwicklungsserver ist absichtlich nur auf demselben Rechner erreichbar; zwei Geräte verwenden die bereitgestellte Demo.
 
