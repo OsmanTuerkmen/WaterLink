@@ -2,7 +2,7 @@
 //
 //   node scripts/import-wpdx.mjs --list                    Counties with record counts
 //   node scripts/import-wpdx.mjs --county Kitui            Neighbourhood around a recent functional point
-//   node scripts/import-wpdx.mjs --county Kitui --near -1.0,38.0 --count 40 --radius 5 --walk 3
+//   node scripts/import-wpdx.mjs --county Kitui --near -1.0,38.0 --count 40 --radius 5 --walk 3 --recent 3
 //
 // Writes data/region.json. WPdx data is CC BY 4.0; the attribution is stored with the data.
 // Survey status is historical. WaterLink never shows it as the current operating status.
@@ -48,8 +48,9 @@ if (!Number.isInteger(count) || count < 3 || count > 400) {
   process.exit(1);
 }
 const radiusKm = Number(option("radius") ?? 5), walkKm = Number(option("walk") ?? 3);
-if (!(radiusKm > 0 && radiusKm <= 50) || !(walkKm > 0 && walkKm <= 10)) {
-  console.error("--radius muss zwischen 0 und 50 km liegen, --walk zwischen 0 und 10 km.");
+const recentYears = Number(option("recent") ?? 3);
+if (!(radiusKm > 0 && radiusKm <= 50) || !(walkKm > 0 && walkKm <= 10) || !(recentYears > 0 && recentYears <= 30)) {
+  console.error("--radius muss zwischen 0 und 50 km liegen, --walk zwischen 0 und 10 km, --recent zwischen 0 und 30 Jahren.");
   process.exit(1);
 }
 let near = null;
@@ -76,7 +77,7 @@ if (!rows.length) {
 
 let region;
 try {
-  region = buildRegion(rows, { county, count, near, radiusKm, walkKm });
+  region = buildRegion(rows, { county, count, near, radiusKm, walkKm, recentYears });
 } catch (error) {
   console.error(`${rows.length} Einträge geladen. ${error.message}`);
   process.exit(1);
@@ -97,5 +98,10 @@ describe("A", find(region.demo.a));
 describe("B", find(region.demo.b));
 describe("C", find(region.demo.c));
 console.log(`Erhebungen: ${dates[0]?.slice(0, 10)} bis ${dates.at(-1)?.slice(0, 10)}`);
+const newest = rows.map((r) => String(r.report_date || "")).sort().at(-1) ?? "";
+const cutoff = newest && new Date(Date.parse(newest) - recentYears * 365.25 * 864e5).toISOString();
+if (cutoff && find(region.demo.a).reportDate < cutoff) {
+  console.log(`Hinweis: Keine geeignete Nachbarschaft mit Erhebungen der letzten ${recentYears} Jahre; A und B stammen aus älteren Erhebungen.`);
+}
 console.log(`Gespeichert: ${out}`);
 console.log("Danach in der App unter Demo-Werkzeuge die Demo zurücksetzen, damit die neuen Daten geladen werden.");

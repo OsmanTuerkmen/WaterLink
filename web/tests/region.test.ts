@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { applyCommand, createSeedState, distanceKm, findAlternative, getNearby, getPointDisplay, parseRegion } from "../lib/domain.ts";
 import type { Actor } from "../lib/domain.ts";
-import { buildRegion, dedupe, isCleanFunctional, isImprovedSource, mapRecord, mapStatus } from "../scripts/wpdx-lib.mjs";
+import { WATER_SEEN, buildRegion, constantCleanStatusDatasets, dedupe, isCleanFunctional, isImprovedSource, mapRecord, mapStatus } from "../scripts/wpdx-lib.mjs";
 
 const NOW = Date.parse("2026-10-10T09:00:00Z");
 const operator: Actor = { id: "op", name: "Demo-Betreiberin", role: "operator" };
@@ -124,4 +124,29 @@ test("demo point A is a cleanly functional improved source; B is within walking 
   assert.ok(isImprovedSource(b) && isCleanFunctional(b));
   assert.ok(distanceKm(a, b)! <= 3);
   assert.ok(region.points.every((p) => distanceKm(a, p)! <= 5), "neighbourhood is limited to the radius");
+});
+
+test("a dataset with a constant status_clean but varying status_id is read via status_id", () => {
+  // Shape of Evidence Action Kenya 2023-2024: status_clean always "Non-Functional", status_id mostly "Yes".
+  const flat = (id: number, lat: number, statusId: string) =>
+    ({ ...row(id, lat, 38.0, "Non-Functional"), status_id: statusId, dataset_title: "Flat status set" });
+  const mixed = [flat(31, -1.0, "Yes"), flat(32, -1.001, "Yes"), flat(33, -1.002, "No"), flat(34, -1.003, "Yes"), row(35, -1.004, 38.0, "Non-Functional")];
+  assert.deepEqual([...constantCleanStatusDatasets(mixed)], ["Flat status set"]);
+  const region = buildRegion(mixed, { county: "Flat" });
+  const byId = (id: string) => region.points.find((p) => p.rowId === id)!;
+  assert.equal(byId("31").status, "functional");
+  assert.equal(byId("31").statusText, WATER_SEEN);
+  assert.equal(byId("33").status, "non_functional");
+  assert.equal(byId("35").status, "non_functional", "other datasets keep status_clean");
+  assert.ok(["31", "32", "34"].includes(region.demo.a));
+});
+
+test("A and B prefer recent surveys over a denser but outdated cluster", () => {
+  const old = (id: number, lat: number) => row(id, lat, 38.0, "Functional", "2012-06-05T00:00:00.000");
+  const records = [
+    old(41, -1.0), old(42, -1.001), old(43, -1.002), old(44, -1.003), old(45, -1.004),
+    row(46, -1.2, 38.0), row(47, -1.201, 38.0), row(48, -1.202, 38.0, "Non-Functional"),
+  ];
+  const region = buildRegion(records, { county: "Mixed ages" });
+  assert.ok(["46", "47"].includes(region.demo.a) && ["46", "47"].includes(region.demo.b));
 });
