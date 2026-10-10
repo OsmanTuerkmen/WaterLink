@@ -57,11 +57,11 @@ npm run typecheck
 npm run test:integration
 ```
 
-Zum gespeicherten Zwischenstand bestehen 22 Fachregeltests und die TypeScript-Prüfung. Der API-Integrationstest hat den vollständigen Ablauf einschließlich Rollenprüfung, Wiederholungen, fehlgeschlagener Funktionsprüfung und gleichzeitiger Änderungen bestanden. Der vollständige Ablauf von der Ausfallmeldung bis zur bestätigten Wiederherstellung wurde in zwei Browserfenstern geprüft, ebenso schmale und breite Ansichten und die Druckansicht (Details und Einschränkungen im [Arbeitsstand](docs/ZWISCHENSTAND.md)). TypeScript-Prüfung und Produktionsbuild nach den letzten Oberflächenkorrekturen stehen noch aus.
+Stand 10. Oktober 2026: 39 Tests, TypeScript-Prüfung, Produktionsbuild und API-Integrationstest bestanden; der vollständige Ablauf wurde im Browser mit echten Orten aus Busia geprüft. Aktueller Stand, offene Aufgaben und Protokoll aller Schritte stehen im [Arbeitsstand](docs/ZWISCHENSTAND.md).
 
 ## Dokumentation
 
-- [Arbeitsstand und nächste Schritte](docs/ZWISCHENSTAND.md)
+- [Arbeitsstand: Ziel, Stand, offene Aufgaben, Protokoll](docs/ZWISCHENSTAND.md) – wird nach jedem Schritt aktualisiert
 - [Demo in drei Minuten](docs/DEMO.md)
 - [Technische Entscheidungen](docs/ARCHITEKTUR.md)
 - [Ursprüngliche Entscheidungsgrundlage](docs/KONZEPT.md) – enthält frühere Vorschläge; für die umgesetzte Architektur gilt das Architekturdokument.
