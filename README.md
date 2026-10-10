@@ -40,7 +40,7 @@ npm run typecheck
 npm run test:integration
 ```
 
-Zum gespeicherten Zwischenstand bestehen 22 Fachregeltests und die TypeScript-Prüfung. Der API-Integrationstest hat den vollständigen Ablauf einschließlich Rollenprüfung, Wiederholungen, fehlgeschlagener Funktionsprüfung und gleichzeitiger Änderungen bestanden. Die automatische Aktualisierung einer Ausfallmeldung wurde in zwei Browserfenstern geprüft. Die vollständige visuelle Endprüfung und ein erneuter Produktionsbuild nach den letzten Oberflächenänderungen stehen noch aus.
+Zum gespeicherten Zwischenstand bestehen 22 Fachregeltests und die TypeScript-Prüfung. Der API-Integrationstest hat den vollständigen Ablauf einschließlich Rollenprüfung, Wiederholungen, fehlgeschlagener Funktionsprüfung und gleichzeitiger Änderungen bestanden. Der vollständige Ablauf von der Ausfallmeldung bis zur bestätigten Wiederherstellung wurde in zwei Browserfenstern geprüft, ebenso schmale und breite Ansichten und die Druckansicht (Details und Einschränkungen im [Arbeitsstand](docs/ZWISCHENSTAND.md)). TypeScript-Prüfung und Produktionsbuild nach den letzten Oberflächenkorrekturen stehen noch aus.
 
 ## Dokumentation
 
