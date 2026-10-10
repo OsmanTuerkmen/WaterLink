@@ -20,6 +20,8 @@ Alle Personen, Meldungen, Bestätigungen und Wegangaben sind simuliert. Die Orte
 | 2:05–2:35 | Betreiberrolle wählen, Funktion vor Ort ausdrücklich als getestet bestätigen. | „Erst diese Bestätigung stellt den Betrieb wieder her und schließt den Auftrag.“ |
 | 2:35–3:00 | In Demo einen veralteten Stand oder die Verbindungssimulation zeigen. | „Alte Informationen bleiben nicht unbegrenzt grün. Wir zeigen Unsicherheit offen.“ |
 
+**Optionaler Zusatz (ca. 30 s), echte Sensordaten:** Unter **Demo-Werkzeuge** die Wiedergabe „Handpumpe Tiwi – Mshikeni, Kwale“ abspielen. Ab KW 13/2014 fällt die Fördermenge auf null, ab der zweiten Woche erscheint der Sensorhinweis. Aussage: „Das sind echte Daten einer Pumpe in Kenia. Ein Sensor kann einen Ausfall vermuten, aber nicht bestätigen. WaterLink macht daraus ‚Prüfung nötig‘, die Betreiberin prüft, und ab da läuft unser Ablauf.“ Optional als Koordination **Hinweis auf A übertragen** und die Tafel zeigen.
+
 Die Verbindungssimulation ist ein ausdrücklich markierter UI-Test. Sie unterbricht keine reale Netzverbindung und verändert keine Messwerte. Für eine echte Unterbrechung kann im Browser die Verbindung offline geschaltet werden.
 
 ## Grenzen offen benennen
@@ -27,7 +29,7 @@ Die Verbindungssimulation ist ein ausdrücklich markierter UI-Test. Sie unterbri
 - Die öffentliche Anzeige erreicht nicht automatisch alle Haushalte. Ein geeigneter Standort und lokale Betreuung fehlen noch.
 - Die 12-Stunden-Frist ist ein konfigurierbarer Demo-Testparameter, keine geprüfte Regel für den Feldbetrieb.
 - Software schafft kein Reparaturbudget, keine Ersatzteile und kein Personal.
-- Kein angeschlossener Sensor, kein SMS-Versand und kein KI-Dienst. Manuelle Formulare bilden den gesamten Kernablauf ab.
+- Kein Live-Sensor, kein SMS-Versand und kein KI-Dienst. Die Sensorwiedergabe nutzt echte, aber historische Daten von 2014. Manuelle Formulare bilden den gesamten Kernablauf ab.
 - Die Betreiber-, Technik- und Koordinationsrollen dienen einer privaten Demonstration. Vor einem Feldpilot sind echte, zu Wasserstellen zugeordnete Konten und lokale Zuständigkeiten erforderlich.
 - Eine konkrete Pilotregion, Sprache und lokale Wege-/Zugangsprüfung stehen aus. Die Demo-Sprache ist Deutsch.
 

@@ -45,6 +45,8 @@ export interface WaterPoint {
   confirmedAt: string | null;
   confirmedBy: string | null;
   conflict: boolean;
+  /** Unconfirmed hint from usage monitoring; never a status by itself, cleared by an on-site report or check. */
+  sensorAlert?: string | null;
   note: string;
   location: string;
   landmark: string;
@@ -93,7 +95,7 @@ export type Command =
   | { type: "progress"; jobId: string; note: string; blocker: Blocker }
   | { type: "repair"; jobId: string; note: string }
   | { type: "confirm"; pointId: string; status: "working" | "limited" | "down"; note: string; tested: true }
-  | { type: "scenario"; scenario: "stale" | "conflict" | "no-alternative" };
+  | { type: "scenario"; scenario: "stale" | "conflict" | "no-alternative" | "sensor" };
 
 export class DomainError extends Error {
   status: number;
@@ -105,7 +107,7 @@ export class DomainError extends Error {
 }
 
 export interface PointDisplay {
-  certainty: "fresh" | "stale" | "conflict" | "unknown";
+  certainty: "fresh" | "stale" | "conflict" | "sensor" | "unknown";
   status: OperatingStatus;
   label: string;
   symbol: string;
@@ -142,6 +144,7 @@ export function getPointDisplay(point: WaterPoint, now: Time = Date.now(), offli
   });
   if (offline) return uncertain("unknown", "Verbindung fehlt", "Gespeicherter Stand; der aktuelle Zustand ist nicht bestätigt.");
   if (point.conflict) return uncertain("conflict", "Meldungen widersprüchlich", "Eine Betreiberperson muss den Zustand vor Ort erneut prüfen.");
+  if (point.sensorAlert) return uncertain("sensor", "Sensorhinweis", point.sensorAlert);
   if (point.status === "unknown" || !Number.isFinite(at) || at > nowMs) {
     return uncertain("unknown", "Zustand unbekannt", "Keine gültige Bestätigung vorhanden.");
   }
@@ -409,6 +412,7 @@ export function applyCommand(state: State, command: Command, actor: Actor, now: 
       point.confirmedAt = at;
       point.confirmedBy = actor.name;
       point.tracked = true;
+      point.sensorAlert = null;
       // An additional report cannot resolve an existing contradiction; confirm does.
       point.note = note;
       const existing = activeJob(point.id);
@@ -479,6 +483,7 @@ export function applyCommand(state: State, command: Command, actor: Actor, now: 
       point.confirmedAt = at;
       point.confirmedBy = actor.name;
       point.conflict = false;
+      point.sensorAlert = null;
       point.tracked = true;
       point.note = note;
       if (command.status === "working" && job) {
@@ -512,6 +517,9 @@ export function applyCommand(state: State, command: Command, actor: Actor, now: 
           if (candidate.id !== "a") candidate.accessVerified = false;
         }
         event("scenario", "Demo-Szenario: Keine verlässlich bestätigte Alternative für Wasserstelle A.", point.id, null);
+      } else if (command.scenario === "sensor") {
+        point.sensorAlert = "Sensor meldet seit 2 Wochen fast keine Förderung. Bitte vor Ort prüfen.";
+        event("scenario", "Demo-Szenario: Sensorhinweis für Wasserstelle A (Muster aus echten Kwale-Daten 2014). Status bleibt unbestätigt bis zur Prüfung vor Ort.", point.id, null);
       } else throw new DomainError("Unbekanntes Demo-Szenario.");
       break;
     }

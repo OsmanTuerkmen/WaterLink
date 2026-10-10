@@ -53,7 +53,7 @@ export function parseCommand(value: unknown): MutationCommand {
       return { type: "confirm", pointId, note, status: value.status, tested: true };
     }
     case "scenario": {
-      if (value.scenario !== "stale" && value.scenario !== "conflict" && value.scenario !== "no-alternative") {
+      if (value.scenario !== "stale" && value.scenario !== "conflict" && value.scenario !== "no-alternative" && value.scenario !== "sensor") {
         throw new HttpError(400, "Unbekanntes Demo-Szenario.");
       }
       return { type: "scenario", scenario: value.scenario };

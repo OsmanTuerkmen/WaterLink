@@ -149,3 +149,41 @@ body{font-size:15px}
 .dictate{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:10px}
 .dictate .button{margin:0;width:auto}
 .dictate small{flex:1;min-width:200px;font-size:12px;color:#6b7a6f;line-height:1.5}
+
+/* ---- Sensor replay (real historical Kwale data) ---- */
+.sensor .eyebrow{gap:6px}
+.sensor .section-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.sensor-controls{display:flex;align-items:center;gap:14px;margin:4px 0 14px;flex-wrap:wrap}
+.sensor-controls .button{margin:0;width:auto}
+.sensor-controls input[type=range]{flex:1;min-width:160px;accent-color:#1d5544;padding:0;border:0;background:none}
+.sensor-controls strong{font-size:17px;font-variant-numeric:tabular-nums;min-width:96px;text-align:right}
+.sensor-chart{width:100%;height:150px;display:block;border-radius:10px;background:#f6f8f3}
+.sensor-chart .bar{fill:#2f7044}
+.sensor-chart .bar.later{fill:#c9d6c6}
+.sensor-chart .gap{fill:#b9bfb4}
+.sensor-chart .episode{fill:#f6dfa6;opacity:.75}
+.sensor-chart .now{fill:none;stroke:#203d35;stroke-width:2;vector-effect:non-scaling-stroke}
+.sensor-legend{display:flex;gap:18px;flex-wrap:wrap;margin:10px 0 16px;font-size:13px;color:#5f6f63}
+.sensor-legend span{display:flex;align-items:center;gap:7px}
+.sensor-legend i{width:14px;height:10px;border-radius:3px;display:inline-block}
+.sensor-legend i.bar{background:#2f7044}
+.sensor-legend i.episode{background:#f6dfa6}
+.sensor-legend i.gap{background:#b9bfb4;height:4px}
+.sensor-hint{display:flex;gap:14px;align-items:flex-start;padding:16px 18px;border-radius:12px;background:#eef3ea;color:#2f5a40}
+.sensor-hint.alert{background:#fbefd2;color:#6d4b10}
+.sensor-hint.low,.sensor-hint.no-data,.sensor-hint.learning{background:#f3f4ef;color:#4f5a50}
+.sensor-hint strong{font-size:17px;display:block}
+.sensor-hint p{font-size:14px;line-height:1.6;margin-top:6px}
+.sensor-hint svg{margin-top:2px}
+.sensor-neighbours{list-style:none;margin:16px 0 0;padding:0}
+.sensor-neighbours li{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid #edf0e7}
+.sensor-neighbours li>span:first-child{flex:1;min-width:0}
+.sensor-neighbours strong{display:block;font-size:15px}
+.sensor-neighbours small{display:block;font-size:12px;color:#6b7a6f;margin-top:2px}
+.sensor-value{font-variant-numeric:tabular-nums;font-size:15px;min-width:64px;text-align:right}
+.sensor-apply{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:16px;padding-top:16px;border-top:1px solid #edf0e7}
+.sensor-apply p{flex:1;min-width:220px;font-size:14px;color:#4f6457;line-height:1.6}
+.sensor-apply .button{margin:0;width:auto}
+.sensor-apply small{width:100%;font-size:12px;color:#6b7a6f}
+.sensor-source{display:block;margin-top:14px;font-size:12px;color:#7d8b80;line-height:1.6}
+@media(max-width:620px){.sensor-controls strong{min-width:0;text-align:left}.sensor-apply .button{width:100%}}

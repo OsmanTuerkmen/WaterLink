@@ -34,6 +34,12 @@ Erhebungsdaten sind historisch. Sie werden als „Erhebung MM.JJJJ: funktioniert
 
 Die Regionsdaten werden beim Laden erneut geprüft; fehlerhafte Einträge werden verworfen. Die importierte Nachbarschaft ist auf höchstens 400 Stellen begrenzt (Standard 60), weil der Demo-Datensatz weiterhin als ein zusammenhängender Datensatz gespeichert und alle drei Sekunden abgefragt wird. Eine landesweite Darstellung bräuchte normalisierte Tabellen, serverseitige Filter und eine Karte.
 
+## Sensordaten als Wiedergabe (Kwale)
+
+`web/scripts/import-kwale.mjs` lädt echte wöchentliche Fördermengen von Smart Handpumps in Kwale (openwashdata/waterpumpkwale, CC BY 4.0, auf einen Commit festgelegt) und schreibt `web/data/kwale-sensors.json`: standardmäßig die Pumpe „Tiwi – Mshikeni“ mit drei Nachbarpumpen für 2014. Die Demo-Werkzeuge spielen den Verlauf ab. `web/lib/sensor.ts` erkennt einen Hinweis erst nach zwei Wochen in Folge unter 10 % des üblichen Werts; fehlende Werte (Funksignal) gelten nie als Ausfall.
+
+Ein Sensorhinweis ist nie ein Betriebszustand. Das Demo-Szenario „sensor“ setzt bei Wasserstelle A nur `sensorAlert`; die Anzeige zeigt „Unklar – Sensorhinweis“, es entsteht kein Auftrag. Erst eine Meldung oder Prüfung vor Ort löst den Hinweis auf. Die Daten sind historisch und werden nie als Live-Zustand dargestellt.
+
 ## Bewusst nicht angeschlossen
 
-Keine SMS, Sensorik, automatische Defekterkennung, KI-Sprachverarbeitung, Bezahlung oder Live-Karte. Diese Integrationen werden auch nicht als funktionierend dargestellt. Der manuelle Kernablauf ist unabhängig davon vollständig nutzbar.
+Keine SMS, Live-Sensorik, KI-Sprachverarbeitung, Bezahlung oder Live-Karte. Die Störungsbeschreibung kann optional über die Spracherkennung des Browsers diktiert werden; der Status wird dabei nie automatisch gesetzt. Diese Integrationen werden auch nicht als funktionierend dargestellt. Der manuelle Kernablauf ist unabhängig davon vollständig nutzbar.

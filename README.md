@@ -16,6 +16,8 @@ Der aktuelle Stand liegt in `web/` auf dem Branch `claude/waterlink-mvp` (aufbau
 - Rollenprüfung, Änderungshistorie, Schutz vor doppelten Anfragen und konkurrierenden Änderungen.
 - Demo-Werkzeuge für Sonderfälle und Zurücksetzen des Beispieldatensatzes.
 - Optional echte Wasserstellen einer Region in Kenia aus WPdx, mit Erhebungsdatum, Quelle und Suchliste.
+- Wiedergabe echter, historischer Sensordaten von Smart Handpumps in Kwale (2014): Ein Einbruch der Fördermenge wird zum Hinweis „Prüfung nötig“, nie zu einem bestätigten Status.
+- [Vom Prototyp zum echten Produkt](docs/WEG-ZUM-PRODUKT.md): was fehlt, realistischer Weg und Antworten auf typische Jury-Fragen.
 
 Die Rollen sind für die private Demo frei wechselbar. Eine echte lokale Berechtigungsverwaltung, SMS, Sensoren und ein KI-Dienst sind nicht angebunden. Die Störungsbeschreibung lässt sich optional über die Spracherkennung des Browsers diktieren; der Text wird vor dem Speichern geprüft, der Status nie automatisch gesetzt. Pilotregion und Wirksamkeit sind ungeprüft.
 
