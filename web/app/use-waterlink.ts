@@ -52,7 +52,7 @@ export function useWaterLink() {
   useEffect(() => {
     try {
       const saved = JSON.parse(localStorage.getItem(CACHE) || "null");
-      if (saved && valid(saved.state)) { current.current = saved.state; setState(saved.state); setLastSync(saved.stamp); offset.current = Number.isFinite(saved.offset) ? saved.offset : 0; setConnection("offline"); }
+      if (saved && valid(saved.state)) { current.current = saved.state; setState(saved.state); setLastSync(saved.stamp); offset.current = Number.isFinite(saved.offset) ? saved.offset : 0; }
       const s = JSON.parse(sessionStorage.getItem(SESSION) || "null");
       if (s?.token && s.actor && Date.parse(s.expiresAt) > Date.now()) setSession(s);
     } catch { /* Invalid storage is discarded. */ }

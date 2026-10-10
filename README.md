@@ -8,7 +8,7 @@ WaterLink verbindet eine öffentliche Statusanzeige für Haushalte mit dem Ablau
 
 Der aktuelle Stand liegt in `web/` auf dem Branch `claude/waterlink-mvp` (aufbauend auf `codex/waterlink-mvp`). Eine gehostete Demo ist noch nicht bereitgestellt.
 
-- Responsive Weboberfläche und separate öffentliche Anzeige (`?view=display`).
+- Responsive Weboberfläche und öffentliche Statustafel (`?view=display`): große Schrift, Status als Wort und Symbol, Bestätigungszeit und Alternative – lesbar aus einigen Metern Entfernung.
 - Gemeinsamer, serverseitig gespeicherter Datenstand mit automatischer Aktualisierung.
 - Störung melden, Auftrag übernehmen, Fortschritt und Hindernisse dokumentieren, Reparatur zur Prüfung melden und Funktion ausdrücklich bestätigen.
 - Getrennte Betriebs- und Auftragszustände; veraltete, widersprüchliche und offline verfügbare Informationen werden entsprechend gekennzeichnet.
@@ -17,7 +17,7 @@ Der aktuelle Stand liegt in `web/` auf dem Branch `claude/waterlink-mvp` (aufbau
 - Demo-Werkzeuge für Sonderfälle und Zurücksetzen des Beispieldatensatzes.
 - Optional echte Wasserstellen einer Region in Kenia aus WPdx, mit Erhebungsdatum, Quelle und Suchliste.
 
-Die Rollen sind für die private Demo frei wechselbar. Eine echte lokale Berechtigungsverwaltung, SMS, Sensoren und KI-Spracherkennung sind nicht angebunden. Pilotregion und Wirksamkeit sind ungeprüft.
+Die Rollen sind für die private Demo frei wechselbar. Eine echte lokale Berechtigungsverwaltung, SMS, Sensoren und ein KI-Dienst sind nicht angebunden. Die Störungsbeschreibung lässt sich optional über die Spracherkennung des Browsers diktieren; der Text wird vor dem Speichern geprüft, der Status nie automatisch gesetzt. Pilotregion und Wirksamkeit sind ungeprüft.
 
 ## Lokal starten
 
