@@ -23,6 +23,10 @@ interface Store {
   /** The error of the role's last failed action, read right after `act` resolves. */
   lastError(role: Role): string;
   clear(role: Role): void;
+  /** "code" on a self-hosted deployment that unlocks changes with a shared demo access code. */
+  authMode: "sites" | "code";
+  /** Redeems the demo access code; resolves to an error message, or "" on success. */
+  unlock(code: string): Promise<string>;
 }
 
 const CACHE = "waterlink-snapshot-v2";
@@ -51,6 +55,7 @@ export function WaterLinkProvider({ children }: { children: ReactNode }) {
   const sessionRef = useRef<Partial<Record<Role, Session>>>({});
   const [feedback, setFeedback] = useState<Record<Role, RoleFeedback>>({ operator: IDLE, technician: IDLE, coordinator: IDLE });
   const [simulatedOffline, setSimulatedOffline] = useState(false);
+  const [authMode, setAuthMode] = useState<"sites" | "code">("sites");
   const simulated = useRef(false), fetching = useRef(false), writing = useRef(false);
   const active = useRef<AbortController | null>(null);
   const requestIds = useRef(new Map<string, string>());
@@ -111,6 +116,7 @@ export function WaterLinkProvider({ children }: { children: ReactNode }) {
       sessionRef.current = restored;
       setSessions(restored);
     } catch { /* Invalid storage is discarded. */ }
+    fetch("/api/access", { cache: "no-store" }).then((r) => r.json() as Promise<{ mode?: string }>).then((d) => { if (d?.mode === "code") setAuthMode("code"); }).catch(() => {});
     void refresh();
     const poll = setInterval(() => void refresh(), 3000);
     const tick = setInterval(() => setNow(Date.now() + offset.current), 15_000);
@@ -204,13 +210,25 @@ export function WaterLinkProvider({ children }: { children: ReactNode }) {
     }
   }, [accept, ensureSession, forget, patch, refresh]);
 
+  const unlock = useCallback(async (code: string): Promise<string> => {
+    try {
+      const response = await fetch("/api/access", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ code }), signal: AbortSignal.timeout(10_000) });
+      const data = (await response.json()) as { error?: string };
+      if (!response.ok) return data.error || "Could not unlock the demo.";
+      for (const role of ROLES) patch(role, { signInNeeded: false, error: "" });
+      return "";
+    } catch {
+      return "No connection. Please try again.";
+    }
+  }, [patch]);
+
   const value = useMemo<Store>(() => ({
-    state, connection, lastSync, now, simulatedOffline, toggleOffline, refresh, act,
+    state, connection, lastSync, now, simulatedOffline, toggleOffline, refresh, act, authMode, unlock,
     actor: (role) => sessions[role]?.actor ?? null,
     lastError: (role) => lastErrors.current[role] ?? "",
     feedback: (role) => feedback[role],
     clear: (role) => patch(role, { error: "", notice: "" }),
-  }), [state, connection, lastSync, now, simulatedOffline, toggleOffline, refresh, act, sessions, feedback, patch]);
+  }), [state, connection, lastSync, now, simulatedOffline, toggleOffline, refresh, act, authMode, unlock, sessions, feedback, patch]);
 
   return <Context.Provider value={value}>{children}</Context.Provider>;
 }

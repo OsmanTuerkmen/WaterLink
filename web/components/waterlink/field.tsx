@@ -1,8 +1,9 @@
 "use client";
 import { useEffect, useState, type ReactNode } from "react";
-import { ArrowLeft, ArrowRight, ArrowUpRight, Check, ClipboardCheck, Droplet, Droplets, Mic, TriangleAlert, Wrench, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, ClipboardCheck, Droplet, Droplets, Mic, TriangleAlert, Wrench, X } from "lucide-react";
 import { getPointDisplay, type Blocker, type Job, type Role, type State, type WaterPoint } from "@/lib/domain";
 import { useWaterLink } from "./store";
+import { SignInPrompt } from "./signin";
 import { PointTile, StatusChip } from "./marks";
 import { BLOCKER, JOB_STEP, ago, clock, isTracked, letter, stamp } from "./format";
 
@@ -46,7 +47,7 @@ export function FieldApp({ role, onRole, initialPoint, framed = false }: { role:
       {fb.error && (
         <div className="field-banner error" role="alert">
           <span>{fb.error}</span>
-          {fb.signInNeeded && <a className="link" href={`/signin-with-chatgpt?return_to=${encodeURIComponent(location.pathname + location.search + location.hash)}`} target="_top">Sign in for the demo <ArrowUpRight size={15} aria-hidden="true" /></a>}
+          {fb.signInNeeded && <SignInPrompt />}
           <button className="icon-btn" aria-label="Dismiss" onClick={() => clear(role)}><X size={16} /></button>
         </div>
       )}

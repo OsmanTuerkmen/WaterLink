@@ -1,4 +1,4 @@
-import { getChatGPTUser } from "@/app/chatgpt-auth";
+import { currentUserId } from "@/lib/access";
 import { getDatabase } from "@/lib/database";
 import { STATUS_TTL_MS } from "@/lib/domain";
 import { errorResponse, HttpError, jsonResponse, readJsonBody, requireSameOrigin } from "@/lib/http";
@@ -20,11 +20,11 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     requireSameOrigin(request);
-    const user = await getChatGPTUser();
-    if (!user) throw new HttpError(401, "Please sign in first.", "sign_in_required");
+    const userId = await currentUserId();
+    if (!userId) throw new HttpError(401, "Please sign in first.", "sign_in_required");
     const now = new Date();
     const db = getDatabase();
-    const session = await requireDemoSession(db, request, user.userId, now);
+    const session = await requireDemoSession(db, request, userId, now);
     const payload = await readJsonBody(request);
     if (!Number.isSafeInteger(payload.expectedRevision) || (payload.expectedRevision as number) < 0) {
       throw new HttpError(400, "The expected revision is invalid.", "invalid_revision");

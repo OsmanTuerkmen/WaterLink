@@ -41,11 +41,11 @@ export function errorResponse(error: unknown): Response {
 export function requireSameOrigin(request: Request): void {
   const origin = request.headers.get("origin");
   if (!origin || origin !== new URL(request.url).origin) {
-    throw new HttpError(403, "Diese Anfrage muss von der WaterLink-Seite stammen.", "invalid_origin");
+    throw new HttpError(403, "This request has to come from the WaterLink page.", "invalid_origin");
   }
   const fetchSite = request.headers.get("sec-fetch-site");
   if (fetchSite === "cross-site") {
-    throw new HttpError(403, "Anfragen von anderen Seiten sind nicht erlaubt.", "invalid_origin");
+    throw new HttpError(403, "Requests from other sites are not allowed.", "invalid_origin");
   }
 }
 

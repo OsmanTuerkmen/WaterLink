@@ -5,6 +5,7 @@ import { getPointDisplay, type State } from "@/lib/domain";
 import { alertEpisodes, readSensor, type SensorState } from "@/lib/sensor";
 import kwale from "@/data/kwale-sensors.json";
 import { useWaterLink } from "./store";
+import { SignInPrompt } from "./signin";
 import { NeighbourhoodMap } from "./map";
 import { PointTile, StatusChip } from "./marks";
 import { BLOCKER, JOB_STEP, ago, isTracked, letter, stamp } from "./format";
@@ -120,7 +121,7 @@ function DemoTools() {
     <div className="demo">
       {(fb.error || fb.notice) && (
         <p className={`banner ${fb.error ? "error" : "ok"}`} role="status">{fb.error || fb.notice}
-          {fb.signInNeeded && <a className="link" href={`/signin-with-chatgpt?return_to=${encodeURIComponent("/#coordination/demo")}`} target="_top">Sign in <ArrowUpRight size={14} /></a>}
+          {fb.signInNeeded && <SignInPrompt />}
           <button className="icon-btn" onClick={() => clear("coordinator")} aria-label="Dismiss"><X size={16} /></button>
         </p>
       )}

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Check, RefreshCw } from "lucide-react";
 import type { State } from "@/lib/domain";
 import { useWaterLink } from "./store";
+import { SignInPrompt } from "./signin";
 import { FieldApp } from "./field";
 import { DisplayBoard } from "./board";
 import { CanMark } from "./marks";
@@ -53,7 +54,7 @@ export function Stage() {
       </header>
       {coord.error && (
         <p className="stage-error" role="alert">{coord.error}
-          {coord.signInNeeded && <a className="link" href="/signin-with-chatgpt?return_to=%2F%3Fview%3Dstage" target="_top">Sign in</a>}
+          {coord.signInNeeded && <SignInPrompt />}
         </p>
       )}
       <div className="stage-floor">
