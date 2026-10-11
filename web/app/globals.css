@@ -459,11 +459,75 @@ select, textarea, input[type="search"] { border-radius: 12px; background: var(--
 .phone .field-point-actions .btn { min-height: 46px; }
 .demo-short { display: none; }
 
+
+/* Simulated SMS on a basic phone */
+.sms-page { display: grid; grid-template-columns: minmax(0, 380px) minmax(0, 1fr); gap: 40px; align-items: start; max-width: 1040px; margin: 0 auto; }
+.sms-device { padding: 12px; border-radius: 34px; background: var(--ink); box-shadow: 0 30px 60px -36px rgba(58, 44, 0, .6); }
+.sms-device .sms { height: 620px; border-radius: 24px; }
+.sms-aside h1 { font-size: clamp(2rem, 3.4vw, 2.8rem); margin-bottom: 14px; }
+.sms-aside > p { color: var(--ink-2); max-width: 60ch; margin-bottom: 18px; }
+.sms-commands { margin-bottom: 16px; background: var(--paper); border-radius: 12px; overflow: hidden; box-shadow: var(--lift); }
+.sms-commands th, .sms-commands td { padding-left: 14px; }
+.sms-commands code { font: 700 15px/1 var(--display); letter-spacing: .02em; color: var(--cap-deep); }
+.sms { display: flex; flex-direction: column; height: 100%; background: var(--paper); overflow: hidden; }
+.sms-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; padding: 12px 14px; background: var(--can); color: var(--can-ink); border-bottom: 2px solid var(--can-deep); }
+.sms-top strong { display: block; font: 800 18px/1.1 var(--display); color: var(--ink); }
+.sms-top span { display: block; font-size: 12.5px; font-weight: 700; }
+.sms-who button { font-size: 13px; padding: 6px 10px; }
+.sms-thread { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding: 14px 12px; background: var(--stone); }
+.sms-empty { margin: auto 8px; text-align: center; color: var(--ink-2); font-size: 15px; }
+.sms-msg { max-width: 86%; }
+.sms-msg p { padding: 9px 12px; border-radius: 16px; font-size: 15.5px; line-height: 1.38; overflow-wrap: anywhere; }
+.sms-msg small { display: block; margin-top: 3px; padding: 0 6px; font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.sms-msg.me { align-self: flex-end; text-align: right; }
+.sms-msg.me p { background: var(--cap); color: #fff; border-bottom-right-radius: 5px; text-align: left; }
+.sms-msg.wl p { background: var(--paper); color: var(--ink); border-bottom-left-radius: 5px; box-shadow: 0 1px 0 rgba(58, 44, 0, .08); }
+.sms-msg.is-typing p { color: var(--ink-3); }
+.sms-msg { animation: settle .35s var(--ease) both; }
+.sms-quick { display: flex; gap: 6px; overflow-x: auto; padding: 8px 10px; background: var(--paper); border-top: 1px solid var(--stone-2); scrollbar-width: none; }
+.sms-quick button { flex-shrink: 0; padding: 7px 11px; border: 0; border-radius: 999px; background: var(--cap-tint); color: var(--cap-deep); font: 700 13.5px/1 var(--display); white-space: nowrap; }
+.sms-quick button:disabled { opacity: .45; }
+.sms-compose { display: flex; gap: 6px; padding: 8px 10px 12px; background: var(--paper); }
+.sms-compose input { flex: 1; min-width: 0; min-height: 44px; padding: 0 14px; border: 0; border-radius: 999px; box-shadow: inset 0 0 0 1.5px var(--line); font-size: 16px; }
+.sms-compose input:focus { outline: none; box-shadow: inset 0 0 0 2px var(--cap); }
+.sms-send { width: 44px; height: 44px; border-radius: 50%; background: var(--cap); color: #fff; }
+.sms-send:hover:not(:disabled) { background: var(--cap-deep); }
+.sms-send:disabled { opacity: .4; }
+.sms-framed { border-radius: 26px; }
+
+/* Stage: the third screen is the shop board or the basic phone; both on wide projectors */
+.stage-board { gap: 10px; }
+.stage-switch { align-self: center; background: rgba(58, 44, 0, .12); }
+.stage-third { display: flex; gap: 22px; width: 100%; align-items: flex-start; }
+.stage-board-unit { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; }
+.stage-sms-unit { display: flex; flex-direction: column; align-items: center; }
+.basic-phone { width: 300px; height: min(600px, calc(100vh - 240px)); min-height: 480px; padding: 10px; border-radius: 34px; background: var(--ink); box-shadow: 0 34px 60px -32px rgba(58, 44, 0, .7); }
+.stage-board[data-show="board"] .stage-sms-unit { display: none; }
+.stage-board[data-show="sms"] .stage-board-unit { display: none; }
+.stage-board[data-show="sms"] .stage-third { justify-content: center; }
+@media (min-width: 1700px) {
+  .stage-switch { display: none; }
+  .stage-board .stage-board-unit, .stage-board .stage-sms-unit { display: flex !important; }
+  .stage-board .stage-third { justify-content: flex-start; }
+}
+
 /* Responsive */
+@media (max-width: 1500px) {
+  .stage-brand small { display: none; }
+  .stage-script li { font-size: 13.5px; padding: 4px 12px 4px 4px; gap: 6px; }
+  .stage-num { width: 24px; height: 24px; font-size: 13px; }
+}
 @media (max-width: 1360px) {
   .stage-floor { grid-template-columns: 300px 300px minmax(0, 1fr); gap: 18px; }
   .phone { width: 300px; }
-  .stage-head { grid-template-columns: auto 1fr; } .stage-reset { grid-column: 1 / -1; justify-content: flex-end; }
+  .stage-script { gap: 6px; }
+}
+@media (max-height: 800px) and (min-width: 1101px) {
+  .stage { gap: 10px; padding: 12px 20px 8px; }
+  .phone { height: calc(100vh - 128px); min-height: 440px; border-radius: 36px; }
+  .basic-phone { height: calc(100vh - 170px); min-height: 420px; }
+  .stage-caption { margin-top: 6px; font-size: 13.5px; }
+  .stage-foot { display: none; }
 }
 @media (max-width: 1100px) {
   .status-layout, .coord-overview { grid-template-columns: 1fr; }
@@ -500,6 +564,9 @@ select, textarea, input[type="search"] { border-radius: 12px; background: var(--
   .field-page .field-head .segmented button { flex: 1; }
   .field-aside { padding-top: 0; }
   .demo { grid-template-columns: 1fr; }
+  .sms-page { grid-template-columns: 1fr; gap: 24px; }
+  .sms-device { padding: 0; border-radius: 0; background: none; box-shadow: none; margin: 0 -16px; }
+  .sms-device .sms { height: 70vh; border-radius: 0; }
   .board-head { grid-template-columns: 1fr auto; } .board-head h1 { grid-column: 1 / -1; grid-row: 2; font-size: 2.6em; }
   .board { font-size: 2.6vw; }
   .board-row { grid-template-columns: repeat(6, minmax(0, 1fr)); }
@@ -538,4 +605,17 @@ select, textarea, input[type="search"] { border-radius: 12px; background: var(--
   .point-row { box-shadow: none; border: 1.5px solid #000; break-inside: avoid; margin-bottom: 8px; }
   .status-chip, .point-letter { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .status-intro h1 { font-size: 26pt; }
+}
+.nmap-drop { fill: var(--ink); }
+.board-fs { position: absolute; right: 2em; bottom: 1.2em; display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border: 0; border-radius: 999px; background: transparent; color: var(--ink-3); font: 700 13px/1 var(--display); opacity: .55; transition: opacity .2s; }
+.board-fs:hover, .board-fs:focus-visible { opacity: 1; background: var(--paper); }
+.board-foot { position: relative; }
+:fullscreen .board-fs { display: none; }
+
+/* Large projectors: use the full height */
+@media (min-width: 1800px) and (min-height: 1000px) {
+  .stage-floor { grid-template-columns: 350px 350px minmax(0, 1fr); gap: 24px; }
+  .phone { width: 350px; height: min(820px, calc(100vh - 170px)); }
+  .basic-phone { width: 310px; height: min(760px, calc(100vh - 230px)); }
+  .stage-caption { font-size: 17px; }
 }

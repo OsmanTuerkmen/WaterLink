@@ -121,7 +121,8 @@ export function NeighbourhoodMap({ state, now, offline, extent = "near", selecte
               aria-label={onSelect ? `${p.name}, ${d.label}` : undefined} tabIndex={onSelect ? 0 : undefined}
               onKeyDown={onSelect ? (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onSelect(p.id); } } : undefined}>
               <rect x={ox - r} y={oy - r} width={r * 2} height={r * 2} rx={9 * scale} className="nmap-tile" style={{ strokeWidth: 4 * scale }} />
-              <text x={ox} y={oy + r / 3} textAnchor="middle" style={{ fontSize: r }}>{letter(p) || "•"}</text>
+              {letter(p) ? <text x={ox} y={oy + r / 3} textAnchor="middle" style={{ fontSize: r }}>{letter(p)}</text>
+                : <path className="nmap-drop" transform={`translate(${ox} ${oy}) scale(${r / 30})`} d="M0-15C-5-7-10-2-10 4a10 10 0 0 0 20 0c0-6-5-11-10-19Z" />}
               <g className="nmap-badge" transform={`translate(${bx} ${by}) scale(${r / 23})`}>
                 <circle r="15" />
                 <path d={SYMBOL[d.certainty === "fresh" ? d.status : "unknown"]} />

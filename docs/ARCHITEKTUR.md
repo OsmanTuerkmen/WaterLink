@@ -29,12 +29,17 @@ Die Oberfläche ist auf Englisch und in fünf Ansichten getrennt, alle in `web/c
 | Status | `/#status` | Haushalte: Statuszeilen, Alternative, Karte, weitere erfasste Stellen |
 | Öffentliche Tafel | `/?view=display` | Laden oder Treffpunkt, aus einigen Metern lesbar |
 | Field app | `/#field/operator`, `/#field/technician` | Betreiberin und Techniker am Handy: ein Schritt pro Bildschirm |
+| SMS | `/#sms` | Tastenhandy ohne Internet: simulierte SMS für Haushalte und Betreiberin |
 | Coordination | `/#coordination/overview`, `/history`, `/demo` | Karte aller Stellen, offene Aufträge mit Hindernissen, Verlauf, Demo-Werkzeuge |
 | Pitch-Bühne | `/?view=stage` | Beide Handys und die Tafel auf einem Bildschirm |
 
 `store.tsx` hält den gemeinsamen Datenstand (Abfrage alle drei Sekunden, Lesekopie im Browser) und für jede Demo-Rolle eine eigene Sitzung. Eine Rolle bekommt ihre Sitzung beim ersten Handeln; so kann die Bühne Betreiberin, Techniker und Koordination gleichzeitig zeigen. Schreibvorgänge laufen nacheinander und tragen weiter die erwartete Revision und eine Anfragekennung.
 
 Gestaltung: Kanister-Gelb als Rahmen, Deckel-Blau für Aktionen, vier Statusfarben, immer zusammen mit Wort und Symbol. Das Statuszeichen ist ein Kanister, dessen Wasserstand genau den Rest der 12-Stunden-Gültigkeit zeigt. Schriften: Archivo und Atkinson Hyperlegible Next, lokal eingebunden über Fontsource (OFL). Gestaltungsregeln stehen in `DESIGN.md`, Produktgrundlagen in `PRODUCT.md`.
+
+Die SMS-Simulation steckt in `web/lib/sms.ts` (reine Funktionen, getestet in `tests/sms.test.ts`): `STATUS`, ein Buchstabe oder `HELP` liefern eine Antwort aus dem zuletzt geladenen Stand, möglichst in einer SMS (160 Zeichen). `DOWN A …`, `OK A …` und `FAIL A …` werden für die registrierte Betreiberin in die normalen Befehle übersetzt und laufen über denselben Server mit denselben Regeln; ein „OK“ vor der Reparaturmeldung wird abgelehnt. Swahili-Stichwörter `HALI` und `MSAADA` werden verstanden. Es ist kein SMS-Anbieter angeschlossen; nichts verlässt die Seite außer den Befehlen der Betreiberin an den eigenen Server.
+
+Die öffentliche Tafel hält den Bildschirm wach (Screen Wake Lock, wo der Browser es kann) und hat einen Vollbild-Knopf. Ohne Verbindung zeigt sie alle Stellen als „Unclear“ mit einem roten Hinweis und lässt die einzelnen Alternativen weg. Die Pitch-Bühne zeigt ab 1700 px Breite Tafel und SMS-Handy nebeneinander, darunter per Umschalter.
 
 Die Karte (`map.tsx`) wird als SVG aus den WPdx-Koordinaten und Straßen aus OpenStreetMap gezeichnet, ohne Kartenkacheln und ohne Netzzugriff. `web/scripts/import-osm.mjs` lädt Straßen, Bäche und benannte Orte im Umkreis der Region über die Overpass-API und schreibt `web/data/osm-area.json` (ODbL, Namensnennung „© OpenStreetMap contributors“). Liegen zwei Stellen am selben Punkt (A und C in Busia), werden die Marker mit einer Hinweislinie auseinandergezogen. Gerade Linien sind keine Wege.
 

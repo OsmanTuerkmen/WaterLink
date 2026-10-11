@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, WifiOff } from "lucide-react";
+import { ArrowRight, Maximize, WifiOff } from "lucide-react";
 import { findAlternative, getPointDisplay, type State } from "@/lib/domain";
-import { CanMark, CanMeter, StatusIcon } from "./marks";
+import { CanMark, CanMeter, PointTile, StatusIcon } from "./marks";
 import { advice, ago, clock, isTracked, letter, toneOf, validityLeft, validityText } from "./format";
 
 /** Rows whose shown status changed recently; drives the board’s one authored motion. */
@@ -26,7 +26,7 @@ function useChanged(keys: Record<string, string>): Set<string> {
 }
 
 /** Glanceable board for a shop or meeting point, readable from a few metres. */
-export function DisplayBoard({ state, now, offline, lastSync, compact = false }: { state: State; now: number; offline: boolean; lastSync: string | null; compact?: boolean }) {
+export function DisplayBoard({ state, now, offline, lastSync, compact = false, onFullscreen }: { state: State; now: number; offline: boolean; lastSync: string | null; compact?: boolean; onFullscreen?: () => void }) {
   const points = state.points.filter(isTracked);
   const region = state.region ?? null;
   const shown = Object.fromEntries(points.map((p) => { const d = getPointDisplay(p, now, offline); return [p.id, `${d.certainty}:${d.status}`]; }));
@@ -53,7 +53,7 @@ export function DisplayBoard({ state, now, offline, lastSync, compact = false }:
           const alt = d.status !== "working" ? findAlternative(state.points, p.id, now, offline) : null;
           return (
             <li key={p.id} className={`board-row ${toneOf(d)} ${changed.has(p.id) ? "is-changed" : ""}`}>
-              <span className="board-letter">{letter(p)}</span>
+              <PointTile point={p} className="board-letter" />
               <div className="board-name"><strong>{p.name}</strong><span>About {p.walkingMinutes} min walk</span></div>
               <div className="board-state">
                 <span className="board-icon"><StatusIcon display={d} size={compact ? 26 : 44} /></span>
@@ -67,7 +67,7 @@ export function DisplayBoard({ state, now, offline, lastSync, compact = false }:
                   <small>{p.confirmedAt ? ago(p.confirmedAt, now) : "no check yet"}</small>
                 </div>
               </div>
-              {d.status !== "working" && (
+              {d.status !== "working" && !offline && (
                 <p className={`board-alt ${alt ? "" : "no-alt"}`}>
                   <ArrowRight size={compact ? 18 : 30} aria-hidden="true" />
                   {alt ? <span>Go to <b>{letter(alt)} · {alt.name}</b> instead, about {alt.walkingMinutes} min. Confirmed {clock(alt.confirmedAt)}.</span>
@@ -81,6 +81,7 @@ export function DisplayBoard({ state, now, offline, lastSync, compact = false }:
       <footer className="board-foot">
         <p><b>Working</b> means water can be drawn. It says nothing about drinking-water quality.</p>
         <p><b>The can empties in 12 hours.</b> After that a point shows as unclear until someone checks on site.</p>
+        {onFullscreen && <button className="board-fs" onClick={onFullscreen}><Maximize size={16} aria-hidden="true" />Full screen</button>}
         <p className="board-source">{region ? `Places: ${region.attribution.replace(/\.$/, "")}. Confirmations and people are simulated.` : "Demo with fictional example data."}</p>
       </footer>
     </div>

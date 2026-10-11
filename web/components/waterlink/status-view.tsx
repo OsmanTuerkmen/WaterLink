@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { ArrowRight, ArrowUpRight, ChevronDown, Footprints, MapPin, Monitor, Printer, Search, Wrench } from "lucide-react";
 import { STATUS_TTL_MS, distanceKm, findAlternative, getNearby, getPointDisplay, isPointOpen, type RegionMeta, type State, type WaterPoint } from "@/lib/domain";
-import { CanMeter, StatusChip } from "./marks";
+import { CanMeter, PointTile, StatusChip } from "./marks";
 import { NeighbourhoodMap } from "./map";
 import { JOB_STEP, SURVEY_TEXT, advice, clock, isTracked, km, letter, month, osmLink, stamp, toneOf, validityLeft, validityText } from "./format";
 
@@ -47,7 +47,7 @@ export function StatusView({ state, now, offline, lastSync, onReport }: ViewProp
             route={firstDown && routeTo ? { from: firstDown.id, to: routeTo.id } : null} />
         </aside>
       </div>
-      <p className="quality-note">Working means water can be drawn. It says nothing about drinking-water quality. A confirmation is valid for 12 hours, then it shows as unclear until someone checks again.</p>
+      <p className="quality-note"><a className="link" href="#sms">No smartphone? Text STATUS to WaterLink</a> (simulated SMS). Working means water can be drawn. It says nothing about drinking-water quality. A confirmation is valid for 12 hours, then it shows as unclear until someone checks again.</p>
       {region && <RecordedPoints points={state.points.filter((p) => !isTracked(p))} region={region} onReport={onReport} />}
     </div>
   );
@@ -69,7 +69,7 @@ function PointRow({ point: p, state, now, offline, highlighted, onReport, onFocu
   return (
     <li className={`point-row ${toneOf(d)} ${highlighted ? "is-highlighted" : ""}`} onMouseEnter={onFocus}>
       <div className="point-row-main">
-        <span className="point-letter" aria-hidden="true">{letter(p)}</span>
+        <PointTile point={p} />
         <div className="point-name">
           <h2>{p.name}</h2>
           <span><MapPin size={14} aria-hidden="true" />{p.location}</span>

@@ -9,7 +9,7 @@ Alle Personen, Meldungen, Bestätigungen und Wegangaben sind simuliert. Die Orte
 3. Optional die Tafel `/?view=display` auf einem zweiten Bildschirm zeigen. Die bereitgestellte private Demo verlangt dort ebenfalls die Anmeldung.
 4. Stabile Verbindung sicherstellen. Lokal ist der Entwicklungsserver nur auf demselben Rechner erreichbar.
 
-Das Band oben auf der Bühne zeigt die vier Schritte und hebt automatisch den nächsten hervor.
+Das Band oben auf der Bühne zeigt die vier Schritte und hebt automatisch den nächsten hervor. Ab 1700 px Breite (z. B. Beamer mit 1920 × 1080) steht rechts zusätzlich das SMS-Handy; bei kleineren Bildschirmen über **Basic phone (SMS)** umschalten. Geprüft bei 1920 × 1080, 1440 × 900 und 1280 × 720.
 
 ## Ablauf
 
@@ -21,6 +21,8 @@ Das Band oben auf der Bühne zeigt die vier Schritte und hebt automatisch den n�
 | 1:35–2:05 | Daniel: **Report repair** → kurze Notiz → **Repaired, ask for test**. | „Eine gemeldete Reparatur ist noch keine funktionierende Wasserstelle. Die Tafel bleibt vorsichtig.“ |
 | 2:05–2:35 | Amina: bei A **Test and confirm** → **Works** → Notiz, „I tested it on site“ → **Confirm result**. | „Erst der Test vor Ort macht A wieder grün und schließt den Auftrag.“ |
 | 2:35–3:00 | In einem zweiten Fenster unter **Coordination → Demo tools** „Let A's confirmation expire“ oder die Verbindungssimulation zeigen. | „Alte Informationen bleiben nicht grün. Wir zeigen Unsicherheit offen.“ |
+
+**Optionaler Zusatz (ca. 20 s), SMS:** Auf dem SMS-Handy als „Household“ **STATUS** und dann **A** tippen. Aussage: „Wer kein Smartphone hat, schreibt STATUS und bekommt dieselbe Antwort in einer SMS.“ Als „Amina“ funktioniert auch `DOWN A …` und `OK A …` nach denselben Regeln.
 
 **Optionaler Zusatz (ca. 30 s), echte Sensordaten:** Unter **Coordination → Demo tools** die Wiedergabe „Tiwi – Mshikeni, Kwale“ abspielen. Ab Woche 13/2014 fällt die Fördermenge auf null, ab der zweiten Woche erscheint der Sensorhinweis. Aussage: „Das sind echte Daten einer Pumpe in Kenia. Ein Sensor kann einen Ausfall vermuten, aber nicht bestätigen. WaterLink macht daraus ‚Prüfung nötig‘.“ Optional **Send this hint to water point A** und die Tafel zeigen.
 

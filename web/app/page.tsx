@@ -8,12 +8,14 @@ import { DisplayBoard } from "@/components/waterlink/board";
 import { FieldApp } from "@/components/waterlink/field";
 import { Coordination, type CoordTab } from "@/components/waterlink/coordination";
 import { Stage } from "@/components/waterlink/stage";
+import { SmsPage } from "@/components/waterlink/sms";
 import { clock } from "@/components/waterlink/format";
 
 type Route =
   | { view: "status" }
   | { view: "field"; role: "operator" | "technician"; point: string | null }
-  | { view: "coordination"; tab: CoordTab };
+  | { view: "coordination"; tab: CoordTab }
+  | { view: "sms" };
 
 function parseHash(hash: string): Route {
   const [view, a, b] = hash.replace(/^#\/?/, "").split("/");
@@ -21,10 +23,11 @@ function parseHash(hash: string): Route {
     if (a === "report" && b) return { view: "field", role: "operator", point: decodeURIComponent(b) };
     return { view: "field", role: a === "technician" ? "technician" : "operator", point: null };
   }
+  if (view === "sms") return { view: "sms" };
   if (view === "coordination") return { view: "coordination", tab: a === "history" || a === "demo" ? a : "overview" };
   return { view: "status" };
 }
-const hashOf = (r: Route) => r.view === "status" ? "#status" : r.view === "field" ? (r.point ? `#field/report/${encodeURIComponent(r.point)}` : `#field/${r.role}`) : `#coordination/${r.tab}`;
+const hashOf = (r: Route) => r.view === "status" ? "#status" : r.view === "sms" ? "#sms" : r.view === "field" ? (r.point ? `#field/report/${encodeURIComponent(r.point)}` : `#field/${r.role}`) : `#coordination/${r.tab}`;
 
 export default function Home() {
   return <WaterLinkProvider><App /></WaterLinkProvider>;
@@ -68,6 +71,7 @@ function TopBar({ route, navigate }: { route: Route; navigate: (r: Route) => voi
   const items: { label: string; to: Route; on: boolean }[] = [
     { label: "Status", to: { view: "status" }, on: route.view === "status" },
     { label: "Field app", to: { view: "field", role: route.view === "field" ? route.role : "operator", point: null }, on: route.view === "field" },
+    { label: "SMS", to: { view: "sms" }, on: route.view === "sms" },
     { label: "Coordination", to: { view: "coordination", tab: "overview" }, on: route.view === "coordination" },
   ];
   const region = state?.region?.label.split(",").slice(0, 2).join(",") ?? "Demo neighbourhood";
@@ -136,6 +140,7 @@ function Content({ route, navigate }: { route: Route; navigate: (r: Route) => vo
           </aside>
         </div>
       )}
+      {route.view === "sms" && <SmsPage />}
       {route.view === "coordination" && <Coordination tab={route.tab} onTab={(tab) => navigate({ view: "coordination", tab })} />}
       <footer className="foot">
         <p>WaterLink · hackathon prototype · times in Kenya (EAT) · <a href="/?view=display" target="_blank" rel="noopener noreferrer">Public board</a> · <a href="/?view=stage" target="_blank" rel="noopener noreferrer">Pitch stage</a></p>
@@ -145,11 +150,27 @@ function Content({ route, navigate }: { route: Route; navigate: (r: Route) => vo
   );
 }
 
+/** Keeps a kiosk screen awake while the board is visible; silently skipped where unsupported. */
+function useWakeLock() {
+  useEffect(() => {
+    type Lock = { release(): Promise<void> };
+    const nav = navigator as Navigator & { wakeLock?: { request(type: "screen"): Promise<Lock> } };
+    if (!nav.wakeLock) return;
+    let lock: Lock | null = null, alive = true;
+    const acquire = () => { if (document.visibilityState === "visible") nav.wakeLock!.request("screen").then((l) => { if (alive) lock = l; else void l.release(); }).catch(() => {}); };
+    acquire();
+    document.addEventListener("visibilitychange", acquire);
+    return () => { alive = false; document.removeEventListener("visibilitychange", acquire); void lock?.release(); };
+  }, []);
+}
+
 function BoardPage() {
   const { state, now, connection, lastSync } = useWaterLink();
+  useWakeLock();
+  const fullscreen = () => { if (document.fullscreenElement) void document.exitFullscreen(); else void document.documentElement.requestFullscreen?.().catch(() => {}); };
   return (
     <div className="board-page">
-      {state ? <DisplayBoard state={state} now={now} offline={connection !== "online"} lastSync={lastSync} />
+      {state ? <DisplayBoard state={state} now={now} offline={connection !== "online"} lastSync={lastSync} onFullscreen={fullscreen} />
         : <div className="loading"><CanMark size={56} /><h1>{connection === "offline" ? "No connection. Status unknown." : "Loading …"}</h1></div>}
     </div>
   );

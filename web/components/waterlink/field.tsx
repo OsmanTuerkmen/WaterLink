@@ -3,7 +3,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { ArrowLeft, ArrowRight, ArrowUpRight, Check, ClipboardCheck, Droplet, Droplets, Mic, TriangleAlert, Wrench, X } from "lucide-react";
 import { getPointDisplay, type Blocker, type Job, type Role, type State, type WaterPoint } from "@/lib/domain";
 import { useWaterLink } from "./store";
-import { StatusChip } from "./marks";
+import { PointTile, StatusChip } from "./marks";
 import { BLOCKER, JOB_STEP, ago, clock, isTracked, letter, stamp } from "./format";
 
 type FieldRole = Extract<Role, "operator" | "technician">;
@@ -86,7 +86,7 @@ function OperatorHome({ state, now, offline, onReport, onConfirm }: { state: Sta
           return (
             <li key={p.id}>
               <div className="field-point-top">
-                <span className="point-letter sm" aria-hidden="true">{letter(p)}</span>
+                <PointTile point={p} small />
                 <div><strong>{p.name}</strong><span>{p.confirmedAt ? `Last check ${clock(p.confirmedAt)}, ${ago(p.confirmedAt, now)}` : "Never checked"}</span></div>
                 <StatusChip display={d} size="sm" />
               </div>
@@ -312,7 +312,7 @@ function JobCoupon({ job, state, now, disabled }: { job: Job; state: State; now:
   return (
     <li className={`coupon ${closed ? "is-closed" : ""}`}>
       <div className="coupon-head">
-        <span className="point-letter sm" aria-hidden="true">{point ? letter(point) : ""}</span>
+        <PointTile point={point} small />
         <div><strong>{point?.name ?? "Water point"}</strong><span>Job {job.id.replace("job-", "#")} · reported {ago(job.createdAt, now)}</span></div>
         {job.blocker && !closed && <span className="tag tag-limit">{BLOCKER[job.blocker]}</span>}
       </div>

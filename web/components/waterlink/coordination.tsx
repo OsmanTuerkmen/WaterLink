@@ -6,7 +6,7 @@ import { alertEpisodes, readSensor, type SensorState } from "@/lib/sensor";
 import kwale from "@/data/kwale-sensors.json";
 import { useWaterLink } from "./store";
 import { NeighbourhoodMap } from "./map";
-import { StatusChip } from "./marks";
+import { PointTile, StatusChip } from "./marks";
 import { BLOCKER, JOB_STEP, ago, isTracked, letter, stamp } from "./format";
 
 export type CoordTab = "overview" | "history" | "demo";
@@ -59,7 +59,7 @@ function Overview({ state, now, offline }: { state: State; now: number; offline:
         <ul className="coord-points">
           {tracked.map((p) => (
             <li key={p.id}>
-              <span className="point-letter sm" aria-hidden="true">{letter(p)}</span>
+              <PointTile point={p} small />
               <span className="coord-points-name">{p.name}</span>
               <StatusChip display={getPointDisplay(p, now, offline)} size="sm" />
             </li>

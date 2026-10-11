@@ -20,6 +20,8 @@ interface Store {
   feedback(role: Role): RoleFeedback;
   /** Runs a command as the given demo role, creating that role’s session on first use. */
   act(role: Role, command: Mutation): Promise<boolean>;
+  /** The error of the role's last failed action, read right after `act` resolves. */
+  lastError(role: Role): string;
   clear(role: Role): void;
 }
 
@@ -52,8 +54,10 @@ export function WaterLinkProvider({ children }: { children: ReactNode }) {
   const simulated = useRef(false), fetching = useRef(false), writing = useRef(false);
   const active = useRef<AbortController | null>(null);
   const requestIds = useRef(new Map<string, string>());
+  const lastErrors = useRef<Partial<Record<Role, string>>>({});
 
   const patch = useCallback((role: Role, value: Partial<RoleFeedback>) => {
+    if (value.error !== undefined) lastErrors.current[role] = value.error;
     setFeedback((all) => ({ ...all, [role]: { ...all[role], ...value } }));
   }, []);
 
@@ -203,6 +207,7 @@ export function WaterLinkProvider({ children }: { children: ReactNode }) {
   const value = useMemo<Store>(() => ({
     state, connection, lastSync, now, simulatedOffline, toggleOffline, refresh, act,
     actor: (role) => sessions[role]?.actor ?? null,
+    lastError: (role) => lastErrors.current[role] ?? "",
     feedback: (role) => feedback[role],
     clear: (role) => patch(role, { error: "", notice: "" }),
   }), [state, connection, lastSync, now, simulatedOffline, toggleOffline, refresh, act, sessions, feedback, patch]);

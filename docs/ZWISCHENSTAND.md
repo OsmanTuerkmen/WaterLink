@@ -2,7 +2,7 @@
 
 Lebendes Dokument: Es wird nach **jedem** Arbeitsschritt aktualisiert. Oben steht immer der aktuelle Stand, unten das Protokoll (neueste Einträge zuerst).
 
-**Zuletzt aktualisiert:** 11. Oktober 2026, ca. 11:50 Uhr (Kenia: EAT) · Branch `claude/waterlink-redesign` (Redesign zum Vergleich mit `claude/waterlink-mvp`)
+**Zuletzt aktualisiert:** 11. Oktober 2026, ca. 12:40 Uhr (Kenia: EAT) · Branch `claude/waterlink-redesign` (Redesign zum Vergleich mit `claude/waterlink-mvp`)
 
 ## Ziel
 
@@ -31,9 +31,13 @@ Bis zum Hackathon am **22. Oktober 2026** (10–22 Uhr, Track Social Impact):
 
 | Prüfung | Ergebnis |
 |---|---|
-| `npm test` | 39 von 39 bestanden |
+| `npm test` | 43 von 43 bestanden (neu: 4 SMS-Tests) |
 | `npm run typecheck`, `npm run build` | bestanden |
 | `npm run test:integration` gegen lokale Vorschau (Port 5174) | bestanden |
+| SMS im Browser: STATUS, Einzelabfrage, DOWN A als Betreiberin | bestanden |
+| Pitch-Bühne bei 1920 × 1080, 1440 × 900 und 1280 × 720 | bestanden nach Anpassungen |
+| Tafel ohne Verbindung | bestanden |
+| Meldung einer weiteren erfassten Stelle (kommt mit Tropfen-Symbol ins Programm) | bestanden |
 | Kompletter Ablauf auf der Pitch-Bühne (melden, übernehmen, starten, Reparatur melden, bestätigen) | bestanden |
 | Ansichten bei 1440 px und 390 px angesehen, zwei Prüfrunden | bestanden, Korrekturen eingearbeitet |
 | Design-Detektor (`impeccable detect`) | keine Befunde |
@@ -64,16 +68,16 @@ Priorität: **P1** = nötig für die Hackathon-Demo, **P2** = macht die Demo bes
 | # | Prio | Aufgabe | Wer | Status |
 |---|---|---|---|---|
 | 1 | P1 | Busia-Daten (`web/data/region.json`) committen, damit die bereitgestellte Demo echte Orte zeigt. | Nutzer entschieden: ja | erledigt |
-| 2 | P1 | Private Sites-Bereitstellung durchführen. Das Projekt ist registriert (`web/.openai/hosting.json`), es gibt noch keine bestätigte Live-Bereitstellung. Kein zweites Projekt anlegen. | Claude mit Nutzer | offen |
+| 2 | P1 | Private Sites-Bereitstellung durchführen. Das Projekt ist registriert (`web/.openai/hosting.json`), es gibt noch keine bestätigte Live-Bereitstellung. Kein zweites Projekt anlegen. Braucht Osmans Zugang (Codex/Sites); von diesem Rechner aus nicht möglich. | Osman | blockiert |
 | 3 | P1 | Auf der Bereitstellung prüfen: Anmeldung, Datenbank, Ablauf auf zwei echten Geräten. | Claude mit Nutzer | offen |
 | 4 | P1 | Kurz vor dem Pitch die Demo zurücksetzen: simulierte Bestätigungen altern nach 12 Stunden. | Nutzer am 22.10. | offen |
 | 5 | P2 | Diktat in Chrome einmal mit Mikrofon ausprobieren. Ohne gesprochene Eingabe konnte Claude es nicht testen. | Nutzer | offen |
-| 6 | P2 | Tafel bei fehlender Verbindung einmal ansehen (Browser offline schalten). Der Code ist geprüft, die Ansicht noch nicht. | Claude | offen |
-| 7 | P2 | Seite „Störung melden“ vereinfachen: zwei Schritte statt zwei gleich gewichteter Formulare nebeneinander. | Claude | offen |
-| 8 | P2 | Simulierte SMS-Ansicht für Haushalte mit einfachem Handy, klar als nicht angeschlossen gekennzeichnet. | Claude | offen |
-| 9 | P2 | Pitch: Folien oder Ablauf, Screenshots aus dem echten Build. | Nutzer und Claude | offen |
+| 6 | P2 | Tafel bei fehlender Verbindung ansehen. Ergebnis: alle Stellen „Unclear“, roter Hinweis; die wiederholten Alternativzeilen wurden offline entfernt. | Claude | erledigt |
+| 7 | P2 | Störung melden vereinfachen. Im Redesign ein Schritt pro Bildschirm in der Field app. | Claude | erledigt |
+| 8 | P2 | Simulierte SMS für einfache Handys (`#sms`, auch auf der Bühne), klar als nicht angeschlossen gekennzeichnet. | Claude | erledigt |
+| 9 | P2 | Pitch-Folien (Englisch, 11 Folien mit Sprechernotizen und echten Bildern) als privates Claude-Artefakt „WaterLink Pitch“. Noch einzutragen: Teamnamen und Demo-Link. | Nutzer | teilweise |
 | 11 | P1 | Redesign oder alte Oberfläche? Reczec hat sich am 11.10. für das Redesign entschieden; die Arbeit geht auf `claude/waterlink-redesign` weiter. Zusammenführen erst, wenn Osman zugestimmt hat. `claude/waterlink-mvp` bleibt bis dahin unverändert. | Osman bestätigt | teilweise |
-| 12 | P2 | Redesign: Bühne auf dem echten Beamer-Format testen (1920 × 1080 und 1280 × 720). | Nutzer | offen |
+| 12 | P2 | Bühne auf Beamer-Formaten testen. Geprüft bei 1920 × 1080 und 1280 × 720; am Veranstaltungsort noch einmal mit dem echten Beamer ansehen. | Nutzer am 22.10. | teilweise |
 | 10 | P3 | Partner vor Ort finden (County, NGO, Wartungsdienst, Smart-Handpump-Team in Oxford) und Gespräche führen, siehe [Weg zum Produkt](WEG-ZUM-PRODUKT.md). | Team | offen |
 
 ## Bewusste Grenzen
@@ -85,6 +89,14 @@ Priorität: **P1** = nötig für die Hackathon-Demo, **P2** = macht die Demo bes
 - Software beschafft kein Geld, keine Ersatzteile und kein Personal.
 
 ## Protokoll
+
+### 11.10.2026, ca. 12:40 – SMS, Beamer, Pitch-Folien, Lücken geschlossen
+
+- Simulierte SMS: `web/lib/sms.ts` mit 4 Tests, Ansicht `#sms` und als viertes Gerät auf der Bühne. Betreiber-SMS laufen über dieselben Serverregeln.
+- Bühne für 1920 × 1080 und 1280 × 720 angepasst. Tafel: Bildschirm bleibt wach, Vollbild-Knopf, offline ohne wiederholte Alternativzeilen.
+- Weitere erfasste Stellen, die gemeldet werden, bekommen ein Tropfen-Symbol statt eines leeren Feldes (Zeilen, Tafel, Karte).
+- Pitch-Folien „WaterLink Pitch“ (Englisch) als privates Claude-Artefakt mit Bildern aus dem echten Build. Platzhalter: Teamnamen, Demo-Link.
+- Bewusst offen: Bereitstellung (Zugang bei Osman), Diktat mit Mikrofon, Swahili-Oberfläche.
 
 ### 11.10.2026, ca. 12:00 – Weiter auf dem Redesign-Branch
 

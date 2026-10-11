@@ -16,3 +16,4 @@ coverage/
 .impeccable/live/
 .impeccable/config.local.json
 .impeccable/questions/
+.playwright-mcp/

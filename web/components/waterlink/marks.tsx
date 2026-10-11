@@ -1,8 +1,14 @@
 "use client";
 import { useId } from "react";
-import { Activity, Check, CircleHelp, TriangleAlert, WifiOff, X } from "lucide-react";
-import type { PointDisplay } from "@/lib/domain";
-import { advice, toneOf } from "./format";
+import { Activity, Check, CircleHelp, Droplet, TriangleAlert, WifiOff, X } from "lucide-react";
+import type { PointDisplay, WaterPoint } from "@/lib/domain";
+import { advice, letter, toneOf } from "./format";
+
+/** Yellow tile with the point's letter; recorded points without a letter get a drawn droplet. */
+export function PointTile({ point, small = false, className = "point-letter" }: { point?: WaterPoint | null; small?: boolean; className?: string }) {
+  const l = point ? letter(point) : "";
+  return <span className={`${className}${small ? " sm" : ""}`} aria-hidden="true">{l || <Droplet size={small ? 18 : 24} strokeWidth={2.6} />}</span>;
+}
 
 // One jerrycan geometry for every scale: logo, meter, board. viewBox 0 0 40 48.
 const BODY = "M7 13h18.5l8.5 7.2V41a5 5 0 0 1-5 5H12a5 5 0 0 1-5-5V13Z";

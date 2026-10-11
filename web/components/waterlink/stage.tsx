@@ -6,6 +6,7 @@ import { useWaterLink } from "./store";
 import { FieldApp } from "./field";
 import { DisplayBoard } from "./board";
 import { CanMark } from "./marks";
+import { SmsPhone } from "./sms";
 
 const SCRIPT = [
   { who: "Amina", text: "reports that A has no water" },
@@ -25,6 +26,7 @@ function progress(state: State | null): number {
 export function Stage() {
   const { state, now, connection, lastSync, act, feedback } = useWaterLink();
   const [confirmReset, setConfirmReset] = useState(false);
+  const [third, setThird] = useState<"board" | "sms">("board");
   const step = progress(state);
   const offline = connection !== "online";
   const coord = feedback("coordinator");
@@ -49,7 +51,11 @@ export function Stage() {
           ) : <button className="btn btn-quiet btn-sm" onClick={() => setConfirmReset(true)}><RefreshCw size={15} />Reset demo</button>}
         </div>
       </header>
-      {coord.error && <p className="stage-error" role="alert">{coord.error}</p>}
+      {coord.error && (
+        <p className="stage-error" role="alert">{coord.error}
+          {coord.signInNeeded && <a className="link" href="/signin-with-chatgpt?return_to=%2F%3Fview%3Dstage" target="_top">Sign in</a>}
+        </p>
+      )}
       <div className="stage-floor">
         <section className="stage-phone" aria-label="Amina’s phone, operator">
           <div className="phone"><FieldApp role="operator" framed /></div>
@@ -59,9 +65,21 @@ export function Stage() {
           <div className="phone"><FieldApp role="technician" framed /></div>
           <p className="stage-caption">Daniel repairs them</p>
         </section>
-        <section className="stage-board" aria-label="Public board at the shop">
-          <div className="stage-screen">{state && <DisplayBoard state={state} now={now} offline={offline} lastSync={lastSync} compact />}</div>
-          <p className="stage-caption">The board at the shop, for everyone without a smartphone</p>
+        <section className="stage-board" data-show={third} aria-label="Public board and basic phone">
+          <div className="segmented stage-switch" role="tablist" aria-label="Third screen">
+            <button role="tab" aria-selected={third === "board"} className={third === "board" ? "is-on" : ""} onClick={() => setThird("board")}>Shop board</button>
+            <button role="tab" aria-selected={third === "sms"} className={third === "sms" ? "is-on" : ""} onClick={() => setThird("sms")}>Basic phone (SMS)</button>
+          </div>
+          <div className="stage-third">
+            <div className="stage-board-unit">
+              <div className="stage-screen">{state && <DisplayBoard state={state} now={now} offline={offline} lastSync={lastSync} compact />}</div>
+              <p className="stage-caption">The board at the shop, for everyone without a smartphone</p>
+            </div>
+            <div className="stage-sms-unit">
+              <div className="basic-phone"><SmsPhone framed /></div>
+              <p className="stage-caption">A basic phone, by SMS (simulated)</p>
+            </div>
+          </div>
         </section>
       </div>
       <footer className="stage-foot">Demo: people and confirmations are simulated · places from WPdx surveys, roads © OpenStreetMap contributors · “working” is not a water-quality claim</footer>
