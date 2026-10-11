@@ -1,14 +1,18 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import "@fontsource-variable/archivo/wdth.css";
+import "@fontsource-variable/atkinson-hyperlegible-next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "WaterLink · Funktioniert unsere Wasserstelle heute?",
-  description: "Zuletzt bestätigte Betriebszustände und nachvollziehbare Reparaturen. Private Hackathon-Demo mit fiktiven Beispieldaten.",
+  title: "WaterLink · Does our water point work today?",
+  description: "Last confirmed state of nearby water points and repairs that only count once tested on site. Private hackathon demo with simulated confirmations.",
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
   },
 };
+
+export const viewport: Viewport = { themeColor: "#f5c211" };
 
 export default function RootLayout({
   children,
@@ -16,8 +20,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="de">
-      <body className="antialiased">{children}</body>
+    <html lang="en">
+      <body>{children}</body>
     </html>
   );
 }

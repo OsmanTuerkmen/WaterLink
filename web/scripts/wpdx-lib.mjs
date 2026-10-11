@@ -20,8 +20,8 @@ export function mapStatus(statusClean, statusId) {
   return "unknown";
 }
 
-export const WATER_SEEN = "Wasser am Erhebungstag: ja";
-const WATER_NOT_SEEN = "Wasser am Erhebungstag: nein";
+export const WATER_SEEN = "Water on survey day: yes";
+const WATER_NOT_SEEN = "Water on survey day: no";
 
 /**
  * Datasets whose status_clean is one constant while status_id ("water available on the day of
@@ -49,8 +49,8 @@ export function mapRecord(row, { useStatusId = false } = {}) {
   const date = Date.parse(row.report_date);
   const status = useStatusId ? mapStatus("", row.status_id) : mapStatus(row.status_clean, row.status_id);
   const statusText = useStatusId
-    ? { functional: WATER_SEEN, non_functional: WATER_NOT_SEEN }[status] ?? "Unbekannt"
-    : str(row.status_clean) || str(row.status_id) || "Unbekannt";
+    ? { functional: WATER_SEEN, non_functional: WATER_NOT_SEEN }[status] ?? "Unknown"
+    : str(row.status_clean) || str(row.status_id) || "Unknown";
   return {
     rowId,
     lat: Math.round(lat * 1e6) / 1e6,
@@ -107,7 +107,7 @@ const demoReady = (record) => isImprovedSource(record) && isCleanFunctional(reco
  * Sparse counties fail with a clear message.
  */
 export function pickNeighbourhood(records, { count = 60, near = null, radiusKm = 5, walkKm = 3, recentYears = 3 } = {}) {
-  if (records.length < 3) throw new Error("Zu wenige Wasserstellen mit Koordinaten (mindestens 3 nötig).");
+  if (records.length < 3) throw new Error("Too few water points with coordinates (at least 3 needed).");
   const within = (origin, km) => records.filter((r) => r !== origin && distanceKm(origin, r) <= km);
   const newest = records.reduce((max, r) => (r.reportDate > max ? r.reportDate : max), "");
   const cutoff = newest ? new Date(Date.parse(newest) - recentYears * 365.25 * 864e5).toISOString() : "";
@@ -128,12 +128,12 @@ export function pickNeighbourhood(records, { count = 60, near = null, radiusKm =
     stale = Boolean(a);
   }
   if (!a) {
-    throw new Error(`Keine geeignete Nachbarschaft gefunden: Es braucht zwei gefasste, als „Functional“ erhobene Wasserstellen höchstens ${walkKm} km voneinander entfernt. Anderes County wählen (--list) oder --radius / --walk erhöhen.`);
+    throw new Error(`No suitable neighbourhood found: it needs two improved water points surveyed as "Functional" at most ${walkKm} km apart. Choose another county (--list) or raise --radius / --walk.`);
   }
   const b = partner(a);
   const neighbourhood = [a, ...within(a, radiusKm).sort(byDistance(a))].slice(0, Math.max(3, count));
   const c = neighbourhood.find((r) => r !== a && r !== b);
-  if (!c) throw new Error("In der Nachbarschaft gibt es keine dritte Wasserstelle. --radius erhöhen.");
+  if (!c) throw new Error("The neighbourhood has no third water point. Raise --radius.");
   return { a, b, c, points: neighbourhood, stale };
 }
 
@@ -148,8 +148,8 @@ export function buildRegion(rows, { county, count, near, radiusKm, walkKm, recen
       label,
       county: a.adm1 || county,
       fetchedAt,
-      attribution: `Water Point Data Exchange (WPdx), CC BY 4.0. Datensätze: ${datasets.slice(0, 3).join("; ")}${datasets.length > 3 ? " u. a." : ""}`.slice(0, 400),
-      meetingPoint: { lat: a.lat, lon: a.lon, label: `Demo-Treffpunkt bei Wasserstelle A (${a.adm3 || a.adm2})` },
+      attribution: `Water Point Data Exchange (WPdx), CC BY 4.0. Datasets: ${datasets.slice(0, 3).join("; ")}${datasets.length > 3 ? " and others" : ""}`.slice(0, 400),
+      meetingPoint: { lat: a.lat, lon: a.lon, label: `demo meeting point at water point A (${a.adm3 || a.adm2})` },
     },
     demo: { a: a.rowId, b: b.rowId, c: c.rowId },
     points,

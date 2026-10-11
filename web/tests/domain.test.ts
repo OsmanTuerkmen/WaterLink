@@ -38,7 +38,7 @@ test("seed is explicitly fictitious, fresh A/B and unconfirmed C", () => {
   assert.deepEqual(state.points.map((item) => item.id), ["a", "b", "c"]);
   assert.equal(getPointDisplay(state.points[0], NOW).status, "working");
   assert.equal(getPointDisplay(state.points[2], NOW).certainty, "unknown");
-  assert.match(state.events[0].message, /Fiktive Demo/);
+  assert.match(state.events[0].message, /Fictional demo/);
   assert.equal(state.jobs.length, 0);
 });
 

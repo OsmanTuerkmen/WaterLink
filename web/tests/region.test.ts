@@ -55,7 +55,7 @@ test("region seed: simulated confirmations only on A/B, every other point unconf
   assert.equal(state.region?.pointCount, state.points.length);
   const [a, b, c] = state.points;
   assert.equal(getPointDisplay(a, NOW).status, "working");
-  assert.match(a.confirmedBy ?? "", /simuliert/);
+  assert.match(a.confirmedBy ?? "", /simulated/);
   assert.equal(getPointDisplay(c, NOW).certainty, "unknown");
   for (const point of state.points.slice(3)) {
     assert.equal(point.tracked, false);
@@ -108,7 +108,7 @@ test("malformed region data is rejected or cleaned instead of trusted", () => {
 test("sparse or outdated counties are rejected instead of producing far-away alternatives", () => {
   // Shape of the real Kitui result: points tens of kilometres apart, mostly non-functional.
   const sparse = [row(11, -1.0, 38.0), row(12, -1.3, 38.2), row(13, -1.6, 37.8, "Non-Functional"), row(14, -0.9, 38.4, "Non-Functional")];
-  assert.throws(() => buildRegion(sparse, { county: "Sparse" }), /Keine geeignete Nachbarschaft/);
+  assert.throws(() => buildRegion(sparse, { county: "Sparse" }), /No suitable neighbourhood/);
 });
 
 test("demo point A is a cleanly functional improved source; B is within walking distance", () => {

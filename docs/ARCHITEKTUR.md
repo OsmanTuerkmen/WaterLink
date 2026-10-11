@@ -20,6 +20,24 @@ Die geplante Bereitstellung ist privat; die gehostete Demo ist zum gesicherten Z
 
 Das beweist technische Trennung der Aktionen, aber keine echten lokalen Berechtigungen. Der Rollenwechsel ist eine gekennzeichnete Demonstrationsfunktion und darf nicht unverändert als öffentliche Pilotanwendung betrieben werden.
 
+## Oberfläche (Branch `claude/waterlink-redesign`)
+
+Die Oberfläche ist auf Englisch und in fünf Ansichten getrennt, alle in `web/components/waterlink/`:
+
+| Ansicht | Adresse | Für wen |
+|---|---|---|
+| Status | `/#status` | Haushalte: Statuszeilen, Alternative, Karte, weitere erfasste Stellen |
+| Öffentliche Tafel | `/?view=display` | Laden oder Treffpunkt, aus einigen Metern lesbar |
+| Field app | `/#field/operator`, `/#field/technician` | Betreiberin und Techniker am Handy: ein Schritt pro Bildschirm |
+| Coordination | `/#coordination/overview`, `/history`, `/demo` | Karte aller Stellen, offene Aufträge mit Hindernissen, Verlauf, Demo-Werkzeuge |
+| Pitch-Bühne | `/?view=stage` | Beide Handys und die Tafel auf einem Bildschirm |
+
+`store.tsx` hält den gemeinsamen Datenstand (Abfrage alle drei Sekunden, Lesekopie im Browser) und für jede Demo-Rolle eine eigene Sitzung. Eine Rolle bekommt ihre Sitzung beim ersten Handeln; so kann die Bühne Betreiberin, Techniker und Koordination gleichzeitig zeigen. Schreibvorgänge laufen nacheinander und tragen weiter die erwartete Revision und eine Anfragekennung.
+
+Gestaltung: Kanister-Gelb als Rahmen, Deckel-Blau für Aktionen, vier Statusfarben, immer zusammen mit Wort und Symbol. Das Statuszeichen ist ein Kanister, dessen Wasserstand genau den Rest der 12-Stunden-Gültigkeit zeigt. Schriften: Archivo und Atkinson Hyperlegible Next, lokal eingebunden über Fontsource (OFL). Gestaltungsregeln stehen in `DESIGN.md`, Produktgrundlagen in `PRODUCT.md`.
+
+Die Karte (`map.tsx`) wird als SVG aus den WPdx-Koordinaten und Straßen aus OpenStreetMap gezeichnet, ohne Kartenkacheln und ohne Netzzugriff. `web/scripts/import-osm.mjs` lädt Straßen, Bäche und benannte Orte im Umkreis der Region über die Overpass-API und schreibt `web/data/osm-area.json` (ODbL, Namensnennung „© OpenStreetMap contributors“). Liegen zwei Stellen am selben Punkt (A und C in Busia), werden die Marker mit einer Hinweislinie auseinandergezogen. Gerade Linien sind keine Wege.
+
 ## Aktualität und Alternativen
 
 Bestätigungszeit, Synchronisationszeit und Auftragsfortschritt sind getrennt. Die Oberfläche berücksichtigt die Serverzeit, zeigt Unsicherheit bei fehlender Verbindung und lässt die gespeicherte Bestätigung weiter altern. Der letzte geladene Datensatz ist nur eine lokale Lesekopie; fehlgeschlagene Schreibvorgänge werden nicht als erfolgreich dargestellt.
@@ -42,4 +60,4 @@ Ein Sensorhinweis ist nie ein Betriebszustand. Das Demo-Szenario „sensor“ se
 
 ## Bewusst nicht angeschlossen
 
-Keine SMS, Live-Sensorik, KI-Sprachverarbeitung, Bezahlung oder Live-Karte. Die Störungsbeschreibung kann optional über die Spracherkennung des Browsers diktiert werden; der Status wird dabei nie automatisch gesetzt. Diese Integrationen werden auch nicht als funktionierend dargestellt. Der manuelle Kernablauf ist unabhängig davon vollständig nutzbar.
+Keine SMS, Live-Sensorik, KI-Sprachverarbeitung, Bezahlung oder Live-Kartendienst. Die Störungsbeschreibung kann optional über die Spracherkennung des Browsers diktiert werden; der Status wird dabei nie automatisch gesetzt. Diese Integrationen werden auch nicht als funktionierend dargestellt. Der manuelle Kernablauf ist unabhängig davon vollständig nutzbar.

@@ -45,7 +45,7 @@ revision = initial.state.revision;
 await send(coordinator.token, { type: 'reset' });
 
 try {
-  const body = { type: 'report', pointId: 'a', status: 'down', note: 'Vor Ort geprüft: kein Wasserfluss.' };
+  const body = { type: 'report', pointId: 'a', status: 'down', note: 'Checked on site: no water flow.' };
   const id = crypto.randomUUID();
   const oldRevision = revision;
   const report = await send(operator.token, body, 200, id);
@@ -71,10 +71,10 @@ try {
   assert.equal(repair.state.points.find(p => p.id === 'a').status, 'down');
   assert.equal(repair.state.jobs.find(j => j.id === job.id).status, 'awaiting_confirmation');
   await send(technician.token, { type: 'confirm', pointId: 'a', status: 'working', note: 'Test', tested: true }, 403);
-  const failed = await send(operator.token, { type: 'confirm', pointId: 'a', status: 'down', note: 'Noch kein Wasserfluss.', tested: true });
+  const failed = await send(operator.token, { type: 'confirm', pointId: 'a', status: 'down', note: 'Still no water flow.', tested: true });
   assert.equal(failed.state.jobs.find(j => j.id === job.id).status, 'in_progress');
   await send(technician.token, { type: 'repair', jobId: job.id, note: 'Verbindung nachgebessert.' });
-  const confirmed = await send(operator.token, { type: 'confirm', pointId: 'a', status: 'working', note: 'Wasserfluss vor Ort geprüft.', tested: true });
+  const confirmed = await send(operator.token, { type: 'confirm', pointId: 'a', status: 'working', note: 'Water flow tested on site.', tested: true });
   assert.equal(confirmed.state.points.find(p => p.id === 'a').status, 'working');
   assert.equal(confirmed.state.jobs.find(j => j.id === job.id).status, 'closed');
   assert.ok(confirmed.state.events.length >= 8);

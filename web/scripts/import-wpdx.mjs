@@ -32,38 +32,38 @@ if (args.includes("--list")) {
     $order: "n DESC",
     $limit: "100",
   });
-  console.log("County · Wasserstellen · neueste Erhebung");
-  for (const row of rows) console.log(`${row.clean_adm1 || "(ohne Angabe)"} · ${row.n} · ${String(row.newest || "").slice(0, 10)}`);
+  console.log("County · water points · newest survey");
+  for (const row of rows) console.log(`${row.clean_adm1 || "(not given)"} · ${row.n} · ${String(row.newest || "").slice(0, 10)}`);
   process.exit(0);
 }
 
 const county = option("county");
 if (!county) {
-  console.error("Bitte --county angeben, z. B. --county Kitui. Mit --list siehst du alle Counties.");
+  console.error("Please pass --county, e.g. --county Kitui. --list shows all counties.");
   process.exit(1);
 }
 const count = Number(option("count") ?? 60);
 if (!Number.isInteger(count) || count < 3 || count > 400) {
-  console.error("--count muss zwischen 3 und 400 liegen.");
+  console.error("--count must be between 3 and 400.");
   process.exit(1);
 }
 const radiusKm = Number(option("radius") ?? 5), walkKm = Number(option("walk") ?? 3);
 const recentYears = Number(option("recent") ?? 3);
 if (!(radiusKm > 0 && radiusKm <= 50) || !(walkKm > 0 && walkKm <= 10) || !(recentYears > 0 && recentYears <= 30)) {
-  console.error("--radius muss zwischen 0 und 50 km liegen, --walk zwischen 0 und 10 km, --recent zwischen 0 und 30 Jahren.");
+  console.error("--radius must be 0–50 km, --walk 0–10 km, --recent 0–30 years.");
   process.exit(1);
 }
 let near = null;
 if (option("near")) {
   const [lat, lon] = option("near").split(",").map(Number);
   if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
-    console.error("--near erwartet Breite,Länge, z. B. --near -1.05,38.01");
+    console.error("--near expects lat,lon, e.g. --near -1.05,38.01");
     process.exit(1);
   }
   near = { lat, lon };
 }
 
-console.log(`Lade Wasserstellen für ${county} von WPdx …`);
+console.log(`Loading water points for ${county} from WPdx …`);
 const rows = await query({
   $select: WPDX_FIELDS.join(","),
   $where: `clean_country_name='Kenya' AND upper(clean_adm1)=upper(${quote(county)})`,
@@ -71,7 +71,7 @@ const rows = await query({
   $limit: "50000",
 });
 if (!rows.length) {
-  console.error(`Keine Einträge für „${county}“. Schreibweise mit --list prüfen.`);
+  console.error(`No records for "${county}". Check the spelling with --list.`);
   process.exit(1);
 }
 
@@ -79,7 +79,7 @@ let region;
 try {
   region = buildRegion(rows, { county, count, near, radiusKm, walkKm, recentYears });
 } catch (error) {
-  console.error(`${rows.length} Einträge geladen. ${error.message}`);
+  console.error(`${rows.length} records loaded. ${error.message}`);
   process.exit(1);
 }
 const out = fileURLToPath(new URL(option("out") ?? "../data/region.json", import.meta.url));
@@ -88,20 +88,20 @@ writeFileSync(out, `${JSON.stringify(region, null, 2)}\n`);
 const find = (id) => region.points.find((p) => p.rowId === id);
 const describe = (label, record) => {
   const km = distanceKm(region.meta.meetingPoint, record).toFixed(1);
-  console.log(`  ${label}: ${record.waterSource || "Wasserstelle"}, ${record.adm3 || record.adm2} · Erhebung ${record.reportDate.slice(0, 10)}: ${record.statusText} · ${km} km`);
+  console.log(`  ${label}: ${record.waterSource || "Water point"}, ${record.adm3 || record.adm2} · survey ${record.reportDate.slice(0, 10)}: ${record.statusText} · ${km} km`);
 };
 const dates = region.points.map((p) => p.reportDate).filter(Boolean).sort();
 const functional = region.points.filter((p) => p.status === "functional").length;
-console.log(`\n${rows.length} Einträge geladen, ${region.points.length} Wasserstellen im Umkreis von ${radiusKm} km übernommen (${functional} damals funktionierend).`);
+console.log(`\n${rows.length} records loaded, ${region.points.length} water points within ${radiusKm} km kept (${functional} functional when surveyed).`);
 console.log(`Region: ${region.meta.label}`);
 describe("A", find(region.demo.a));
 describe("B", find(region.demo.b));
 describe("C", find(region.demo.c));
-console.log(`Erhebungen: ${dates[0]?.slice(0, 10)} bis ${dates.at(-1)?.slice(0, 10)}`);
+console.log(`Surveys: ${dates[0]?.slice(0, 10)} to ${dates.at(-1)?.slice(0, 10)}`);
 const newest = rows.map((r) => String(r.report_date || "")).sort().at(-1) ?? "";
 const cutoff = newest && new Date(Date.parse(newest) - recentYears * 365.25 * 864e5).toISOString();
 if (cutoff && find(region.demo.a).reportDate < cutoff) {
-  console.log(`Hinweis: Keine geeignete Nachbarschaft mit Erhebungen der letzten ${recentYears} Jahre; A und B stammen aus älteren Erhebungen.`);
+  console.log(`Note: no suitable neighbourhood with surveys from the last ${recentYears} years; A and B come from older surveys.`);
 }
-console.log(`Gespeichert: ${out}`);
-console.log("Danach in der App unter Demo-Werkzeuge die Demo zurücksetzen, damit die neuen Daten geladen werden.");
+console.log(`Saved: ${out}`);
+console.log("Then reset the demo under Demo tools so the app loads the new data.");

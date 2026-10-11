@@ -33,7 +33,7 @@ export function errorResponse(error: unknown): Response {
   // Do not return DB internals, account headers, or bearer tokens to visitors.
   console.error("WaterLink request failed:", error instanceof Error ? error.message : "unknown error");
   return jsonResponse(
-    { error: "Speichern oder Laden ist gerade nicht möglich. Bitte erneut versuchen.", code: "server_error" },
+    { error: "Saving or loading is not possible right now. Please try again.", code: "server_error" },
     500,
   );
 }
@@ -64,7 +64,7 @@ export async function readJsonBody(request: Request): Promise<Record<string, unk
   if (declaredLength && Number(declaredLength) > limit) {
     throw new HttpError(413, "Die Meldung ist zu lang.", "body_too_large");
   }
-  if (!request.body) throw new HttpError(400, "Die Anfrage enthält keine Daten.", "invalid_body");
+  if (!request.body) throw new HttpError(400, "The request contains no data.", "invalid_body");
   const reader = request.body.getReader();
   const chunks: Uint8Array[] = [];
   let length = 0;
@@ -92,7 +92,7 @@ export async function readJsonBody(request: Request): Promise<Record<string, unk
   try {
     value = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes));
   } catch {
-    throw new HttpError(400, "Die Anfrage enthält kein gültiges JSON.", "invalid_json");
+    throw new HttpError(400, "The request is not valid JSON.", "invalid_json");
   }
   if (!isRecord(value)) throw new HttpError(400, "Die Anfrage muss ein JSON-Objekt enthalten.", "invalid_body");
   return value;

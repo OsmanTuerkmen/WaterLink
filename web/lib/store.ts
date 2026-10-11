@@ -13,12 +13,12 @@ const RECEIPT_LIMIT = 100;
 /** Whitelist wire fields; identity, clock, and revision never come from a command. */
 export function parseCommand(value: unknown): MutationCommand {
   if (!isRecord(value) || typeof value.type !== "string") {
-    throw new HttpError(400, "Die Aktion ist ungültig.", "invalid_command");
+    throw new HttpError(400, "The action is invalid.", "invalid_command");
   }
   const text = (key: string, max: number): string => {
     const field = value[key];
     if (typeof field !== "string" || field.length === 0 || field.length > max) {
-      throw new HttpError(400, `Das Feld „${key}“ ist ungültig.`, "invalid_command");
+      throw new HttpError(400, `The field "${key}" is invalid.`, "invalid_command");
     }
     return field;
   };
@@ -28,7 +28,7 @@ export function parseCommand(value: unknown): MutationCommand {
     case "report": {
       const pointId = text("pointId", 80);
       const note = text("note", 1000);
-      if (value.status !== "down" && value.status !== "limited") throw new HttpError(400, "Ungültiger Störungszustand.");
+      if (value.status !== "down" && value.status !== "limited") throw new HttpError(400, "Invalid problem status.");
       return { type: "report", pointId, note, status: value.status };
     }
     case "claim": case "start":
@@ -37,7 +37,7 @@ export function parseCommand(value: unknown): MutationCommand {
       const jobId = text("jobId", 80);
       const note = text("note", 1000);
       if (value.blocker !== null && value.blocker !== "parts" && value.blocker !== "funding" && value.blocker !== "staff") {
-        throw new HttpError(400, "Ungültiger Hinderungsgrund.");
+        throw new HttpError(400, "Invalid blocker.");
       }
       return { type: "progress", jobId, note, blocker: value.blocker };
     }
@@ -46,20 +46,20 @@ export function parseCommand(value: unknown): MutationCommand {
     case "confirm": {
       const pointId = text("pointId", 80);
       const note = text("note", 1000);
-      if (value.tested !== true) throw new HttpError(400, "Die Funktionsprüfung vor Ort muss ausdrücklich bestätigt werden.");
+      if (value.tested !== true) throw new HttpError(400, "Please confirm explicitly that you tested it on site.");
       if (value.status !== "working" && value.status !== "limited" && value.status !== "down") {
-        throw new HttpError(400, "Ungültiger bestätigter Betriebszustand.");
+        throw new HttpError(400, "Invalid confirmed status.");
       }
       return { type: "confirm", pointId, note, status: value.status, tested: true };
     }
     case "scenario": {
       if (value.scenario !== "stale" && value.scenario !== "conflict" && value.scenario !== "no-alternative" && value.scenario !== "sensor") {
-        throw new HttpError(400, "Unbekanntes Demo-Szenario.");
+        throw new HttpError(400, "Unknown demo scenario.");
       }
       return { type: "scenario", scenario: value.scenario };
     }
     case "reset": return { type: "reset" };
-    default: throw new HttpError(400, "Unbekannte Aktion.", "invalid_command");
+    default: throw new HttpError(400, "Unknown action.", "invalid_command");
   }
 }
 
@@ -92,7 +92,7 @@ function replay(envelope: StoredEnvelope, requestId: string, sessionKey: string,
   const receipt = envelope.receipts.find((item) => item.requestId === requestId && item.sessionKey === sessionKey);
   if (!receipt) return null;
   if (receipt.commandHash !== commandHash) {
-    throw new HttpError(409, "Diese Anfragekennung wurde bereits für eine andere Aktion verwendet.", "request_id_reused");
+    throw new HttpError(409, "This request ID was already used for another action.", "request_id_reused");
   }
   return envelope.state;
 }
@@ -111,17 +111,17 @@ export async function mutateState(
   const duplicate = replay(envelope, requestId, sessionKey, commandHash);
   if (duplicate) return duplicate;
   if (envelope.state.revision !== expectedRevision) {
-    throw new HttpError(409, "Der Stand hat sich geändert. Bitte aktualisieren und die Aktion erneut prüfen.", "revision_conflict");
+    throw new HttpError(409, "Someone else saved a change first. The latest state is loaded; please check and try again.", "revision_conflict");
   }
 
   let next: State;
   if (command.type === "reset") {
-    if (actor.role !== "coordinator") throw new HttpError(403, "Nur die Demo-Koordination darf die Demo zurücksetzen.", "forbidden");
+    if (actor.role !== "coordinator") throw new HttpError(403, "Only demo coordination can reset the demo.", "forbidden");
     next = createSeedState(now, REGION);
     next.revision = envelope.state.revision + 1;
     next.events = [{
       id: `event-reset-${next.revision}`, pointId: null, jobId: null, type: "reset",
-      message: "Demo zurückgesetzt. Alle Orte, Wege und Meldungen sind fiktive Beispieldaten.",
+      message: "Demo reset. Confirmations, routes, people and reports are simulated.",
       actorId: actor.id, actorName: actor.name, at: now.toISOString(),
     }];
   } else {
@@ -139,7 +139,7 @@ export async function mutateState(
     const current = await loadEnvelope(db, now);
     const completed = replay(current, requestId, sessionKey, commandHash);
     if (completed) return completed;
-    throw new HttpError(409, "Eine andere Aktion wurde gerade gespeichert. Bitte aktualisieren und erneut prüfen.", "revision_conflict");
+    throw new HttpError(409, "Another change was saved at the same moment. The latest state is loaded; please check and try again.", "revision_conflict");
   }
   return next;
 }

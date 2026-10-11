@@ -8,6 +8,8 @@ WaterLink verbindet eine öffentliche Statusanzeige für Haushalte mit dem Ablau
 
 Der aktuelle Stand liegt in `web/` auf dem Branch `claude/waterlink-mvp` (aufbauend auf `codex/waterlink-mvp`). Eine gehostete Demo ist noch nicht bereitgestellt.
 
+**Redesign zum Vergleich (Branch `claude/waterlink-redesign`, 11. Oktober 2026):** dieselbe Fachlogik mit neuer, englischer Oberfläche in der Bildwelt „gelber Kanister“. Getrennte Ansichten für Haushalte (`#status`), die öffentliche Tafel (`?view=display`), eine Handy-App für Betreiberin und Techniker (`#field`), die Koordination (`#coordination`) und eine Pitch-Bühne (`?view=stage`), die beide Handys und die Tafel live nebeneinander zeigt. Neu ist eine Karte aus echten Koordinaten und OpenStreetMap-Straßen ohne Kartendienst. Details in [Architektur](docs/ARCHITEKTUR.md), Ablauf im [Demo-Skript](docs/DEMO.md).
+
 - Responsive Weboberfläche und öffentliche Statustafel (`?view=display`): große Schrift, Status als Wort und Symbol, Bestätigungszeit und Alternative – lesbar aus einigen Metern Entfernung.
 - Gemeinsamer, serverseitig gespeicherter Datenstand mit automatischer Aktualisierung.
 - Störung melden, Auftrag übernehmen, Fortschritt und Hindernisse dokumentieren, Reparatur zur Prüfung melden und Funktion ausdrücklich bestätigen.
@@ -46,7 +48,7 @@ npm run data:wpdx -- --county Kitui --count 40 --near -1.05,38.01
 
 Das Skript wählt nur Nachbarschaften, in denen zwei gefasste, als „Functional“ erhobene Wasserstellen höchstens 3 km auseinanderliegen (`--walk`), und übernimmt Stellen im Umkreis von 5 km (`--radius`). Dabei bevorzugt es Erhebungen aus den letzten 3 Jahren vor der neuesten Erhebung im County (`--recent`). Gute Ausgangswahl ist z. B. `--county Busia`. Bei Datensätzen, deren bereinigter Status für alle Einträge gleich ist, obwohl die Rohangabe „Wasser vorhanden ja/nein“ wechselt (Evidence Action Kenya 2023–2024: immer „Non-Functional“), gilt die Rohangabe. Gibt ein County das nicht her (z. B. Kitui: 48 weit verstreute, meist als defekt erhobene Einträge), bricht es mit einer Meldung ab.
 
-Das Skript schreibt `data/region.json`. Danach den Entwicklungsserver neu starten (bzw. neu bauen) und unter **Demo-Werkzeuge** die Demo zurücksetzen. Mit `null` in `data/region.json` gelten wieder die fiktiven Beispieldaten.
+Das Skript schreibt `data/region.json`. Für die Karte lädt `node scripts/import-osm.mjs` anschließend Straßen und Orte der Region aus OpenStreetMap nach `data/osm-area.json`. Danach den Entwicklungsserver neu starten (bzw. neu bauen) und unter **Demo-Werkzeuge** die Demo zurücksetzen. Mit `null` in `data/region.json` gelten wieder die fiktiven Beispieldaten.
 
 ## Prüfungen
 

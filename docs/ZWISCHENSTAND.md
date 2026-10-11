@@ -2,7 +2,7 @@
 
 Lebendes Dokument: Es wird nach **jedem** Arbeitsschritt aktualisiert. Oben steht immer der aktuelle Stand, unten das Protokoll (neueste Einträge zuerst).
 
-**Zuletzt aktualisiert:** 11. Oktober 2026, ca. 11:00 Uhr (Kenia: EAT) · Branch `claude/waterlink-mvp`
+**Zuletzt aktualisiert:** 11. Oktober 2026, ca. 11:50 Uhr (Kenia: EAT) · Branch `claude/waterlink-redesign` (Redesign zum Vergleich mit `claude/waterlink-mvp`)
 
 ## Ziel
 
@@ -17,6 +17,7 @@ Bis zum Hackathon am **22. Oktober 2026** (10–22 Uhr, Track Social Impact):
 
 **Fertig und geprüft**
 
+- **Redesign (dieser Branch):** englische Oberfläche „gelber Kanister“ mit fünf Ansichten: Status für Haushalte, öffentliche Tafel, Handy-App für Betreiberin und Techniker, Koordination, Pitch-Bühne mit beiden Handys und Tafel nebeneinander. Karte aus WPdx-Koordinaten und OpenStreetMap-Straßen. Fachregeln unverändert, nur Texte übersetzt.
 - Kompletter manueller Ablauf: Meldung → Auftrag → Übernahme → Fortschritt und Blockierungen → Reparaturmeldung → ausdrückliche Funktionsprüfung. Betriebszustand und Auftragsstand sind getrennt. Rollen werden auf dem Server geprüft.
 - Öffentliche Statustafel (`?view=display`): große Zeilen, Status als Wort und Symbol, Bestätigungszeit, Alternative, deutlicher Hinweis bei fehlender Verbindung.
 - Arbeitsansicht: Die Frage steht oben, die Karten sind auf das Wesentliche reduziert, Details sind aufklappbar, die Schrift ist größer.
@@ -26,7 +27,17 @@ Bis zum Hackathon am **22. Oktober 2026** (10–22 Uhr, Track Social Impact):
 - Diktat der Störungsbeschreibung über die Spracherkennung des Browsers (optional).
 - Dokumente: [Konzept](KONZEPT.md), [Architektur](ARCHITEKTUR.md), [Demo-Skript](DEMO.md), [Weg zum Produkt](WEG-ZUM-PRODUKT.md).
 
-**Letzte Prüfungen (11.10.2026, zweiter Rechner, frischer Klon)**
+**Letzte Prüfungen (11.10.2026, Redesign-Branch)**
+
+| Prüfung | Ergebnis |
+|---|---|
+| `npm test` | 39 von 39 bestanden |
+| `npm run typecheck`, `npm run build` | bestanden |
+| `npm run test:integration` gegen lokale Vorschau (Port 5174) | bestanden |
+| Kompletter Ablauf auf der Pitch-Bühne (melden, übernehmen, starten, Reparatur melden, bestätigen) | bestanden |
+| Ansichten bei 1440 px und 390 px angesehen | bestanden, kleine Korrekturen eingearbeitet |
+
+**Davor (11.10.2026, zweiter Rechner, frischer Klon)**
 
 | Prüfung | Ergebnis |
 |---|---|
@@ -60,6 +71,8 @@ Priorität: **P1** = nötig für die Hackathon-Demo, **P2** = macht die Demo bes
 | 7 | P2 | Seite „Störung melden“ vereinfachen: zwei Schritte statt zwei gleich gewichteter Formulare nebeneinander. | Claude | offen |
 | 8 | P2 | Simulierte SMS-Ansicht für Haushalte mit einfachem Handy, klar als nicht angeschlossen gekennzeichnet. | Claude | offen |
 | 9 | P2 | Pitch: Folien oder Ablauf, Screenshots aus dem echten Build. | Nutzer und Claude | offen |
+| 11 | P1 | **Entscheiden:** alte Oberfläche (`claude/waterlink-mvp`) oder Redesign (`claude/waterlink-redesign`) weiterführen. Beide lokal ansehen, dann einen Branch zusammenführen. | Nutzer und Osman | offen |
+| 12 | P2 | Redesign: Bühne auf dem echten Beamer-Format testen (1920 × 1080 und 1280 × 720). | Nutzer | offen |
 | 10 | P3 | Partner vor Ort finden (County, NGO, Wartungsdienst, Smart-Handpump-Team in Oxford) und Gespräche führen, siehe [Weg zum Produkt](WEG-ZUM-PRODUKT.md). | Team | offen |
 
 ## Bewusste Grenzen
@@ -71,6 +84,14 @@ Priorität: **P1** = nötig für die Hackathon-Demo, **P2** = macht die Demo bes
 - Software beschafft kein Geld, keine Ersatzteile und kein Personal.
 
 ## Protokoll
+
+### 11.10.2026, ca. 11:50 – Redesign „gelber Kanister“ (Branch `claude/waterlink-redesign`)
+
+- Auf Wunsch des Nutzers: alles auf Englisch, eigener Stil, sympathisch und leicht bedienbar, auf eigenem Branch zum Vergleich. Stilrichtung aus drei Vorschlägen gewählt: „Der gelbe Kanister“.
+- Neue Oberfläche in `web/components/waterlink/` (fünf Ansichten, siehe Architektur). Statuszeichen: Kanister, dessen Wasserstand die verbleibende 12-Stunden-Gültigkeit zeigt. Pitch-Bühne `?view=stage` mit eigener Sitzung je Rolle.
+- Fachlogik, Server- und Importtexte ins Englische übersetzt (Regeln unverändert). Busia-Daten mit englischen Texten neu erzeugt. Neu: `web/scripts/import-osm.mjs` und `web/data/osm-area.json` (22 Wege, 3 Märkte, ODbL).
+- Schriften Archivo und Atkinson Hyperlegible Next lokal über Fontsource. `PRODUCT.md` und Gestaltungsvertrag unter `.impeccable/` angelegt.
+- Bewusst offen: Swahili, echte SMS, Prüfung auf Beamer. Die alte Oberfläche bleibt unverändert auf `claude/waterlink-mvp`.
 
 ### 11.10.2026, ca. 11:00 – Zweiter Rechner, Busia-Daten im Repo
 

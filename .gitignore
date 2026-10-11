@@ -7,3 +7,12 @@ coverage/
 *.log
 
 .sites-publish/
+
+# Local tooling
+.claude/
+.impeccable/review/
+.impeccable/mocks/
+.impeccable/build/
+.impeccable/live/
+.impeccable/config.local.json
+.impeccable/questions/

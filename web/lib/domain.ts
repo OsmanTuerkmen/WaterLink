@@ -116,7 +116,7 @@ export interface PointDisplay {
 }
 
 const STATUS_TEXT: Record<OperatingStatus, string> = {
-  working: "Funktioniert", limited: "Eingeschränkt", down: "Ausgefallen", unknown: "Unbekannt",
+  working: "Working", limited: "Limited", down: "Not working", unknown: "Unknown",
 };
 const STATUS_SYMBOL: Record<OperatingStatus, string> = {
   working: "✓", limited: "!", down: "×", unknown: "?",
@@ -124,7 +124,7 @@ const STATUS_SYMBOL: Record<OperatingStatus, string> = {
 
 function toMs(time: Time): number {
   const value = time instanceof Date ? time.getTime() : typeof time === "number" ? time : Date.parse(time);
-  if (!Number.isFinite(value)) throw new DomainError("Ungültiger Zeitpunkt.");
+  if (!Number.isFinite(value)) throw new DomainError("Invalid time.");
   return value;
 }
 
@@ -142,18 +142,18 @@ export function getPointDisplay(point: WaterPoint, now: Time = Date.now(), offli
   const uncertain = (certainty: PointDisplay["certainty"], label: string, reason: string): PointDisplay => ({
     certainty, status: "unknown", label, symbol: "?", reason, ageMinutes,
   });
-  if (offline) return uncertain("unknown", "Verbindung fehlt", "Gespeicherter Stand; der aktuelle Zustand ist nicht bestätigt.");
-  if (point.conflict) return uncertain("conflict", "Meldungen widersprüchlich", "Eine Betreiberperson muss den Zustand vor Ort erneut prüfen.");
-  if (point.sensorAlert) return uncertain("sensor", "Sensorhinweis", point.sensorAlert);
+  if (offline) return uncertain("unknown", "No connection", "Saved copy; the current state is not confirmed.");
+  if (point.conflict) return uncertain("conflict", "Reports disagree", "An operator has to check on site again.");
+  if (point.sensorAlert) return uncertain("sensor", "Sensor hint", point.sensorAlert);
   if (point.status === "unknown" || !Number.isFinite(at) || at > nowMs) {
-    return uncertain("unknown", "Zustand unbekannt", "Keine gültige Bestätigung vorhanden.");
+    return uncertain("unknown", "Not confirmed", "No valid confirmation yet.");
   }
   if (!isFresh(point.confirmedAt, nowMs, STATUS_TTL_MS)) {
-    return uncertain("stale", "Bestätigung veraltet", "Aktueller Zustand nicht bestätigt. Die Demo-Frist beträgt 12 Stunden.");
+    return uncertain("stale", "Confirmation expired", "Not confirmed today. A confirmation is valid for 12 hours in this demo.");
   }
   return {
     certainty: "fresh", status: point.status, label: STATUS_TEXT[point.status],
-    symbol: STATUS_SYMBOL[point.status], reason: "Betriebszustand zuletzt ausdrücklich bestätigt.", ageMinutes,
+    symbol: STATUS_SYMBOL[point.status], reason: "Confirmed on site by the operator.", ageMinutes,
   };
 }
 
@@ -226,15 +226,16 @@ export function estimateWalkingMinutes(km: number): number {
 
 const text = (value: unknown, max: number): string => (typeof value === "string" ? value.trim().slice(0, max) : "");
 const finite = (value: unknown): value is number => typeof value === "number" && Number.isFinite(value);
-const WATER_SOURCE_DE: Record<string, string> = {
-  "Borehole": "Bohrloch", "Tube Well or Borehole": "Bohrloch", "Borehole/Tubewell": "Bohrloch", "Protected Well": "Geschützter Brunnen", "Protected Dug Well": "Geschützter Brunnen", "Unprotected Well": "Ungeschützter Brunnen", "Protected Shallow Well": "Geschützter Brunnen",
-  "Unprotected Shallow Well": "Ungeschützter Brunnen", "Protected Spring": "Gefasste Quelle", "Unprotected Spring": "Ungefasste Quelle",
-  "Rainwater Harvesting": "Regenwassertank", "Piped Water": "Leitungswasser", "Public Tapstand": "Zapfstelle", "Public tapstand": "Zapfstelle",
-  "Undefined Well": "Brunnen", "Undefined Shallow Well": "Brunnen", "Surface Water (River/Stream/Lake/Pond/Dam)": "Oberflächenwasser", "Piped Water Point": "Zapfstelle", "Kiosk": "Wasserkiosk", "Unprotected Dug Well": "Ungeschützter Brunnen",
-  "Sand or Sub-surface Dam": "Sanddamm", "Delivered Water": "Wasserlieferung", "Packaged water": "Abgefülltes Wasser",
+const WATER_SOURCE_LABEL: Record<string, string> = {
+  "Tube Well or Borehole": "Borehole", "Borehole/Tubewell": "Borehole", "Protected Well": "Protected well", "Protected Dug Well": "Protected well", "Protected Shallow Well": "Protected well",
+  "Unprotected Well": "Unprotected well", "Unprotected Shallow Well": "Unprotected well", "Unprotected Dug Well": "Unprotected well",
+  "Protected Spring": "Protected spring", "Unprotected Spring": "Unprotected spring", "Rainwater Harvesting": "Rainwater tank",
+  "Piped Water": "Tap stand", "Public Tapstand": "Tap stand", "Public tapstand": "Tap stand", "Piped Water Point": "Tap stand",
+  "Undefined Well": "Well", "Undefined Shallow Well": "Well", "Surface Water (River/Stream/Lake/Pond/Dam)": "Surface water", "Kiosk": "Water kiosk",
+  "Sand or Sub-surface Dam": "Sand dam", "Delivered Water": "Water delivery", "Packaged water": "Packaged water",
 };
 export function waterSourceLabel(value: string): string {
-  return WATER_SOURCE_DE[value] ?? (value || "Wasserstelle");
+  return WATER_SOURCE_LABEL[value] ?? (value || "Water point");
 }
 
 /** Validates imported data; malformed entries are dropped rather than trusted. */
@@ -263,9 +264,9 @@ export function parseRegion(value: unknown): RegionData | null {
   if (new Set(ids).size !== 3 || !ids.every((id) => seen.has(id))) return null;
   return {
     meta: {
-      label: text(meta.label, 120) || "Region in Kenia", county: text(meta.county, 80), fetchedAt: text(meta.fetchedAt, 40),
+      label: text(meta.label, 120) || "Region in Kenya", county: text(meta.county, 80), fetchedAt: text(meta.fetchedAt, 40),
       attribution: text(meta.attribution, 400) || "Water Point Data Exchange (WPdx), CC BY 4.0",
-      meetingPoint: { lat: meeting.lat, lon: meeting.lon, label: text(meeting.label, 120) || "Demo-Treffpunkt" },
+      meetingPoint: { lat: meeting.lat, lon: meeting.lon, label: text(meeting.label, 120) || "demo meeting point" },
     },
     demo: { a: ids[0], b: ids[1], c: ids[2] },
     points,
@@ -283,21 +284,22 @@ function createRegionSeed(region: RegionData, time: number): State {
   const names = new Map<string, number>();
   const points: WaterPoint[] = region.points.map((record) => {
     const { lat, lon, ...survey } = record;
-    const base = `${waterSourceLabel(survey.waterSource)} ${survey.adm3 || survey.adm2}`.trim();
-    const count = (names.get(base) ?? 0) + 1;
-    names.set(base, count);
+    const base = waterSourceLabel(survey.waterSource);
     const id = role.get(record.rowId) ?? `wpdx-${record.rowId}`;
+    // Demo points carry their letter; other recorded points are numbered per source type.
+    const count = id.length === 1 ? 0 : (names.get(base) ?? 0) + 1;
+    if (count) names.set(base, count);
     const km = distanceKm({ lat, lon }, region.meta.meetingPoint) ?? 0;
     const demoConfirmed = id === "a" || id === "b";
     return {
-      id, name: count > 1 ? `${base} (${count})` : base,
+      id, name: count ? `${base} ${count}` : `${base} ${id.toUpperCase()}`,
       status: demoConfirmed ? "working" : "unknown",
       confirmedAt: id === "a" ? ago(18) : id === "b" ? ago(32) : null,
-      confirmedBy: demoConfirmed ? "Demo-Betreiberin (simuliert)" : null,
+      confirmedBy: demoConfirmed ? "Demo operator (simulated)" : null,
       conflict: false,
-      note: demoConfirmed ? "Simulierte Demo-Bestätigung; nicht vor Ort geprüft." : "Keine WaterLink-Bestätigung. Nur historische Erhebungsdaten.",
+      note: demoConfirmed ? "Simulated demo confirmation; not checked on site." : "No WaterLink confirmation. Historical survey data only.",
       location: [survey.adm3, survey.adm2].filter(Boolean).join(", ") || survey.adm1,
-      landmark: `Lage laut Erhebung: ${survey.adm3 || survey.adm2 || survey.adm1}. Keine geprüfte Wegbeschreibung; Koordinaten in den Details.`,
+      landmark: `Location from the survey: ${survey.adm3 || survey.adm2 || survey.adm1}. No checked directions.`,
       walkingMinutes: estimateWalkingMinutes(km),
       accessVerified: id === "b", routeVerified: id === "b", accessConfirmedAt: id === "b" ? ago(35) : null,
       opensAt: "", closesAt: "", allDay: id === "b",
@@ -312,7 +314,7 @@ function createRegionSeed(region: RegionData, time: number): State {
     points,
     jobs: [],
     events: [{ id: "event-seed", pointId: null, jobId: null, type: "seed",
-      message: `Demo gestartet mit ${points.length} erfassten Wasserstellen (${region.meta.label}, Quelle WPdx). Bestätigungen, Wege und Personen sind simuliert.`,
+      message: `Demo started with ${points.length} recorded water points (${region.meta.label}, source WPdx). Confirmations, routes and people are simulated.`,
       actorId: "demo", actorName: "WaterLink Demo", at: ago(35) }],
   };
 }
@@ -332,33 +334,33 @@ function createFictionalSeed(now: Time = Date.now()): State {
   return {
     revision: 0,
     points: [
-      { ...shared, id: "a", name: "Brunnen am Markt", status: "working", confirmedAt: ago(18),
-        confirmedBy: "Demo-Betreiberin", note: "Wasserentnahme im Beispiel geprüft.",
-        location: "Am Markt", landmark: "Neben dem großen Marktstand, gegenüber dem Treffpunkt.", walkingMinutes: 12 },
-      { ...shared, id: "b", name: "Wasserstelle an der Schule", status: "working", confirmedAt: ago(32),
-        confirmedBy: "Demo-Betreiberin", note: "Betrieb und öffentlicher Zugang im Beispiel bestätigt.",
-        location: "An der Schule", landmark: "Dem Hauptweg zur Schule folgen; Zugang neben dem blauen Tor.", walkingMinutes: 22 },
-      { ...shared, id: "c", name: "Pumpe am Akazienweg", status: "unknown", confirmedAt: null,
-        confirmedBy: null, note: "Für dieses Beispiel liegt keine Bestätigung vor.",
-        location: "Am Akazienweg", landmark: "Hinter der Weggabelung bei der großen Akazie.", walkingMinutes: 31,
+      { ...shared, id: "a", name: "Market well", status: "working", confirmedAt: ago(18),
+        confirmedBy: "Demo operator", note: "Water flow checked in this example.",
+        location: "At the market", landmark: "Next to the big market stall, opposite the meeting point.", walkingMinutes: 12 },
+      { ...shared, id: "b", name: "School tap", status: "working", confirmedAt: ago(32),
+        confirmedBy: "Demo operator", note: "Operation and public access confirmed in this example.",
+        location: "At the school", landmark: "Follow the main path to the school; access next to the blue gate.", walkingMinutes: 22 },
+      { ...shared, id: "c", name: "Acacia Lane pump", status: "unknown", confirmedAt: null,
+        confirmedBy: null, note: "No confirmation in this example.",
+        location: "Acacia Lane", landmark: "Behind the fork by the big acacia tree.", walkingMinutes: 31,
         accessVerified: false, routeVerified: false, accessConfirmedAt: null, allDay: false },
     ],
     jobs: [],
     events: [{ id: "event-seed", pointId: null, jobId: null, type: "seed",
-      message: "Fiktive Demo gestartet. Alle Orte, Wege und Meldungen sind Beispieldaten.",
+      message: "Fictional demo started. All places, routes and reports are example data.",
       actorId: "demo", actorName: "WaterLink Demo", at: ago(35) }],
   };
 }
 
 function requireRole(actor: Actor, role: Role): void {
   if (!actor || actor.role !== role || !actor.id || !actor.name) {
-    throw new DomainError("Diese Aktion ist für deine Rolle nicht erlaubt.", 403);
+    throw new DomainError("Your role cannot do this.", 403);
   }
 }
 
 function cleanNote(note: string): string {
   if (typeof note !== "string" || note.trim().length < 3 || note.trim().length > 1000) {
-    throw new DomainError("Bitte eine Beschreibung mit 3 bis 1.000 Zeichen eingeben.");
+    throw new DomainError("Please write a description of 3 to 1,000 characters.");
   }
   return note.trim();
 }
@@ -374,12 +376,12 @@ export function applyCommand(state: State, command: Command, actor: Actor, now: 
   };
   const pointById = (id: string) => {
     const point = next.points.find((item) => item.id === id);
-    if (!point) throw new DomainError("Wasserstelle nicht gefunden.", 404);
+    if (!point) throw new DomainError("Water point not found.", 404);
     return point;
   };
   const jobById = (id: string) => {
     const job = next.jobs.find((item) => item.id === id);
-    if (!job) throw new DomainError("Auftrag nicht gefunden.", 404);
+    if (!job) throw new DomainError("Repair job not found.", 404);
     return job;
   };
   const activeJob = (pointId: string) => next.jobs.find((job) => job.pointId === pointId && job.status !== "closed");
@@ -397,14 +399,14 @@ export function applyCommand(state: State, command: Command, actor: Actor, now: 
   const technicianJob = (jobId: string) => {
     requireRole(actor, "technician");
     const job = jobById(jobId);
-    if (job.assignedTo !== actor.id) throw new DomainError("Nur die zuständige Fachkraft darf diesen Auftrag bearbeiten.", 403);
+    if (job.assignedTo !== actor.id) throw new DomainError("Only the assigned technician can work on this job.", 403);
     return job;
   };
-  if (!command || typeof command !== "object") throw new DomainError("Ungültige Aktion.");
+  if (!command || typeof command !== "object") throw new DomainError("Invalid action.");
   switch (command.type) {
     case "report": {
       requireRole(actor, "operator");
-      if (command.status !== "down" && command.status !== "limited") throw new DomainError("Ungültiger Störungszustand.");
+      if (command.status !== "down" && command.status !== "limited") throw new DomainError("Invalid problem status.");
       const note = cleanNote(command.note);
       const point = pointById(command.pointId);
       // This is an explicit operator observation, not an unverified crowdsourced vote.
@@ -423,62 +425,62 @@ export function applyCommand(state: State, command: Command, actor: Actor, now: 
         job.status = job.assignedTo ? "in_progress" : "open";
         job.repairedAt = null;
       }
-      event("report", `${point.name}: ${STATUS_TEXT[point.status]}. ${existing ? "Bestehender Auftrag aktualisiert" : "Reparaturauftrag erstellt"}. ${note}`, point.id, job.id);
+      event("report", `${point.name}: ${STATUS_TEXT[point.status]}. ${existing ? "Existing repair job updated" : "Repair job created"}. ${note}`, point.id, job.id);
       break;
     }
     case "claim": {
       requireRole(actor, "technician");
       const job = jobById(command.jobId);
-      if (job.status !== "open" || job.assignedTo) throw new DomainError("Dieser Auftrag kann nicht mehr übernommen werden.", 409);
+      if (job.status !== "open" || job.assignedTo) throw new DomainError("This job can no longer be claimed.", 409);
       job.status = "claimed";
       job.assignedTo = actor.id;
       job.assignedName = actor.name;
       job.updatedAt = at;
-      event("claim", `${actor.name} hat den Auftrag übernommen.`, job.pointId, job.id);
+      event("claim", `${actor.name} claimed the job.`, job.pointId, job.id);
       break;
     }
     case "start": {
       const job = technicianJob(command.jobId);
-      if (job.status !== "claimed") throw new DomainError("Nur ein übernommener Auftrag kann gestartet werden.", 409);
+      if (job.status !== "claimed") throw new DomainError("Only a claimed job can be started.", 409);
       job.status = "in_progress";
       job.updatedAt = at;
-      event("start", "Arbeit an der Wasserstelle begonnen.", job.pointId, job.id);
+      event("start", "Work on site started.", job.pointId, job.id);
       break;
     }
     case "progress": {
       const job = technicianJob(command.jobId);
-      if (job.status !== "claimed" && job.status !== "in_progress") throw new DomainError("Dieser Auftrag ist nicht in Bearbeitung.", 409);
-      if (![null, "parts", "funding", "staff"].includes(command.blocker)) throw new DomainError("Ungültiger Hinderungsgrund.");
+      if (job.status !== "claimed" && job.status !== "in_progress") throw new DomainError("This job is not in progress.", 409);
+      if (![null, "parts", "funding", "staff"].includes(command.blocker)) throw new DomainError("Invalid blocker.");
       job.note = cleanNote(command.note);
       job.blocker = command.blocker;
       job.status = "in_progress";
       job.updatedAt = at;
-      event("progress", `Fortschritt dokumentiert: ${job.note}`, job.pointId, job.id);
+      event("progress", `Progress noted: ${job.note}`, job.pointId, job.id);
       break;
     }
     case "repair": {
       const job = technicianJob(command.jobId);
-      if (job.status !== "in_progress") throw new DomainError("Die Arbeit muss vor der Reparaturmeldung gestartet werden.", 409);
+      if (job.status !== "in_progress") throw new DomainError("Start the work before reporting a repair.", 409);
       job.note = cleanNote(command.note);
       job.status = "awaiting_confirmation";
       job.blocker = null;
       job.repairedAt = at;
       job.updatedAt = at;
       // The point is intentionally untouched: repair completion is no operating confirmation.
-      event("repair", `Reparatur gemeldet; unabhängige Betriebsbestätigung ausstehend. ${job.note}`, job.pointId, job.id);
+      event("repair", `Repair reported; waiting for the operator to test it. ${job.note}`, job.pointId, job.id);
       break;
     }
     case "confirm": {
       requireRole(actor, "operator");
-      if (command.tested !== true) throw new DomainError("Die Funktionsprüfung vor Ort muss ausdrücklich bestätigt werden.");
-      if (!["working", "limited", "down"].includes(command.status)) throw new DomainError("Ungültiger bestätigter Betriebszustand.");
+      if (command.tested !== true) throw new DomainError("Please confirm explicitly that you tested it on site.");
+      if (!["working", "limited", "down"].includes(command.status)) throw new DomainError("Invalid confirmed status.");
       const point = pointById(command.pointId);
       const note = cleanNote(command.note);
       let job = activeJob(point.id);
       if (command.status === "working" && job && job.status !== "awaiting_confirmation") {
-        throw new DomainError("Zuerst muss die zuständige Fachkraft die Reparatur melden.", 409);
+        throw new DomainError("The technician has to report the repair first.", 409);
       }
-      if (job?.repairedAt && nowMs < Date.parse(job.repairedAt)) throw new DomainError("Die Prüfung kann nicht vor der Reparatur liegen.", 409);
+      if (job?.repairedAt && nowMs < Date.parse(job.repairedAt)) throw new DomainError("The test cannot be earlier than the repair.", 409);
       point.status = command.status;
       point.confirmedAt = at;
       point.confirmedBy = actor.name;
@@ -498,7 +500,7 @@ export function applyCommand(state: State, command: Command, actor: Actor, now: 
         job.updatedAt = at;
         job.note = note;
       }
-      event("confirm", `Funktionsprüfung bestätigt: ${STATUS_TEXT[point.status]}. ${note}`, point.id, job?.id ?? null);
+      event("confirm", `Tested on site: ${STATUS_TEXT[point.status]}. ${note}`, point.id, job?.id ?? null);
       break;
     }
     case "scenario": {
@@ -507,23 +509,23 @@ export function applyCommand(state: State, command: Command, actor: Actor, now: 
       if (command.scenario === "stale") {
         point.confirmedAt = new Date(nowMs - STATUS_TTL_MS - 60_000).toISOString();
         point.conflict = false;
-        event("scenario", "Demo-Szenario: Bestätigung der Wasserstelle A ist veraltet.", point.id, null);
+        event("scenario", "Demo scenario: the confirmation of water point A has expired.", point.id, null);
       } else if (command.scenario === "conflict") {
         point.conflict = true;
-        point.note = "Simulierte widersprüchliche Meldungen: Vor-Ort-Prüfung erforderlich.";
-        event("scenario", "Demo-Szenario: Widersprüchliche Meldungen zu Wasserstelle A.", point.id, null);
+        point.note = "Simulated conflicting reports: an on-site check is needed.";
+        event("scenario", "Demo scenario: conflicting reports about water point A.", point.id, null);
       } else if (command.scenario === "no-alternative") {
         for (const candidate of next.points) {
           if (candidate.id !== "a") candidate.accessVerified = false;
         }
-        event("scenario", "Demo-Szenario: Keine verlässlich bestätigte Alternative für Wasserstelle A.", point.id, null);
+        event("scenario", "Demo scenario: no reliably confirmed alternative for water point A.", point.id, null);
       } else if (command.scenario === "sensor") {
-        point.sensorAlert = "Sensor meldet seit 2 Wochen fast keine Förderung. Bitte vor Ort prüfen.";
-        event("scenario", "Demo-Szenario: Sensorhinweis für Wasserstelle A (Muster aus echten Kwale-Daten 2014). Status bleibt unbestätigt bis zur Prüfung vor Ort.", point.id, null);
-      } else throw new DomainError("Unbekanntes Demo-Szenario.");
+        point.sensorAlert = "The sensor has shown almost no pumping for 2 weeks. Please check on site.";
+        event("scenario", "Demo scenario: sensor hint for water point A (pattern from real Kwale data, 2014). The status stays unconfirmed until someone checks on site.", point.id, null);
+      } else throw new DomainError("Unknown demo scenario.");
       break;
     }
-    default: throw new DomainError("Unbekannte Aktion.");
+    default: throw new DomainError("Unknown action.");
   }
   return next;
 }

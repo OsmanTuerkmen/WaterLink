@@ -21,16 +21,16 @@ export async function POST(request: Request) {
   try {
     requireSameOrigin(request);
     const user = await getChatGPTUser();
-    if (!user) throw new HttpError(401, "Bitte zuerst mit ChatGPT anmelden.", "sign_in_required");
+    if (!user) throw new HttpError(401, "Please sign in first.", "sign_in_required");
     const now = new Date();
     const db = getDatabase();
     const session = await requireDemoSession(db, request, user.userId, now);
     const payload = await readJsonBody(request);
     if (!Number.isSafeInteger(payload.expectedRevision) || (payload.expectedRevision as number) < 0) {
-      throw new HttpError(400, "Die erwartete Datenrevision ist ungültig.", "invalid_revision");
+      throw new HttpError(400, "The expected revision is invalid.", "invalid_revision");
     }
     if (typeof payload.requestId !== "string" || !/^[A-Za-z0-9_-]{8,128}$/.test(payload.requestId)) {
-      throw new HttpError(400, "Die Anfragekennung ist ungültig.", "invalid_request_id");
+      throw new HttpError(400, "The request ID is invalid.", "invalid_request_id");
     }
     const command = parseCommand(payload.command);
     const state = await mutateState(db, {

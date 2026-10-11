@@ -61,12 +61,12 @@ const keep = weeks.map((w) => year === "all" || w.startsWith(`${year}-`));
 const pump = (id, km) => ({ id, ...place.get(id), km: Math.round(km * 10) / 10, volumes: volumes.get(id).filter((_, i) => keep[i]) });
 const data = {
   meta: {
-    title: "Smart Handpumps, Kwale County, Kenia",
-    source: "openwashdata/waterpumpkwale (Thomson, Hope, Foster u. a.; University of Oxford)",
+    title: "Smart Handpumps, Kwale County, Kenya",
+    source: "openwashdata/waterpumpkwale (Thomson, Hope, Foster et al.; University of Oxford)",
     license: "CC BY 4.0",
     doi: "10.5281/zenodo.8399886",
     url: "https://github.com/openwashdata/waterpumpkwale",
-    notes: "Wöchentliche Fördermenge laut Sensor, Genauigkeit ±20 %. Lücken durch schwankendes Funksignal.",
+    notes: "Weekly volume pumped according to the sensor, accuracy ±20 %. Gaps come from an unstable radio signal.",
   },
   focus: focusId,
   weeks: weeks.filter((_, i) => keep[i]),
