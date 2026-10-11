@@ -2,7 +2,7 @@
 
 Lebendes Dokument: Es wird nach **jedem** Arbeitsschritt aktualisiert. Oben steht immer der aktuelle Stand, unten das Protokoll (neueste Einträge zuerst).
 
-**Zuletzt aktualisiert:** 10. Oktober 2026, ca. 23:45 Uhr (Kenia: EAT) · Branch `claude/waterlink-mvp`
+**Zuletzt aktualisiert:** 11. Oktober 2026, ca. 11:00 Uhr (Kenia: EAT) · Branch `claude/waterlink-mvp`
 
 ## Ziel
 
@@ -21,12 +21,20 @@ Bis zum Hackathon am **22. Oktober 2026** (10–22 Uhr, Track Social Impact):
 - Öffentliche Statustafel (`?view=display`): große Zeilen, Status als Wort und Symbol, Bestätigungszeit, Alternative, deutlicher Hinweis bei fehlender Verbindung.
 - Arbeitsansicht: Die Frage steht oben, die Karten sind auf das Wesentliche reduziert, Details sind aufklappbar, die Schrift ist größer.
 - Unsicherheit: veraltet nach 12 Stunden, widersprüchlich, offline, Sensorhinweis. Ein alter grüner Status wird nie als aktuell gezeigt.
-- Echte Orte: 60 Wasserstellen aus WPdx-Erhebungen in Busia (Marachi East). A und B sind zwei Bohrlöcher, Erhebung 12/2023.
+- Echte Orte: 60 Wasserstellen aus WPdx-Erhebungen in Busia (Marachi East), jetzt im Repo (`web/data/region.json`). A und B sind zwei Bohrlöcher, Erhebung 12/2023.
 - Echte Sensordaten als Wiedergabe: Handpumpe Tiwi – Mshikeni (Kwale, 2014) mit Ausfallerkennung. Daraus wird nur ein Hinweis zur Prüfung, nie ein Status.
 - Diktat der Störungsbeschreibung über die Spracherkennung des Browsers (optional).
 - Dokumente: [Konzept](KONZEPT.md), [Architektur](ARCHITEKTUR.md), [Demo-Skript](DEMO.md), [Weg zum Produkt](WEG-ZUM-PRODUKT.md).
 
-**Letzte Prüfungen (10.10.2026, Rechner des Nutzers)**
+**Letzte Prüfungen (11.10.2026, zweiter Rechner, frischer Klon)**
+
+| Prüfung | Ergebnis |
+|---|---|
+| `npm ci`, `npm test` | 39 von 39 bestanden |
+| `npm run typecheck`, `npm run build` | bestanden |
+| Dev-Server mit neuer lokaler Datenbank: Arbeitsansicht und Tafel zeigen Busia-Orte | bestanden |
+
+**Davor (10.10.2026, Rechner von Osman)**
 
 | Prüfung | Ergebnis |
 |---|---|
@@ -43,7 +51,7 @@ Priorität: **P1** = nötig für die Hackathon-Demo, **P2** = macht die Demo bes
 
 | # | Prio | Aufgabe | Wer | Status |
 |---|---|---|---|---|
-| 1 | P1 | **Entscheiden:** Busia-Daten (`web/data/region.json`) committen, damit die bereitgestellte Demo echte Orte zeigt. Empfehlung: ja. Bisher liegt dort im Repo `null` (fiktive Daten). | Nutzer entscheidet | offen |
+| 1 | P1 | Busia-Daten (`web/data/region.json`) committen, damit die bereitgestellte Demo echte Orte zeigt. | Nutzer entschieden: ja | erledigt |
 | 2 | P1 | Private Sites-Bereitstellung durchführen. Das Projekt ist registriert (`web/.openai/hosting.json`), es gibt noch keine bestätigte Live-Bereitstellung. Kein zweites Projekt anlegen. | Claude mit Nutzer | offen |
 | 3 | P1 | Auf der Bereitstellung prüfen: Anmeldung, Datenbank, Ablauf auf zwei echten Geräten. | Claude mit Nutzer | offen |
 | 4 | P1 | Kurz vor dem Pitch die Demo zurücksetzen: simulierte Bestätigungen altern nach 12 Stunden. | Nutzer am 22.10. | offen |
@@ -63,6 +71,13 @@ Priorität: **P1** = nötig für die Hackathon-Demo, **P2** = macht die Demo bes
 - Software beschafft kein Geld, keine Ersatzteile und kein Personal.
 
 ## Protokoll
+
+### 11.10.2026, ca. 11:00 – Zweiter Rechner, Busia-Daten im Repo
+
+- Repo auf einem zweiten Rechner (GitHub `Reczec`) geklont; alle Branches gelesen. Keine PRs oder Issues.
+- Entscheidung des Nutzers: Busia-Daten committen. `npm run data:wpdx -- --county Busia` ergab dieselbe Nachbarschaft wie am 10.10. (Marachi East, 60 Stellen, A und B Bohrlöcher von 12/2023).
+- Befund: npm 12 blockiert die Install-Skripte von `esbuild` und `workerd`; Build und Dev-Server laufen trotzdem.
+- Bewusst offen: Integrationstest auf diesem Rechner noch nicht ausgeführt (Port 5173 belegt, Vorschau läuft auf 5174).
 
 ### 10.10.2026, ca. 23:45 – Arbeitsstand als lebendes Dokument
 
