@@ -20,6 +20,7 @@ export function StatusView({ state, now, offline, lastSync, onReport }: ViewProp
       <section className="print-sheet-head" aria-hidden="true">
         <strong>WaterLink status sheet · printed {stamp(new Date(now).toISOString())} EAT</strong>
         <p>A snapshot. Problems can start after printing. Without a new check after the time shown, treat the state as unclear. Working means water can be drawn; it says nothing about drinking-water quality.</p>
+        <p>{region ? `Demo prototype: places from real surveys (${region.label}); confirmations, people and routes are simulated. Places: ${region.attribution}` : "Demo prototype with fictional example data; confirmations and people are simulated."}</p>
       </section>
       <header className="status-intro">
         <div>
@@ -83,7 +84,7 @@ function PointRow({ point: p, state, now, offline, highlighted, onReport, onFocu
           <CanMeter level={level} size={48} label={validityText(p, d, now)} />
           <div>
             <strong>{confirmed ? `${d.status === "working" || d.certainty !== "fresh" ? "Confirmed" : "Reported"} ${clock(p.confirmedAt)}` : "Never confirmed"}</strong>
-            <span>{validityText(p, d, now)}</span>
+            <span className="print-hide">{validityText(p, d, now)}</span>
             {confirmed && <small className="print-expiry">Check: {stamp(p.confirmedAt)} EAT. Recheck by {stamp(new Date(Date.parse(p.confirmedAt!) + STATUS_TTL_MS).toISOString())} EAT.</small>}
           </div>
         </div>

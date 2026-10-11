@@ -14,6 +14,23 @@ type Screen =
   | { kind: "confirm"; pointId: string; step: 1 | 2 }
   | { kind: "done"; title: string; text: string };
 
+/**
+ * Drafts survive the sign-in redirect and reloads within the tab. Only the choice and the text are
+ * kept; the on-site and tested checkboxes are never restored, so they are always ticked on purpose.
+ */
+const draftKey = (kind: "report" | "confirm", pointId: string) => `waterlink-draft:${kind}:${pointId}`;
+function loadDraft(key: string): { choice?: unknown; note?: unknown } {
+  if (typeof window === "undefined") return {};
+  try { return JSON.parse(sessionStorage.getItem(key) ?? "{}") ?? {}; } catch { return {}; }
+}
+function saveDraft(key: string, choice: string | null, note: string) {
+  try {
+    if (choice || note) sessionStorage.setItem(key, JSON.stringify({ choice, note }));
+    else sessionStorage.removeItem(key);
+  } catch { /* A lost draft only means typing it again. */ }
+}
+const oneOf = <T extends string>(value: unknown, allowed: readonly T[]): T | null => (allowed as readonly unknown[]).includes(value) ? value as T : null;
+
 const PEOPLE: Record<FieldRole, { name: string; job: string }> = {
   operator: { name: "Amina", job: "Operator" },
   technician: { name: "Daniel", job: "Technician" },
@@ -182,8 +199,10 @@ function NoteField({ id, note, setNote, label, placeholder, quick }: { id: strin
 function ReportFlow({ state, screen, disabled, go }: { state: State; screen: Extract<Screen, { kind: "report" }>; disabled: boolean; go: (s: Screen) => void }) {
   const { act } = useWaterLink();
   const point = state.points.find((p) => p.id === screen.pointId);
-  const [status, setStatus] = useState<"down" | "limited" | null>(null);
-  const [note, setNote] = useState(""), [onSite, setOnSite] = useState(false);
+  const key = draftKey("report", screen.pointId);
+  const [status, setStatus] = useState(() => oneOf(loadDraft(key).choice, ["down", "limited"] as const));
+  const [note, setNote] = useState(() => String(loadDraft(key).note ?? "").slice(0, 1000)), [onSite, setOnSite] = useState(false);
+  useEffect(() => saveDraft(key, status, note), [key, status, note]);
   if (!point) return <p className="muted">This water point no longer exists.</p>;
   const back = () => (screen.step === 1 ? go({ kind: "home" }) : go({ ...screen, step: 1 }));
   if (screen.step === 1) return (
@@ -199,6 +218,7 @@ function ReportFlow({ state, screen, disabled, go }: { state: State; screen: Ext
   async function send() {
     if (!status || !point) return;
     if (await act("operator", { type: "report", pointId: point.id, status, note })) {
+      saveDraft(key, null, "");
       go({ kind: "done", title: "Report sent", text: `Every screen now shows ${point.name} as ${status === "down" ? "not working" : "limited"}. A repair job is waiting for a technician.` });
     }
   }
@@ -221,8 +241,10 @@ function ConfirmFlow({ state, screen, disabled, go }: { state: State; screen: Ex
   const point = state.points.find((p) => p.id === screen.pointId);
   const job = state.jobs.find((j) => j.pointId === screen.pointId && j.status !== "closed");
   const canRestore = !job || job.status === "awaiting_confirmation";
-  const [result, setResult] = useState<"working" | "limited" | "down" | null>(null);
-  const [note, setNote] = useState(""), [tested, setTested] = useState(false);
+  const key = draftKey("confirm", screen.pointId);
+  const [result, setResult] = useState(() => oneOf(loadDraft(key).choice, ["working", "limited", "down"] as const));
+  const [note, setNote] = useState(() => String(loadDraft(key).note ?? "").slice(0, 1000)), [tested, setTested] = useState(false);
+  useEffect(() => saveDraft(key, result, note), [key, result, note]);
   if (!point) return <p className="muted">This water point no longer exists.</p>;
   const back = () => (screen.step === 1 ? go({ kind: "home" }) : go({ ...screen, step: 1 }));
   if (screen.step === 1) return (
@@ -240,6 +262,7 @@ function ConfirmFlow({ state, screen, disabled, go }: { state: State; screen: Ex
   async function send() {
     if (!result || !point) return;
     if (await act("operator", { type: "confirm", pointId: point.id, status: result, note, tested: true })) {
+      saveDraft(key, null, "");
       go({ kind: "done", title: result === "working" ? "Confirmed working" : "Test result saved",
         text: result === "working" ? `${point.name} shows as working for the next 12 hours.${job ? " The repair job is closed." : ""}` : "The repair job stays open." });
     }

@@ -633,3 +633,28 @@ select, textarea, input[type="search"] { border-radius: 12px; background: var(--
 /* Explicit SMS test review, also usable in the compact stage phone. */
 .sms-review{padding:16px;border-top:1px solid var(--line);overflow-wrap:anywhere}.sms-review p{margin:8px 0}.sms-review .check{margin:12px 0}.sms-review .btn{margin-top:8px}
 .print-expiry{display:none}@media print{.print-expiry{display:block;font-size:10pt;max-width:240px}}
+
+/* Touch targets: DESIGN.md asks for at least 48px. Phones and touch screens get full-height
+   navigation, role switch and quick-reply chips; desktop pointers keep the compact sizes. */
+@media (pointer: coarse), (max-width: 720px) {
+  .topnav a { min-height: 48px; display: inline-flex; align-items: center; justify-content: center; }
+  .segmented button, .quick button, .sms-quick button, .tabs a { min-height: 48px; display: inline-flex; align-items: center; justify-content: center; }
+  .point-more { min-height: 48px; }
+  .sensor-controls input[type="range"] { min-height: 48px; }
+}
+
+/* Print sheet: one A4 page for the tracked points. Relative times ("valid for 11 more hours")
+   go stale on paper, so only absolute check and recheck times are printed. */
+@media print {
+  .print-hide, .quality-note { display: none !important; }
+  .print-expiry { max-width: none; }
+  .status-intro h1 { font-size: 20pt; }
+  .status-intro p { font-size: 11pt; }
+  .point-row { padding: 10px 14px; margin-bottom: 6px; }
+  /* A4 is narrow enough to trigger the phone layout; keep the two-column row on paper. */
+  .point-row-main { grid-template-columns: 44px minmax(0, 1fr) auto; grid-template-areas: "letter name walk" "letter state fresh"; gap: 6px 14px; }
+  .point-walk, .point-fresh { justify-self: end; text-align: right; }
+  .point-fresh .can-meter { order: 2; }
+  .point-job, .point-alt { margin-left: 58px; }
+  .point-alt { margin-top: 6px; padding: 8px 12px; }
+}
