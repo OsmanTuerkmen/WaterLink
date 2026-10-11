@@ -68,7 +68,7 @@ export function DisplayBoard({ state, now, offline, lastSync, compact = false }:
                 </div>
               </div>
               {d.status !== "working" && (
-                <p className="board-alt">
+                <p className={`board-alt ${alt ? "" : "no-alt"}`}>
                   <ArrowRight size={compact ? 18 : 30} aria-hidden="true" />
                   {alt ? <span>Go to <b>{letter(alt)} · {alt.name}</b> instead, about {alt.walkingMinutes} min. Confirmed {clock(alt.confirmedAt)}.</span>
                     : <span>No confirmed alternative. Please ask on site.</span>}

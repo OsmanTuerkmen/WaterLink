@@ -96,7 +96,7 @@ function DemoStrip() {
   const { state } = useWaterLink();
   return (
     <div className="demo-strip">
-      <p><b>Demo.</b> {state?.region ? "Places come from real WPdx surveys (CC BY 4.0). Confirmations, people and routes are simulated." : "All places, people and reports are fictional example data."}</p>
+      <p><b>Demo.</b> <span className="demo-long">{state?.region ? "Places come from real WPdx surveys (CC BY 4.0). Confirmations, people and routes are simulated." : "All places, people and reports are fictional example data."}</span><span className="demo-short">{state?.region ? "Real places, simulated confirmations." : "Fictional example data."}</span></p>
       <div>
         <a href="/?view=display" target="_blank" rel="noopener noreferrer">Public board <ArrowUpRight size={14} aria-hidden="true" /></a>
         <a href="/?view=stage" target="_blank" rel="noopener noreferrer">Pitch stage <ArrowUpRight size={14} aria-hidden="true" /></a>
@@ -138,7 +138,7 @@ function Content({ route, navigate }: { route: Route; navigate: (r: Route) => vo
       )}
       {route.view === "coordination" && <Coordination tab={route.tab} onTab={(tab) => navigate({ view: "coordination", tab })} />}
       <footer className="foot">
-        <p>WaterLink · hackathon prototype · times in Kenya (EAT)</p>
+        <p>WaterLink · hackathon prototype · times in Kenya (EAT) · <a href="/?view=display" target="_blank" rel="noopener noreferrer">Public board</a> · <a href="/?view=stage" target="_blank" rel="noopener noreferrer">Pitch stage</a></p>
         <p>{state.region ? `${state.region.attribution}. Roads © OpenStreetMap contributors (ODbL).` : "Fictional demo data."}</p>
       </footer>
     </>

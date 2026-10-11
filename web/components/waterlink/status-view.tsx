@@ -27,6 +27,7 @@ export function StatusView({ state, now, offline, lastSync, onReport }: ViewProp
           <p className={offline ? "is-warn" : ""}>
             {offline ? "No live connection. Today’s state is not confirmed." :
               `${working} of ${tracked.length} water points confirmed working · updated ${clock(lastSync)} EAT`}
+            {!offline && firstDown && routeTo && <b className="status-hint">{letter(firstDown)} {advice(getPointDisplay(firstDown, now, offline)).word.toLowerCase()}: go to {letter(routeTo)} instead, about {routeTo.walkingMinutes} min.</b>}
           </p>
         </div>
         <div className="status-intro-actions">

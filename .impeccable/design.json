@@ -1,0 +1,702 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-11T08:56:34+00:00",
+  "title": "Design System: WaterLink",
+  "extensions": {
+    "colorMeta": {
+      "can": {
+        "role": "primary",
+        "displayName": "Jerrycan Yellow",
+        "canonical": "#f5c211",
+        "oklch": "oklch(83.6% 0.169 89)",
+        "tonalRamp": [
+          "#130900",
+          "#322400",
+          "#564200",
+          "#7d6206",
+          "#a6841b",
+          "#d2a828",
+          "#fdca25",
+          "#feedc4"
+        ]
+      },
+      "can-deep": {
+        "role": "primary",
+        "displayName": "Drum-Rim Ochre",
+        "canonical": "#d9a600",
+        "oklch": "oklch(75.2% 0.154 86)",
+        "tonalRamp": [
+          "#130900",
+          "#322400",
+          "#584101",
+          "#806109",
+          "#a9831e",
+          "#d8a500",
+          "#fdc945",
+          "#feedc7"
+        ]
+      },
+      "can-pale": {
+        "role": "primary",
+        "displayName": "Pale Can",
+        "canonical": "#fcecb3",
+        "oklch": "oklch(94.2% 0.075 94)",
+        "tonalRamp": [
+          "#110a00",
+          "#302500",
+          "#524409",
+          "#746530",
+          "#988953",
+          "#bdae77",
+          "#e1d199",
+          "#ffefb5"
+        ]
+      },
+      "can-wash": {
+        "role": "primary",
+        "displayName": "Can Wash",
+        "canonical": "#fff4c7",
+        "oklch": "oklch(96.5% 0.059 96)",
+        "tonalRamp": [
+          "#110a00",
+          "#2f2600",
+          "#4e451d",
+          "#70663e",
+          "#948960",
+          "#b9ae84",
+          "#dcd1a6",
+          "#faefc2"
+        ]
+      },
+      "can-ink": {
+        "role": "primary",
+        "displayName": "Jerrycan Ink",
+        "canonical": "#3a2c00",
+        "oklch": "oklch(30.1% 0.061 90)",
+        "tonalRamp": [
+          "#120a00",
+          "#312500",
+          "#52431a",
+          "#74653c",
+          "#98885e",
+          "#bdad81",
+          "#e1d0a3",
+          "#ffedc0"
+        ]
+      },
+      "cap": {
+        "role": "secondary",
+        "displayName": "Cap Blue",
+        "canonical": "#1f4fa8",
+        "oklch": "oklch(44.9% 0.153 261)",
+        "tonalRamp": [
+          "#000038",
+          "#001d64",
+          "#0d3d95",
+          "#3061bc",
+          "#5286e4",
+          "#83aef9",
+          "#b9d2fd",
+          "#e6effe"
+        ]
+      },
+      "cap-deep": {
+        "role": "secondary",
+        "displayName": "Deep Cap",
+        "canonical": "#173d85",
+        "oklch": "oklch(37.9% 0.129 262)",
+        "tonalRamp": [
+          "#000038",
+          "#001d63",
+          "#1a4089",
+          "#3b63af",
+          "#5c88d7",
+          "#84aef9",
+          "#b9d2fd",
+          "#e6effe"
+        ]
+      },
+      "cap-tint": {
+        "role": "secondary",
+        "displayName": "Cap Tint",
+        "canonical": "#e4ecfa",
+        "oklch": "oklch(94.1% 0.021 262)",
+        "tonalRamp": [
+          "#070b14",
+          "#212731",
+          "#3f4550",
+          "#606672",
+          "#828a96",
+          "#a7aebc",
+          "#cad1df",
+          "#e7effd"
+        ]
+      },
+      "water": {
+        "role": "secondary",
+        "displayName": "Meter Water",
+        "canonical": "#4a84e6",
+        "oklch": "oklch(62.2% 0.160 260)",
+        "tonalRamp": [
+          "#00003a",
+          "#00215d",
+          "#013d98",
+          "#2961c0",
+          "#4c86e9",
+          "#7faefd",
+          "#b9d2fc",
+          "#e6efff"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#1b1c1e",
+        "oklch": "oklch(22.6% 0.004 264)",
+        "tonalRamp": [
+          "#0a0b0d",
+          "#252628",
+          "#444547",
+          "#656668",
+          "#88898c",
+          "#acaeb1",
+          "#cfd1d4",
+          "#edeef1"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Ink 2",
+        "canonical": "#4c483f",
+        "oklch": "oklch(40.3% 0.016 87)",
+        "tonalRamp": [
+          "#0e0b05",
+          "#2a261e",
+          "#49453c",
+          "#6a665c",
+          "#8d897f",
+          "#b2ada3",
+          "#d5d1c6",
+          "#f3eee3"
+        ]
+      },
+      "ink-3": {
+        "role": "neutral",
+        "displayName": "Ink 3",
+        "canonical": "#6c675b",
+        "oklch": "oklch(51.5% 0.019 88)",
+        "tonalRamp": [
+          "#0f0b03",
+          "#2a261c",
+          "#494539",
+          "#6b665a",
+          "#8e897c",
+          "#b3ada0",
+          "#d6d1c3",
+          "#f4eee0"
+        ]
+      },
+      "stone": {
+        "role": "neutral",
+        "displayName": "Pump-Apron Stone",
+        "canonical": "#ebe7dc",
+        "oklch": "oklch(92.8% 0.015 90)",
+        "tonalRamp": [
+          "#0e0b05",
+          "#29261e",
+          "#48453c",
+          "#69665c",
+          "#8d897f",
+          "#b2aea3",
+          "#d5d1c6",
+          "#f2eee3"
+        ]
+      },
+      "stone-2": {
+        "role": "neutral",
+        "displayName": "Stone 2",
+        "canonical": "#e1dccd",
+        "oklch": "oklch(89.4% 0.021 92)",
+        "tonalRamp": [
+          "#0e0b03",
+          "#2a261b",
+          "#494538",
+          "#6a6659",
+          "#8e897b",
+          "#b3ae9f",
+          "#d6d1c2",
+          "#f3eedf"
+        ]
+      },
+      "stone-3": {
+        "role": "neutral",
+        "displayName": "Stone 3",
+        "canonical": "#d3ccb9",
+        "oklch": "oklch(84.6% 0.027 90)",
+        "tonalRamp": [
+          "#100b01",
+          "#2b2617",
+          "#4b4535",
+          "#6c6655",
+          "#8f8977",
+          "#b4ae9b",
+          "#d8d1be",
+          "#f5eedb"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "canonical": "#ffffff",
+        "oklch": "oklch(100.0% 0.000 90)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#262626",
+          "#454545",
+          "#666666",
+          "#898989",
+          "#aeaeae",
+          "#d1d1d1",
+          "#eeeeee"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Line",
+        "canonical": "#ddd7c8",
+        "oklch": "oklch(88.0% 0.021 89)",
+        "tonalRamp": [
+          "#0f0b03",
+          "#2b261a",
+          "#4a4538",
+          "#6b6658",
+          "#8e897b",
+          "#b3ae9f",
+          "#d7d1c2",
+          "#f4eedf"
+        ]
+      },
+      "ok": {
+        "role": "tertiary",
+        "displayName": "Working Green",
+        "canonical": "#1b7a42",
+        "oklch": "oklch(51.2% 0.122 152)",
+        "tonalRamp": [
+          "#001102",
+          "#003013",
+          "#005427",
+          "#1a7941",
+          "#469e64",
+          "#6dc487",
+          "#90e8aa",
+          "#c6ffd4"
+        ]
+      },
+      "ok-tint": {
+        "role": "tertiary",
+        "displayName": "Working Tint",
+        "canonical": "#e1f1e6",
+        "oklch": "oklch(94.3% 0.022 156)",
+        "tonalRamp": [
+          "#040e07",
+          "#1e2a22",
+          "#3c4940",
+          "#5c6a61",
+          "#7f8d83",
+          "#a3b2a8",
+          "#c6d6cb",
+          "#e3f3e8"
+        ]
+      },
+      "limit": {
+        "role": "tertiary",
+        "displayName": "Burnt Orange Limited",
+        "canonical": "#b25000",
+        "oklch": "oklch(54.7% 0.147 49)",
+        "tonalRamp": [
+          "#1d0200",
+          "#421800",
+          "#702f00",
+          "#a14904",
+          "#ce692a",
+          "#f78f53",
+          "#fec2a2",
+          "#ffeadf"
+        ]
+      },
+      "limit-tint": {
+        "role": "tertiary",
+        "displayName": "Limited Tint",
+        "canonical": "#fbe9d8",
+        "oklch": "oklch(94.4% 0.030 66)",
+        "tonalRamp": [
+          "#140801",
+          "#312416",
+          "#504234",
+          "#726354",
+          "#968676",
+          "#bcab9b",
+          "#dfcebd",
+          "#fdebda"
+        ]
+      },
+      "limit-text": {
+        "role": "tertiary",
+        "displayName": "Limited Text on Tint",
+        "canonical": "#7a3900",
+        "oklch": "oklch(42.3% 0.108 52)",
+        "tonalRamp": [
+          "#1c0300",
+          "#401a00",
+          "#6d3200",
+          "#955223",
+          "#bc7548",
+          "#e49a6c",
+          "#fec29e",
+          "#ffeadd"
+        ]
+      },
+      "down": {
+        "role": "tertiary",
+        "displayName": "Down Red",
+        "canonical": "#c0302a",
+        "oklch": "oklch(53.4% 0.182 28)",
+        "tonalRamp": [
+          "#220000",
+          "#4f0002",
+          "#84080b",
+          "#b72622",
+          "#e25147",
+          "#fb887b",
+          "#fdc0b7",
+          "#ffe9e5"
+        ]
+      },
+      "down-tint": {
+        "role": "tertiary",
+        "displayName": "Down Tint",
+        "canonical": "#fae3e1",
+        "oklch": "oklch(93.4% 0.025 24)",
+        "tonalRamp": [
+          "#140706",
+          "#322220",
+          "#52403e",
+          "#74615f",
+          "#988382",
+          "#bea8a6",
+          "#e1cbc9",
+          "#fee9e7"
+        ]
+      },
+      "down-text": {
+        "role": "tertiary",
+        "displayName": "Down Text on Tint",
+        "canonical": "#8a1f1b",
+        "oklch": "oklch(41.8% 0.143 28)",
+        "tonalRamp": [
+          "#220000",
+          "#500002",
+          "#811412",
+          "#a93d35",
+          "#d26257",
+          "#fb887b",
+          "#febfb7",
+          "#ffe9e5"
+        ]
+      },
+      "unk": {
+        "role": "tertiary",
+        "displayName": "Stone Grey Unclear",
+        "canonical": "#66625a",
+        "oklch": "oklch(49.7% 0.013 85)",
+        "tonalRamp": [
+          "#0e0b05",
+          "#29261f",
+          "#48453d",
+          "#6a665e",
+          "#8d8980",
+          "#b2ada5",
+          "#d5d0c7",
+          "#f3eee5"
+        ]
+      },
+      "unk-tint": {
+        "role": "tertiary",
+        "displayName": "Unclear Tint",
+        "canonical": "#eeebe4",
+        "oklch": "oklch(94.0% 0.010 87)",
+        "tonalRamp": [
+          "#0d0b07",
+          "#282621",
+          "#47453f",
+          "#686660",
+          "#8c8983",
+          "#b0aea7",
+          "#d4d1ca",
+          "#f1eee7"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "The one question per view; Archivo 800 at width 88%, balanced, max about 19ch."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Point names in rows, field step titles, panel heads (21-30px)."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Field point names, coupon heads, choice labels (18-20px)."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "All running text in Atkinson Hyperlegible Next; 15px secondary, 13-14px meta."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Buttons, nav, tabs, segmented controls in the display face."
+      },
+      "numeral": {
+        "displayName": "Numeral",
+        "purpose": "Times, clocks and counts with tabular figures; board numerals at width 85%."
+      }
+    },
+    "shadows": [
+      {
+        "name": "lift",
+        "value": "0 1px 0 rgba(58, 44, 0, 0.06), 0 10px 24px -18px rgba(58, 44, 0, 0.45)",
+        "purpose": "Point rows, board rows, map, coordination and demo panels."
+      },
+      {
+        "name": "highlight-ring",
+        "value": "0 0 0 2.5px #1b1c1e, 0 1px 0 rgba(58, 44, 0, 0.06), 0 10px 24px -18px rgba(58, 44, 0, 0.45)",
+        "purpose": "Row matching the hovered map marker."
+      },
+      {
+        "name": "inset-hairline",
+        "value": "inset 0 0 0 1.5px #ddd7c8",
+        "purpose": "Quiet buttons, inputs, coupons, field rows; 2px on choices and textareas."
+      },
+      {
+        "name": "device",
+        "value": "0 30px 60px -36px rgba(58, 44, 0, .55), 0 0 0 1px rgba(58, 44, 0, .06)",
+        "purpose": "Framed field app."
+      },
+      {
+        "name": "stage-device",
+        "value": "0 34px 60px -32px rgba(58, 44, 0, .7)",
+        "purpose": "Stage phones and board screen."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "The one easing for every authored motion and press."
+      },
+      {
+        "name": "state",
+        "value": "150ms",
+        "purpose": "Button, choice and input state changes; 1px press on active."
+      },
+      {
+        "name": "meter-level",
+        "value": "1.4s var(--ease)",
+        "purpose": "CanMeter water level as validity drains."
+      },
+      {
+        "name": "pour",
+        "value": "2.4s var(--ease)",
+        "purpose": "Board row fill when its status changes; the board's single authored moment."
+      },
+      {
+        "name": "settle",
+        "value": ".7s var(--ease)",
+        "purpose": "Done mark after a confirmation."
+      },
+      {
+        "name": "stage-step",
+        "value": ".4s var(--ease)",
+        "purpose": "Pitch stage script step colour change."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "small-phone",
+        "value": "520px"
+      },
+      {
+        "name": "mobile",
+        "value": "860px"
+      },
+      {
+        "name": "stack",
+        "value": "1100px"
+      },
+      {
+        "name": "stage",
+        "value": "1360px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Every non-destructive action: Cap Blue, heavy display label, 48px tall.",
+      "html": "<button class=\"ds-btn ds-btn-primary\">Details &amp; directions <svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"/><path d=\"m12 5 7 7-7 7\"/></svg></button>",
+      "css": ".ds-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 10px 18px; border: 0; border-radius: 12px; font: 700 16px/1.2 var(--display, 'Archivo Variable', Archivo, system-ui, sans-serif); font-stretch: 92%; cursor: pointer; transition: background-color .15s, box-shadow .15s, transform .15s cubic-bezier(0.16, 1, 0.3, 1); } .ds-btn:active { transform: translateY(1px); } .ds-btn:focus-visible { outline: 3px solid var(--cap, #1f4fa8); outline-offset: 3px; } .ds-btn-primary { background: var(--cap, #1f4fa8); color: #fff; } .ds-btn-primary:hover { background: var(--cap-deep, #173d85); }"
+    },
+    {
+      "name": "Quiet Button",
+      "kind": "button",
+      "refersTo": "button-quiet",
+      "description": "Secondary actions on stone or paper: paper fill with an inset hairline.",
+      "html": "<button class=\"ds-btn-quiet\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M6 9V2h12v7\"/><path d=\"M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2\"/><path d=\"M6 14h12v8H6z\"/></svg>Print sheet</button>",
+      "css": ".ds-btn-quiet { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 10px 18px; border: 0; border-radius: 12px; background: var(--paper, #fff); color: var(--ink, #1b1c1e); box-shadow: inset 0 0 0 1.5px var(--line, #ddd7c8); font: 700 16px/1.2 var(--display, 'Archivo Variable', Archivo, system-ui, sans-serif); font-stretch: 92%; cursor: pointer; transition: box-shadow .15s, transform .15s; } .ds-btn-quiet:hover { box-shadow: inset 0 0 0 1.5px var(--ink-3, #6c675b); } .ds-btn-quiet:focus-visible { outline: 3px solid var(--cap, #1f4fa8); outline-offset: 3px; } .ds-btn-quiet:active { transform: translateY(1px); }"
+    },
+    {
+      "name": "Danger Button",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "Destructive or outage-reporting actions only.",
+      "html": "<button class=\"ds-btn-danger\">Report: no water</button>",
+      "css": ".ds-btn-danger { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 10px 18px; border: 0; border-radius: 12px; background: var(--down, #c0302a); color: #fff; font: 700 16px/1.2 var(--display, 'Archivo Variable', Archivo, system-ui, sans-serif); font-stretch: 92%; cursor: pointer; transition: background-color .15s; } .ds-btn-danger:hover { background: #a32420; } .ds-btn-danger:focus-visible { outline: 3px solid var(--cap, #1f4fa8); outline-offset: 3px; }"
+    },
+    {
+      "name": "Status Chip",
+      "kind": "chip",
+      "refersTo": "status-chip-ok",
+      "description": "Status as word, drawn symbol and colour together; four tones, three sizes.",
+      "html": "<span class=\"ds-chip ds-ok\"><span class=\"ds-chip-icon\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M20 6 9 17l-5-5\"/></svg></span>Working</span> <span class=\"ds-chip ds-unk\"><span class=\"ds-chip-icon\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3\"/><path d=\"M12 17h.01\"/></svg></span>Unclear</span>",
+      "css": ".ds-chip { display: inline-flex; align-items: center; gap: 8px; padding: 4px 14px 4px 4px; border-radius: 999px; font: 800 17px/1 var(--display, 'Archivo Variable', Archivo, system-ui, sans-serif); font-stretch: 90%; white-space: nowrap; } .ds-chip-icon { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; color: #fff; } .ds-ok { background: var(--ok-tint, #e1f1e6); color: var(--ok, #1b7a42); } .ds-ok .ds-chip-icon { background: var(--ok, #1b7a42); } .ds-unk { background: var(--unk-tint, #eeebe4); color: var(--unk, #66625a); } .ds-unk .ds-chip-icon { background: var(--unk, #66625a); }"
+    },
+    {
+      "name": "CanMeter",
+      "kind": "custom",
+      "refersTo": "",
+      "description": "Signature: water level is the share of the 12-hour validity left; empty means Unclear.",
+      "html": "<span class=\"ds-meter-wrap\"><span><strong>Confirmed 11:32</strong><small>Valid for 11 more hours</small></span><svg class=\"ds-meter\" width=\"29\" height=\"34\" viewBox=\"0 0 40 48\" role=\"img\" aria-label=\"11 of 12 hours left\"><defs><clipPath id=\"ds-can\"><path d=\"M7 13h18.5l8.5 7.2V41a5 5 0 0 1-5 5H12a5 5 0 0 1-5-5V13Z\"/></clipPath></defs><path class=\"ds-handle\" d=\"M13.5 3.5h10a3 3 0 0 1 3 3V13h-4V8h-8v5h-4V6.5a3 3 0 0 1 3-3Z\"/><path class=\"ds-body\" d=\"M7 13h18.5l8.5 7.2V41a5 5 0 0 1-5 5H12a5 5 0 0 1-5-5V13Z\"/><g clip-path=\"url(#ds-can)\"><path class=\"ds-water\" style=\"transform: translateY(15.75px)\" d=\"M0 1.2C5 -0.6 9 2.8 14 1.2S23 -0.6 28 1.2 37 2.8 42 1.2V40H0Z\"/></g><path class=\"ds-outline\" d=\"M7 13h18.5l8.5 7.2V41a5 5 0 0 1-5 5H12a5 5 0 0 1-5-5V13Z\"/><rect class=\"ds-capr\" x=\"27.5\" y=\"8\" width=\"7\" height=\"6\" rx=\"1.6\" transform=\"rotate(40 31 11)\"/><path class=\"ds-rib\" d=\"M11.5 25.5h18M11.5 34.5h18\"/></svg></span>",
+      "css": ".ds-meter-wrap { display: inline-flex; align-items: center; gap: 10px; text-align: right; font-family: var(--text, 'Atkinson Hyperlegible Next Variable', system-ui, sans-serif); } .ds-meter-wrap strong { display: block; font: 700 17px/1.2 var(--display, 'Archivo Variable', Archivo, system-ui, sans-serif); font-stretch: 92%; font-variant-numeric: tabular-nums; } .ds-meter-wrap small { display: block; font-size: 14px; color: var(--ink-2, #4c483f); } .ds-handle { fill: var(--ink, #1b1c1e); } .ds-body { fill: var(--can-pale, #fcecb3); } .ds-water { fill: var(--water, #4a84e6); transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1); } .ds-outline { fill: none; stroke: var(--ink, #1b1c1e); stroke-width: 2.4; stroke-linejoin: round; } .ds-capr { fill: var(--cap, #1f4fa8); } .ds-rib { fill: none; stroke: var(--ink, #1b1c1e); stroke-width: 1.6; opacity: .22; stroke-linecap: round; }"
+    },
+    {
+      "name": "Point Row",
+      "kind": "card",
+      "refersTo": "point-row",
+      "description": "A water point as a long white row with the yellow letter tile; never a grid card.",
+      "html": "<div class=\"ds-row\"><span class=\"ds-letter\">A</span><div><strong class=\"ds-row-name\">Borehole A</strong><span class=\"ds-row-meta\">Marachi East, Butula</span></div><span class=\"ds-row-walk\">About 1 min</span></div>",
+      "css": ".ds-row { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 14px 18px; align-items: center; padding: 16px 20px; border-radius: 14px; background: var(--paper, #fff); box-shadow: 0 1px 0 rgba(58, 44, 0, 0.06), 0 10px 24px -18px rgba(58, 44, 0, 0.45); transition: box-shadow .2s; font-family: var(--text, 'Atkinson Hyperlegible Next Variable', system-ui, sans-serif); color: var(--ink, #1b1c1e); } .ds-row:hover { box-shadow: 0 0 0 2.5px var(--ink, #1b1c1e), 0 1px 0 rgba(58, 44, 0, 0.06), 0 10px 24px -18px rgba(58, 44, 0, 0.45); } .ds-letter { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 13px; background: var(--can, #f5c211); color: var(--can-ink, #3a2c00); font: 800 30px/1 var(--display, 'Archivo Variable', Archivo, system-ui, sans-serif); } .ds-row-name { display: block; font: 800 25px/1.05 var(--display, 'Archivo Variable', Archivo, system-ui, sans-serif); font-stretch: 88%; letter-spacing: -0.02em; } .ds-row-meta { display: block; margin-top: 4px; font-size: 15px; color: var(--ink-3, #6c675b); } .ds-row-walk { font-size: 15px; font-weight: 700; color: var(--ink-2, #4c483f); }"
+    },
+    {
+      "name": "Top Bar Navigation",
+      "kind": "nav",
+      "refersTo": "topbar",
+      "description": "Jerrycan Yellow shell with ochre rule, pill nav, active as an ink pill.",
+      "html": "<nav class=\"ds-topbar\"><span class=\"ds-brand\">WaterLink</span><span class=\"ds-topnav\"><a href=\"#\" aria-current=\"page\">Status</a><a href=\"#\">Field app</a><a href=\"#\">Coordination</a></span><span class=\"ds-conn\">Live</span></nav>",
+      "css": ".ds-topbar { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; min-height: 66px; padding: 8px 28px; background: var(--can, #f5c211); color: var(--can-ink, #3a2c00); border-bottom: 3px solid var(--can-deep, #d9a600); } .ds-brand { font: 800 25px/1 var(--display, 'Archivo Variable', Archivo, system-ui, sans-serif); font-stretch: 90%; letter-spacing: -0.02em; color: var(--ink, #1b1c1e); } .ds-topnav { display: flex; gap: 4px; padding: 4px; border-radius: 999px; background: rgba(58, 44, 0, .09); } .ds-topnav a { padding: 9px 18px; border-radius: 999px; text-decoration: none; font: 700 16px/1 var(--display, 'Archivo Variable', Archivo, system-ui, sans-serif); font-stretch: 92%; color: var(--can-ink, #3a2c00); } .ds-topnav a:hover { background: rgba(58, 44, 0, .1); } .ds-topnav a:focus-visible { outline: 3px solid var(--cap, #1f4fa8); outline-offset: 3px; } .ds-topnav a[aria-current=page] { background: var(--ink, #1b1c1e); color: var(--can, #f5c211); } .ds-conn { justify-self: end; padding: 5px 11px; border-radius: 999px; background: rgba(255, 255, 255, .6); font-size: 15px; font-weight: 700; }"
+    },
+    {
+      "name": "Repair Coupon",
+      "kind": "custom",
+      "refersTo": "coupon",
+      "description": "A repair job as a coupon with a dashed tear line and stamped steps that never disappear.",
+      "html": "<div class=\"ds-coupon\"><div class=\"ds-coupon-head\"><strong>B · Borehole B</strong><span>Handle broken</span></div><ol class=\"ds-stamps\"><li class=\"is-done\"><span class=\"ds-dot\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M20 6 9 17l-5-5\"/></svg></span>Reported<span class=\"ds-t\">09:12</span></li><li class=\"is-next\"><span class=\"ds-dot\"></span>Claimed<span class=\"ds-t\"></span></li><li><span class=\"ds-dot\"></span>Tested on site<span class=\"ds-t\"></span></li></ol></div>",
+      "css": ".ds-coupon { max-width: 360px; border-radius: 16px; background: var(--paper, #fff); box-shadow: inset 0 0 0 1.5px var(--line, #ddd7c8); overflow: hidden; font-family: var(--text, 'Atkinson Hyperlegible Next Variable', system-ui, sans-serif); } .ds-coupon-head { padding: 14px; background: var(--can-wash, #fff4c7); border-bottom: 2px dashed #e7d48a; } .ds-coupon-head strong { display: block; font: 800 18px/1.15 var(--display, 'Archivo Variable', Archivo, system-ui, sans-serif); font-stretch: 90%; } .ds-coupon-head span { font-size: 13.5px; color: var(--ink-3, #6c675b); } .ds-stamps { list-style: none; margin: 0; padding: 12px 14px; display: flex; flex-direction: column; gap: 2px; } .ds-stamps li { position: relative; display: grid; grid-template-columns: 26px 1fr auto; gap: 10px; align-items: center; min-height: 32px; color: var(--ink-3, #6c675b); font-size: 15px; } .ds-stamps li:not(:last-child)::after { content: \"\"; position: absolute; left: 12px; top: 26px; height: 14px; width: 2px; background: var(--line, #ddd7c8); } .ds-stamps li.is-done::after { background: var(--ok, #1b7a42); } .ds-dot { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; box-shadow: inset 0 0 0 2px var(--line, #ddd7c8); background: var(--paper, #fff); } .ds-stamps li.is-done { color: var(--ink, #1b1c1e); } .ds-stamps li.is-done .ds-dot { background: var(--ok, #1b7a42); box-shadow: none; color: #fff; } .ds-stamps li.is-next { color: var(--cap, #1f4fa8); font-weight: 700; } .ds-stamps li.is-next .ds-dot { box-shadow: inset 0 0 0 3px var(--cap, #1f4fa8); } .ds-t { font-size: 14px; color: var(--ink-2, #4c483f); font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "Field Choice",
+      "kind": "custom",
+      "refersTo": "choice",
+      "description": "One-step-per-screen status choice: 84px tile, tinted symbol, status ring when selected.",
+      "html": "<button class=\"ds-choice is-on\"><span class=\"ds-choice-icon\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M20 6 9 17l-5-5\"/></svg></span><span><strong>Water flows</strong><small>Tested just now on site</small></span></button>",
+      "css": ".ds-choice { display: flex; align-items: center; gap: 14px; width: 100%; min-height: 84px; padding: 14px 16px; border: 0; border-radius: 16px; background: var(--paper, #fff); box-shadow: inset 0 0 0 2px var(--line, #ddd7c8); text-align: left; cursor: pointer; transition: box-shadow .15s, background-color .15s; font-family: var(--text, 'Atkinson Hyperlegible Next Variable', system-ui, sans-serif); color: var(--ink, #1b1c1e); } .ds-choice:hover:not(.is-on) { box-shadow: inset 0 0 0 2px var(--ink-3, #6c675b); } .ds-choice:focus-visible { outline: 3px solid var(--cap, #1f4fa8); outline-offset: 3px; } .ds-choice strong { display: block; font: 800 20px/1.15 var(--display, 'Archivo Variable', Archivo, system-ui, sans-serif); font-stretch: 90%; } .ds-choice small { display: block; margin-top: 3px; font-size: 15px; color: var(--ink-2, #4c483f); } .ds-choice-icon { display: grid; place-items: center; width: 50px; height: 50px; border-radius: 50%; background: var(--ok-tint, #e1f1e6); color: var(--ok, #1b7a42); flex-shrink: 0; } .ds-choice.is-on { background: var(--ok-tint, #e1f1e6); box-shadow: inset 0 0 0 3px var(--ok, #1b7a42); }"
+    },
+    {
+      "name": "Note Field",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Paper textarea with an inset hairline that turns Cap Blue on focus.",
+      "html": "<label class=\"ds-note\"><span>What did you see?</span><textarea placeholder=\"Handle loose, water still comes\"></textarea></label>",
+      "css": ".ds-note { display: flex; flex-direction: column; gap: 6px; font-family: var(--text, 'Atkinson Hyperlegible Next Variable', system-ui, sans-serif); } .ds-note span { font-weight: 700; font-size: 15px; } .ds-note textarea { width: 100%; min-height: 112px; padding: 12px 14px; border: 0; border-radius: 12px; background: var(--paper, #fff); box-shadow: inset 0 0 0 2px var(--line, #ddd7c8); font-family: inherit; font-size: 17px; line-height: 1.45; resize: vertical; } .ds-note textarea:focus { outline: none; box-shadow: inset 0 0 0 2.5px var(--cap, #1f4fa8); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Yellow Jerrycan",
+    "overview": "The yellow 20-litre jerrycan every household carries is the colour of the information before the walk. Jerrycan yellow owns the shell (top bar, board header, field-app header, pitch stage frame); cap blue, the colour of the can's screw cap, carries every action and link; ink text sits on white rows laid over a warm stone ground taken from the concrete apron around a pump. The system is a working instrument: dense where staff work, enormous where the public reads from metres away, and always honest about how old a confirmation is.\n\nInformation is arranged as rows and coupons, never as card grids. A water point is a long white row with a yellow letter tile; a repair job is a coupon with a dashed tear line and a stamped sequence of steps that never disappear. One mark, the jerrycan, appears at every scale: the wordmark, the validity meter in every row, the board, and the favicon. Status is always told three ways at once: a word, a drawn symbol, and one of four colours.\n\nMotion is rare and authored. The board has one moment (a changed row fills like a can being poured), the meter's water level eases as validity drains, and a completed confirmation settles into place. Everything else is a short state transition (150ms on controls, up to 400ms on the stage script).",
+    "keyCharacteristics": [
+      "Jerrycan yellow shell, cap blue actions, ink on white rows over warm stone.",
+      "Exactly four status colours, each always paired with a word and a drawn symbol.",
+      "One heavy semi-condensed grotesk (Archivo, 800, width 85-92%) for display and numerals; Atkinson Hyperlegible Next for all running text.",
+      "Rows and coupons, not card grids; the yellow letter tile anchors every point.",
+      "The jerrycan mark at every scale, including the CanMeter signature.",
+      "One authored motion per surface; reduced motion removes all of it."
+    ],
+    "rules": [
+      {
+        "name": "The Four Colours Rule",
+        "body": "Status uses exactly `ok`, `limit`, `down`, `unk`, never another hue, and never colour alone: every status carries its word and its drawn symbol.",
+        "section": "colors"
+      },
+      {
+        "name": "The Old Green Rule",
+        "body": "A stale, conflicting, offline or sensor-only state never renders in Working Green. Unknown is shown as Stone Grey Unclear.",
+        "section": "colors"
+      },
+      {
+        "name": "The Yellow Is Ground Rule",
+        "body": "Jerrycan Yellow is the shell and the letter tile. It never marks status, never fills a button, and is never used as a warning colour.",
+        "section": "colors"
+      },
+      {
+        "name": "The Cap Carries Action Rule",
+        "body": "Anything tappable that is not destructive is Cap Blue or a quiet paper button; blue is never decoration.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two Faces Rule",
+        "body": "Archivo speaks (headings, labels, numbers); Atkinson explains (sentences). No third face.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tabular Time Rule",
+        "body": "Every time and count uses tabular figures so a changing clock never shifts the row.",
+        "section": "typography"
+      },
+      {
+        "name": "The Board Em Rule",
+        "body": "The public board sizes everything in `em` from one viewport-scaled root (clamp(13px, 1.2vw, 24px)), so it scales as a whole from stage thumbnail to wall screen.",
+        "section": "typography"
+      },
+      {
+        "name": "The Warm Shadow Rule",
+        "body": "Every shadow is Jerrycan Ink at low alpha. Inputs and selectable containers use inset rings, not drop shadows.",
+        "section": "elevation"
+      },
+      {
+        "name": "The One Silhouette Rule",
+        "body": "The jerrycan geometry (one body path, one handle path, a rotated cap rectangle) is shared by the mark and the meter at every size; never redraw a second can.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "Do keep the shell Jerrycan Yellow with the 3px ochre rule, and put content on Paper rows over Stone.",
+      "Do show every status as word + drawn symbol + one of the four status colours.",
+      "Do pair every confirmation time with the CanMeter and use tabular figures.",
+      "Do use Cap Blue for every non-destructive action and link, with the 3px Cap Blue focus outline.",
+      "Do arrange points as rows with the yellow letter tile, and repairs as coupons with stamped steps.",
+      "Do keep touch targets at 48px or more and the public board sized in em from one root.",
+      "Do tint all shadows with Jerrycan Ink (`rgba(58, 44, 0, …)`)."
+    ],
+    "donts": [
+      "Don't add a fifth status colour or use yellow, blue or green decoratively for state.",
+      "Don't show a stale, offline or sensor-only state in Working Green.",
+      "Don't lay points out as a grid of identical cards or build a white dashboard with a dark sidebar.",
+      "Don't introduce a third typeface or set running text in Archivo.",
+      "Don't add motion beyond the pour, the meter level, the settle mark and short state transitions (150-400ms); reduced motion removes all of it.",
+      "Don't remove a completed stamp from a coupon."
+    ]
+  }
+}

@@ -9,6 +9,11 @@ type Place = { kind: string; name: string; lat: number; lon: number };
 const WAYS = osm.ways as Way[];
 const PLACES = osm.places as Place[];
 const UNIT = 111_320; // metres per degree of latitude
+// Status symbols drawn at badge scale (radius 15), the same four meanings as the rows.
+const SYMBOL: Record<string, string> = {
+  working: "M-6.5 0.5l4.5 4.5 8.5-9", down: "M-5.5-5.5l11 11M5.5-5.5l-11 11",
+  limited: "M0-7v8M0 6.2v0.6", unknown: "M-4.2-3.4a4.4 4.4 0 1 1 6 4.1c-1.3.6-1.8 1.3-1.8 2.6M0 6.6v0.6",
+};
 
 interface Props {
   state: State;
@@ -52,14 +57,16 @@ export function NeighbourhoodMap({ state, now, offline, extent = "near", selecte
   const place = (p: WaterPoint) => ({ px: x(p.lon!), py: y(p.lat!) });
 
   // Points recorded at the same spot fan out with a leader line instead of hiding each other.
-  const r = 30 * scale;
+  const r = (extent === "all" ? 22 : 30) * scale;
   const markers: { p: WaterPoint; px: number; py: number; ox: number; oy: number }[] = [];
   for (const p of tracked) {
     const { px, py } = place(p);
     let ox = px, oy = py, turn = 0;
-    while (markers.some((m) => Math.hypot(m.ox - ox, m.oy - oy) < r * 2.3) && turn < 8) {
+    // Square tiles overlap unless they are apart on at least one axis.
+    while (markers.some((m) => Math.abs(m.ox - ox) < r * 3.1 && Math.abs(m.oy - oy) < r * 3.1) && turn < 12) {
       const angle = -Math.PI / 2 + turn * (Math.PI / 3);
-      ox = px + Math.cos(angle) * r * 2.6; oy = py + Math.sin(angle) * r * 2.6; turn++;
+      const reach = r * (turn < 6 ? 3.5 : 6.4);
+      ox = px + Math.cos(angle) * reach; oy = py + Math.sin(angle) * reach; turn++;
     }
     markers.push({ p, px, py, ox, oy });
   }
@@ -104,15 +111,21 @@ export function NeighbourhoodMap({ state, now, offline, extent = "near", selecte
             <circle cx={px} cy={py} r={5 * scale} className="nmap-anchor" />
           </g>
         ))}
-        {markers.map(({ p, ox, oy }) => {
+        {markers.map(({ p, px, py, ox, oy }) => {
           const d = getPointDisplay(p, now, offline);
+          // The badge sits on the corner facing away from the spot a fanned-out tile came from.
+          const bx = ox + (ox < px ? -1 : 1) * r * 0.95, by = oy + (oy > py ? 1 : -1) * r * 0.95;
           return (
             <g key={p.id} className={`nmap-marker ${toneOf(d)} ${selected === p.id ? "selected" : ""}`}
               onClick={onSelect ? () => onSelect(p.id) : undefined} role={onSelect ? "button" : undefined}
               aria-label={onSelect ? `${p.name}, ${d.label}` : undefined} tabIndex={onSelect ? 0 : undefined}
               onKeyDown={onSelect ? (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onSelect(p.id); } } : undefined}>
               <rect x={ox - r} y={oy - r} width={r * 2} height={r * 2} rx={9 * scale} className="nmap-tile" style={{ strokeWidth: 4 * scale }} />
-              <text x={ox} y={oy + 10 * scale} textAnchor="middle" style={{ fontSize: 30 * scale }}>{letter(p) || "•"}</text>
+              <text x={ox} y={oy + r / 3} textAnchor="middle" style={{ fontSize: r }}>{letter(p) || "•"}</text>
+              <g className="nmap-badge" transform={`translate(${bx} ${by}) scale(${r / 23})`}>
+                <circle r="15" />
+                <path d={SYMBOL[d.certainty === "fresh" ? d.status : "unknown"]} />
+              </g>
             </g>
           );
         })}

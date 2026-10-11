@@ -35,7 +35,8 @@ Bis zum Hackathon am **22. Oktober 2026** (10–22 Uhr, Track Social Impact):
 | `npm run typecheck`, `npm run build` | bestanden |
 | `npm run test:integration` gegen lokale Vorschau (Port 5174) | bestanden |
 | Kompletter Ablauf auf der Pitch-Bühne (melden, übernehmen, starten, Reparatur melden, bestätigen) | bestanden |
-| Ansichten bei 1440 px und 390 px angesehen | bestanden, kleine Korrekturen eingearbeitet |
+| Ansichten bei 1440 px und 390 px angesehen, zwei Prüfrunden | bestanden, Korrekturen eingearbeitet |
+| Design-Detektor (`impeccable detect`) | keine Befunde |
 
 **Davor (11.10.2026, zweiter Rechner, frischer Klon)**
 
@@ -92,6 +93,7 @@ Priorität: **P1** = nötig für die Hackathon-Demo, **P2** = macht die Demo bes
 - Fachlogik, Server- und Importtexte ins Englische übersetzt (Regeln unverändert). Busia-Daten mit englischen Texten neu erzeugt. Neu: `web/scripts/import-osm.mjs` und `web/data/osm-area.json` (22 Wege, 3 Märkte, ODbL).
 - Schriften Archivo und Atkinson Hyperlegible Next lokal über Fontsource. `PRODUCT.md` und Gestaltungsvertrag unter `.impeccable/` angelegt.
 - Bewusst offen: Swahili, echte SMS, Prüfung auf Beamer. Die alte Oberfläche bleibt unverändert auf `claude/waterlink-mvp`.
+- Unabhängige Gestaltungsprüfung in zwei Runden (Urteil jeweils „fix“), alle Punkte eingearbeitet: Kartenmarker mit Statussymbol und ohne Überlappung, Alternative schon in der Zusammenfassung oben, schlankerer Kopf auf dem Handy, Handy-App randlos, flache Buchstabenfelder, Tafel nutzt die ganze Höhe, Hinweiszeile in Schwarz statt Link-Blau. Danach erneut geprüft: 39 Tests, Typprüfung, Build, Integrationstest, Design-Detektor ohne Befund. Gestaltungssystem in `DESIGN.md`.
 
 ### 11.10.2026, ca. 11:00 – Zweiter Rechner, Busia-Daten im Repo
 

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Activity, ArrowUpRight, Check, CircleHelp, Clock3, MapPin, Pause, Play, RefreshCw, TriangleAlert, Wifi, WifiOff, Wrench } from "lucide-react";
+import { Activity, ArrowUpRight, Check, X, CircleHelp, Clock3, MapPin, Pause, Play, RefreshCw, TriangleAlert, Wifi, WifiOff, Wrench } from "lucide-react";
 import { getPointDisplay, type State } from "@/lib/domain";
 import { alertEpisodes, readSensor, type SensorState } from "@/lib/sensor";
 import kwale from "@/data/kwale-sensors.json";
@@ -121,7 +121,7 @@ function DemoTools() {
       {(fb.error || fb.notice) && (
         <p className={`banner ${fb.error ? "error" : "ok"}`} role="status">{fb.error || fb.notice}
           {fb.signInNeeded && <a className="link" href={`/signin-with-chatgpt?return_to=${encodeURIComponent("/#coordination/demo")}`} target="_top">Sign in <ArrowUpRight size={14} /></a>}
-          <button className="icon-btn" onClick={() => clear("coordinator")} aria-label="Dismiss">×</button>
+          <button className="icon-btn" onClick={() => clear("coordinator")} aria-label="Dismiss"><X size={16} /></button>
         </p>
       )}
       <section className="demo-block">
