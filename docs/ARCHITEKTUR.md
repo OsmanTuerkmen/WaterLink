@@ -14,6 +14,10 @@ Die Geschäftsregeln in `web/lib/domain.ts` sind unabhängig vom Webframework te
 
 Für die kleine Demo ist dieser Aufbau absichtlich einfach. Vor größerem Betrieb sind normalisierte Tabellen, Archivierung, eine vollständige Zuständigkeitsverwaltung und ein abgestimmtes Betriebskonzept nötig.
 
+## Anmeldung: Sites oder Zugangscode
+
+`web/lib/access.ts` entscheidet, wer Daten ändern darf. Ohne weitere Einstellung gilt die Anmeldung der Sites-Plattform über deren vertrauenswürdige Header. Mit `WATERLINK_AUTH=code` (die Cloudflare-Bereitstellung, siehe [Bereitstellung](BEREITSTELLUNG.md)) werden diese Header ignoriert, weil sie außerhalb von Sites jeder Besucher setzen könnte. Dann gilt nur ein HttpOnly-Cookie, das `POST /api/access` gegen den geheimen `DEMO_ACCESS_CODE` ausgibt (HMAC-signiert, 30 Tage, `SameSite=Strict`). `GET /api/access` meldet den Modus; die Oberfläche zeigt entsprechend den Plattform-Link oder ein Codefeld. Lesen (`GET /api/waterlink`) braucht in beiden Fällen keine Anmeldung.
+
 ## Rollen und private Demo
 
 Die geplante Bereitstellung ist privat; die gehostete Demo ist zum gesicherten Zwischenstand noch nicht bereitgestellt. Sites übernimmt die Anmeldung. Eine angemeldete Person darf für die Demo zwischen drei fiktiven Rollen wechseln. Der Server stellt dafür kurzlebige, zufällige Sitzungstoken aus und speichert nur deren Hash. Bei jeder Änderung werden Plattformidentität, Sitzung, Rolle, Übergang und gegebenenfalls Auftragszuordnung geprüft. Ein frei mitgeschicktes Rollenfeld reicht nicht.

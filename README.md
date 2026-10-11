@@ -2,11 +2,13 @@
 
 **Funktioniert unsere Wasserstelle heute?**
 
+**Live-Demo:** https://waterlink-demo.waterlink.workers.dev · Bühne für den Pitch: `/?view=stage` · Änderungen nur mit Demo-Zugangscode ([Bereitstellung](docs/BEREITSTELLUNG.md)) · **Neu hier? → [Übergabe](docs/UEBERGABE.md)**
+
 WaterLink verbindet eine öffentliche Statusanzeige für Haushalte mit dem Ablauf von der Störungsmeldung bis zur ausdrücklich bestätigten Reparatur. Personen, Bestätigungen und Aufträge im Prototyp sind simuliert. Die Wasserstellen sind entweder fiktiv oder stammen aus echten Erhebungen der [Water Point Data Exchange](https://www.waterpointdata.org/) (CC BY 4.0); deren Erhebungsstatus ist historisch und nie ein aktueller Zustand. „Funktioniert“ beschreibt den Betrieb, keine geprüfte Trinkwasserqualität.
 
 ## Zwischenstand vom 10. Oktober 2026
 
-Der aktuelle Stand liegt in `web/` auf dem Branch `claude/waterlink-mvp` (aufbauend auf `codex/waterlink-mvp`). Eine gehostete Demo ist noch nicht bereitgestellt.
+Der bisherige Stand liegt in `web/` auf dem Branch `claude/waterlink-mvp` (aufbauend auf `codex/waterlink-mvp`). Weitergearbeitet wird auf `claude/waterlink-redesign`; dieser Stand läuft live auf Cloudflare.
 
 **Redesign zum Vergleich (Branch `claude/waterlink-redesign`, 11. Oktober 2026):** dieselbe Fachlogik mit neuer, englischer Oberfläche in der Bildwelt „gelber Kanister“. Getrennte Ansichten für Haushalte (`#status`), die öffentliche Tafel (`?view=display`), eine Handy-App für Betreiberin und Techniker (`#field`), simulierte SMS für Tastenhandys (`#sms`), die Koordination (`#coordination`) und eine Pitch-Bühne (`?view=stage`), die beide Handys, die Tafel und das SMS-Handy live nebeneinander zeigt. Neu ist eine Karte aus echten Koordinaten und OpenStreetMap-Straßen ohne Kartendienst. Details in [Architektur](docs/ARCHITEKTUR.md), Ablauf im [Demo-Skript](docs/DEMO.md).
 
@@ -61,8 +63,14 @@ npm run test:integration
 
 Stand 10. Oktober 2026: 39 Tests, TypeScript-Prüfung, Produktionsbuild und API-Integrationstest bestanden; der vollständige Ablauf wurde im Browser mit echten Orten aus Busia geprüft. Aktueller Stand, offene Aufgaben und Protokoll aller Schritte stehen im [Arbeitsstand](docs/ZWISCHENSTAND.md).
 
+## Bereitstellen
+
+Kostenlos auf Cloudflare Workers mit D1, im Ordner `web/`: `npx wrangler login` (einmalig), dann `npm run deploy:cloudflare`. Einzelheiten, Zugangscode und Grenzen in [Bereitstellung](docs/BEREITSTELLUNG.md).
+
 ## Dokumentation
 
+- [Übergabe: was seit dem 10. Oktober passiert ist](docs/UEBERGABE.md)
+- [Bereitstellung und Live-Demo](docs/BEREITSTELLUNG.md)
 - [Arbeitsstand: Ziel, Stand, offene Aufgaben, Protokoll](docs/ZWISCHENSTAND.md) – wird nach jedem Schritt aktualisiert
 - [Demo in drei Minuten](docs/DEMO.md)
 - [Technische Entscheidungen](docs/ARCHITEKTUR.md)

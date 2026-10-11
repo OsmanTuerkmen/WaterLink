@@ -2,7 +2,7 @@
 
 Lebendes Dokument: Es wird nach **jedem** Arbeitsschritt aktualisiert. Oben steht immer der aktuelle Stand, unten das Protokoll (neueste Einträge zuerst).
 
-**Zuletzt aktualisiert:** 11. Oktober 2026, ca. 12:40 Uhr (Kenia: EAT) · Branch `claude/waterlink-redesign` (Redesign zum Vergleich mit `claude/waterlink-mvp`)
+**Zuletzt aktualisiert:** 11. Oktober 2026, ca. 13:00 Uhr (Kenia: EAT) · Branch `claude/waterlink-redesign` (Redesign zum Vergleich mit `claude/waterlink-mvp`)
 
 ## Ziel
 
@@ -17,6 +17,7 @@ Bis zum Hackathon am **22. Oktober 2026** (10–22 Uhr, Track Social Impact):
 
 **Fertig und geprüft**
 
+- **Live-Demo:** https://waterlink-demo.waterlink.workers.dev (Cloudflare, kostenlos). Ansehen offen, Ändern mit Demo-Zugangscode. Siehe [Bereitstellung](BEREITSTELLUNG.md); Überblick für Osman in der [Übergabe](UEBERGABE.md).
 - **Redesign (dieser Branch):** englische Oberfläche „gelber Kanister“ mit fünf Ansichten: Status für Haushalte, öffentliche Tafel, Handy-App für Betreiberin und Techniker, Koordination, Pitch-Bühne mit beiden Handys und Tafel nebeneinander. Karte aus WPdx-Koordinaten und OpenStreetMap-Straßen. Fachregeln unverändert, nur Texte übersetzt.
 - Kompletter manueller Ablauf: Meldung → Auftrag → Übernahme → Fortschritt und Blockierungen → Reparaturmeldung → ausdrückliche Funktionsprüfung. Betriebszustand und Auftragsstand sind getrennt. Rollen werden auf dem Server geprüft.
 - Öffentliche Statustafel (`?view=display`): große Zeilen, Status als Wort und Symbol, Bestätigungszeit, Alternative, deutlicher Hinweis bei fehlender Verbindung.
@@ -68,8 +69,8 @@ Priorität: **P1** = nötig für die Hackathon-Demo, **P2** = macht die Demo bes
 | # | Prio | Aufgabe | Wer | Status |
 |---|---|---|---|---|
 | 1 | P1 | Busia-Daten (`web/data/region.json`) committen, damit die bereitgestellte Demo echte Orte zeigt. | Nutzer entschieden: ja | erledigt |
-| 2 | P1 | Private Sites-Bereitstellung durchführen. Das Projekt ist registriert (`web/.openai/hosting.json`), es gibt noch keine bestätigte Live-Bereitstellung. Kein zweites Projekt anlegen. Braucht Osmans Zugang (Codex/Sites); von diesem Rechner aus nicht möglich. | Osman | blockiert |
-| 3 | P1 | Auf der Bereitstellung prüfen: Anmeldung, Datenbank, Ablauf auf zwei echten Geräten. | Claude mit Nutzer | offen |
+| 2 | P1 | Bereitstellung. Erledigt über Cloudflare (Reczecs Konto, kostenlos): https://waterlink-demo.waterlink.workers.dev. Die private Sites-Bereitstellung bleibt optional und braucht Osmans Zugang. | Claude | erledigt |
+| 3 | P1 | Auf der Bereitstellung prüfen. Geprüft: Seiten, Datenbank (60 Stellen), Code-Modus, gefälschte Header abgewiesen. Offen: einmal mit dem Zugangscode freischalten und den Ablauf auf zwei echten Geräten durchspielen. | Reczec | teilweise |
 | 4 | P1 | Kurz vor dem Pitch die Demo zurücksetzen: simulierte Bestätigungen altern nach 12 Stunden. | Nutzer am 22.10. | offen |
 | 5 | P2 | Diktat in Chrome einmal mit Mikrofon ausprobieren. Ohne gesprochene Eingabe konnte Claude es nicht testen. | Nutzer | offen |
 | 6 | P2 | Tafel bei fehlender Verbindung ansehen. Ergebnis: alle Stellen „Unclear“, roter Hinweis; die wiederholten Alternativzeilen wurden offline entfernt. | Claude | erledigt |
@@ -78,6 +79,7 @@ Priorität: **P1** = nötig für die Hackathon-Demo, **P2** = macht die Demo bes
 | 9 | P2 | Pitch-Folien (Englisch, 11 Folien mit Sprechernotizen und echten Bildern) als privates Claude-Artefakt „WaterLink Pitch“. Noch einzutragen: Teamnamen und Demo-Link. | Nutzer | teilweise |
 | 11 | P1 | Redesign oder alte Oberfläche? Reczec hat sich am 11.10. für das Redesign entschieden; die Arbeit geht auf `claude/waterlink-redesign` weiter. Zusammenführen erst, wenn Osman zugestimmt hat. `claude/waterlink-mvp` bleibt bis dahin unverändert. | Osman bestätigt | teilweise |
 | 12 | P2 | Bühne auf Beamer-Formaten testen. Geprüft bei 1920 × 1080 und 1280 × 720; am Veranstaltungsort noch einmal mit dem echten Beamer ansehen. | Nutzer am 22.10. | teilweise |
+| 13 | P2 | Zugangscode der Live-Demo privat an Osman weitergeben und die Pitch-Folien für ihn freigeben (Share). | Reczec | offen |
 | 10 | P3 | Partner vor Ort finden (County, NGO, Wartungsdienst, Smart-Handpump-Team in Oxford) und Gespräche führen, siehe [Weg zum Produkt](WEG-ZUM-PRODUKT.md). | Team | offen |
 
 ## Bewusste Grenzen
@@ -89,6 +91,14 @@ Priorität: **P1** = nötig für die Hackathon-Demo, **P2** = macht die Demo bes
 - Software beschafft kein Geld, keine Ersatzteile und kein Personal.
 
 ## Protokoll
+
+### 11.10.2026, ca. 13:00 – Live auf Cloudflare
+
+- Neuer Anmeldeweg für selbst betriebene Bereitstellungen: Demo-Zugangscode statt Plattform-Headern (`web/lib/access.ts`, `/api/access`). Grund: Außerhalb von Sites könnte jeder die Header fälschen.
+- `npm run deploy:cloudflare` baut, legt D1-Datenbank und Tabellen an, lädt hoch und setzt den Code. Bereitgestellt auf Reczecs kostenlosem Cloudflare-Konto, Subdomain `waterlink.workers.dev`.
+- Geprüft: lokal auf dem Produktions-Build (gefälschte Header 401, falscher Code 401, richtiger Code 201, Freischalten im Browser), live (Seiten 200, 60 Stellen, Code-Modus, gefälschte Header 401). Integrationstest im Sites-Modus weiter bestanden.
+- Dokumentiert: [Bereitstellung](BEREITSTELLUNG.md), [Übergabe für Osman](UEBERGABE.md), README, Architektur, Demo-Skript, CLAUDE.md.
+- Bewusst offen: Freischalten mit dem Code auf der Live-Seite (Claude gibt keine Zugangsdaten auf öffentlichen Seiten ein).
 
 ### 11.10.2026, ca. 12:40 – SMS, Beamer, Pitch-Folien, Lücken geschlossen
 

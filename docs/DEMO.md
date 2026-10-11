@@ -4,9 +4,9 @@ Alle Personen, Meldungen, Bestätigungen und Wegangaben sind simuliert. Die Orte
 
 ## Vorbereitung
 
-1. Die **Pitch-Bühne** öffnen: `/?view=stage`. Sie zeigt Aminas Handy (Betreiberin), Daniels Handy (Techniker) und die öffentliche Tafel nebeneinander, alle live auf demselben Serverstand. Ein zweites Gerät ist nicht nötig.
+1. Die **Pitch-Bühne** öffnen: https://waterlink-demo.waterlink.workers.dev/?view=stage (oder lokal `/?view=stage`). In der Live-Demo einmal eine Aktion versuchen und den **Demo-Zugangscode** eingeben (privat im Team, siehe [Bereitstellung](BEREITSTELLUNG.md)); danach gilt er 30 Tage in diesem Browser. Sie zeigt Aminas Handy (Betreiberin), Daniels Handy (Techniker) und die öffentliche Tafel nebeneinander, alle live auf demselben Serverstand. Ein zweites Gerät ist nicht nötig.
 2. Oben rechts **Reset demo** wählen. Die simulierten Bestätigungen von A und B gelten 12 Stunden, also kurz vor dem Pitch zurücksetzen.
-3. Optional die Tafel `/?view=display` auf einem zweiten Bildschirm zeigen. Die bereitgestellte private Demo verlangt dort ebenfalls die Anmeldung.
+3. Optional die Tafel `/?view=display` auf einem zweiten Bildschirm zeigen. Zum Ansehen braucht sie keinen Code.
 4. Stabile Verbindung sicherstellen. Lokal ist der Entwicklungsserver nur auf demselben Rechner erreichbar.
 
 Das Band oben auf der Bühne zeigt die vier Schritte und hebt automatisch den nächsten hervor. Ab 1700 px Breite (z. B. Beamer mit 1920 × 1080) steht rechts zusätzlich das SMS-Handy; bei kleineren Bildschirmen über **Basic phone (SMS)** umschalten. Geprüft bei 1920 × 1080, 1440 × 900 und 1280 × 720.

@@ -8,4 +8,8 @@
 - README, `docs/DEMO.md` und `docs/ARCHITEKTUR.md` mitziehen, wenn sich Ablauf oder Technik ändern.
 - Simulierte und historische Daten immer als solche kennzeichnen; „Funktioniert“ ist nie eine Aussage zur Trinkwasserqualität.
 - Prüfungen im Ordner `web/`: `npm test`, `npm run typecheck`, `npm run build`, mit laufender Vorschau `npm run test:integration`. Unter Windows-PowerShell `npm.cmd`.
-- `web/data/region.json` nur committen, wenn der Nutzer es entschieden hat (siehe offene Aufgaben).
+- `web/data/region.json` ist seit dem 11.10.2026 mit den Busia-Daten im Repo (Entscheidung von Reczec).
+- Aktiver Branch: `claude/waterlink-redesign`. Nichts in `main` oder `claude/waterlink-mvp` zusammenführen, bevor Osman zugestimmt hat.
+- Oberflächentexte auf Englisch, Dokumente auf Deutsch. Gestaltung nach `DESIGN.md`, Produktgrundlagen in `PRODUCT.md`.
+- Live-Demo: Cloudflare (`npm run deploy:cloudflare` in `web/`), siehe `docs/BEREITSTELLUNG.md`. Den Zugangscode (`web/.env.demo-access`) nie committen, ausgeben oder in Dokumente schreiben.
+- Wer neu dazukommt, zuerst `docs/UEBERGABE.md` lesen.
