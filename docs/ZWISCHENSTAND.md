@@ -72,7 +72,7 @@ Priorität: **P1** = nötig für die Hackathon-Demo, **P2** = macht die Demo bes
 | 7 | P2 | Seite „Störung melden“ vereinfachen: zwei Schritte statt zwei gleich gewichteter Formulare nebeneinander. | Claude | offen |
 | 8 | P2 | Simulierte SMS-Ansicht für Haushalte mit einfachem Handy, klar als nicht angeschlossen gekennzeichnet. | Claude | offen |
 | 9 | P2 | Pitch: Folien oder Ablauf, Screenshots aus dem echten Build. | Nutzer und Claude | offen |
-| 11 | P1 | **Entscheiden:** alte Oberfläche (`claude/waterlink-mvp`) oder Redesign (`claude/waterlink-redesign`) weiterführen. Beide lokal ansehen, dann einen Branch zusammenführen. | Nutzer und Osman | offen |
+| 11 | P1 | Redesign oder alte Oberfläche? Reczec hat sich am 11.10. für das Redesign entschieden; die Arbeit geht auf `claude/waterlink-redesign` weiter. Zusammenführen erst, wenn Osman zugestimmt hat. `claude/waterlink-mvp` bleibt bis dahin unverändert. | Osman bestätigt | teilweise |
 | 12 | P2 | Redesign: Bühne auf dem echten Beamer-Format testen (1920 × 1080 und 1280 × 720). | Nutzer | offen |
 | 10 | P3 | Partner vor Ort finden (County, NGO, Wartungsdienst, Smart-Handpump-Team in Oxford) und Gespräche führen, siehe [Weg zum Produkt](WEG-ZUM-PRODUKT.md). | Team | offen |
 
@@ -85,6 +85,10 @@ Priorität: **P1** = nötig für die Hackathon-Demo, **P2** = macht die Demo bes
 - Software beschafft kein Geld, keine Ersatzteile und kein Personal.
 
 ## Protokoll
+
+### 11.10.2026, ca. 12:00 – Weiter auf dem Redesign-Branch
+
+Reczec gefällt das Redesign. Es wird separat auf `claude/waterlink-redesign` weiterentwickelt, ohne Zusammenführung, solange Osman nicht erreichbar ist.
 
 ### 11.10.2026, ca. 11:50 – Redesign „gelber Kanister“ (Branch `claude/waterlink-redesign`)
 
