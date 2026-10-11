@@ -192,7 +192,7 @@ function SensorReplay({ disabled }: { disabled: boolean }) {
   const reading = readSensor(focus.volumes, week), episodes = alertEpisodes(focus.volumes);
   const max = Math.max(...focus.volumes.map((v) => v ?? 0)), barW = 10;
   const message = reading.state === "alert" ? `Sensor hint: almost no pumping for ${reading.quietWeeks} weeks`
-    : reading.state === "low" ? "Unusually low this week, no hint yet" : reading.state === "no-data" ? "No data this week (weak radio signal)"
+    : reading.state === "low" ? "Unusually low this week, no hint yet" : reading.state === "no-data" ? "No data this week (cause unknown)"
     : reading.state === "learning" ? "Too little history to compare" : "Pump is in use, no hint";
   return (
     <section className="demo-block sensor">

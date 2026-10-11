@@ -2,13 +2,13 @@
 
 **Funktioniert unsere Wasserstelle heute?**
 
-**Live-Demo:** https://waterlink-demo.waterlink.workers.dev · Bühne für den Pitch: `/?view=stage` · Änderungen nur mit Demo-Zugangscode ([Bereitstellung](docs/BEREITSTELLUNG.md)) · **Neu hier? → [Übergabe](docs/UEBERGABE.md)**
+**Live-Demo:** https://waterlink-demo.waterlink.workers.dev · Bühne für den Pitch: `/?view=stage` · Änderungen nur mit Demo-Zugangscode ([Bereitstellung](docs/BEREITSTELLUNG.md)) · **Neu hier? → [Aktueller Stand](docs/ZWISCHENSTAND.md) · [Review](docs/REVIEW_CODEX.md) · [Nächster Prompt](docs/NAECHSTER_PROMPT.md)**
 
 WaterLink verbindet eine öffentliche Statusanzeige für Haushalte mit dem Ablauf von der Störungsmeldung bis zur ausdrücklich bestätigten Reparatur. Personen, Bestätigungen und Aufträge im Prototyp sind simuliert. Die Wasserstellen sind entweder fiktiv oder stammen aus echten Erhebungen der [Water Point Data Exchange](https://www.waterpointdata.org/) (CC BY 4.0); deren Erhebungsstatus ist historisch und nie ein aktueller Zustand. „Funktioniert“ beschreibt den Betrieb, keine geprüfte Trinkwasserqualität.
 
-## Zwischenstand vom 10. Oktober 2026
+## Zwischenstand vom 11. Oktober 2026
 
-Der bisherige Stand liegt in `web/` auf dem Branch `claude/waterlink-mvp` (aufbauend auf `codex/waterlink-mvp`). Weitergearbeitet wird auf `claude/waterlink-redesign`; dieser Stand läuft live auf Cloudflare.
+Aktueller Arbeitsbranch: **`codex/waterlink-review`**, aufbauend auf Claudes Redesign (`2207f2c`). Er enthält geprüfte Korrekturen für SMS-Offline-Status, ausdrückliche Testbestätigung, Anmeldung, Direktlinks und Druck-Ablaufzeiten. Die Live-Adresse zeigt noch Claudes Stand. Kein Merge oder neues Deployment wurde vorgenommen. Priorität: funktionierende App; Pitch erst anschließend.
 
 **Redesign zum Vergleich (Branch `claude/waterlink-redesign`, 11. Oktober 2026):** dieselbe Fachlogik mit neuer, englischer Oberfläche in der Bildwelt „gelber Kanister“. Getrennte Ansichten für Haushalte (`#status`), die öffentliche Tafel (`?view=display`), eine Handy-App für Betreiberin und Techniker (`#field`), simulierte SMS für Tastenhandys (`#sms`), die Koordination (`#coordination`) und eine Pitch-Bühne (`?view=stage`), die beide Handys, die Tafel und das SMS-Handy live nebeneinander zeigt. Neu ist eine Karte aus echten Koordinaten und OpenStreetMap-Straßen ohne Kartendienst. Details in [Architektur](docs/ARCHITEKTUR.md), Ablauf im [Demo-Skript](docs/DEMO.md).
 
@@ -23,7 +23,7 @@ Der bisherige Stand liegt in `web/` auf dem Branch `claude/waterlink-mvp` (aufba
 - Wiedergabe echter, historischer Sensordaten von Smart Handpumps in Kwale (2014): Ein Einbruch der Fördermenge wird zum Hinweis „Prüfung nötig“, nie zu einem bestätigten Status.
 - [Vom Prototyp zum echten Produkt](docs/WEG-ZUM-PRODUKT.md): was fehlt, realistischer Weg und Antworten auf typische Jury-Fragen.
 
-Die Rollen sind für die private Demo frei wechselbar. Eine echte lokale Berechtigungsverwaltung, SMS, Sensoren und ein KI-Dienst sind nicht angebunden. Die Störungsbeschreibung lässt sich optional über die Spracherkennung des Browsers diktieren; der Text wird vor dem Speichern geprüft, der Status nie automatisch gesetzt. Pilotregion und Wirksamkeit sind ungeprüft.
+Nach Freischaltung sind die Rollen in der Demo frei wechselbar. Eine echte lokale Berechtigungsverwaltung, SMS, Sensoren und ein KI-Dienst sind nicht angebunden. Die Störungsbeschreibung lässt sich optional über die Spracherkennung des Browsers diktieren; der Text wird vor dem Speichern geprüft, der Status nie automatisch gesetzt. Pilotregion und Wirksamkeit sind ungeprüft.
 
 ## Lokal starten
 
@@ -61,7 +61,7 @@ npm run typecheck
 npm run test:integration
 ```
 
-Stand 10. Oktober 2026: 39 Tests, TypeScript-Prüfung, Produktionsbuild und API-Integrationstest bestanden; der vollständige Ablauf wurde im Browser mit echten Orten aus Busia geprüft. Aktueller Stand, offene Aufgaben und Protokoll aller Schritte stehen im [Arbeitsstand](docs/ZWISCHENSTAND.md).
+Stand 11. Oktober 2026 (Codex-Review): 45 Tests, TypeScript-Prüfung, Produktionsbuild und lokaler API-Integrationstest bestanden. SMS-Prüfschritt, Offline-SMS und Meldungs-Direktlink wurden im Browser geprüft. Neue mobile Prüfung und Druckprüfung stehen noch aus. Aktueller Stand, offene Aufgaben und Protokoll aller Schritte stehen im [Arbeitsstand](docs/ZWISCHENSTAND.md).
 
 ## Bereitstellen
 

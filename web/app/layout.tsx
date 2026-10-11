@@ -5,7 +5,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "WaterLink · Does our water point work today?",
-  description: "Last confirmed state of nearby water points and repairs that only count once tested on site. Private hackathon demo with simulated confirmations.",
+  description: "Last confirmed state of nearby water points and repairs that only count once tested on site. Hackathon prototype with simulated confirmations.",
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",

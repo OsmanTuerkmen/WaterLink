@@ -1,5 +1,7 @@
 # Übergabe: was seit dem 10. Oktober passiert ist
 
+> Frühere Übergabe von Claude. Codex arbeitet inzwischen auf codex/waterlink-review. Maßgeblich für die Fortsetzung: [aktueller Stand](ZWISCHENSTAND.md), [Review](REVIEW_CODEX.md), [nächster Prompt](NAECHSTER_PROMPT.md).
+
 Für Osman, geschrieben am 11. Oktober 2026. Reczec hat mit Claude auf einem zweiten Rechner weitergearbeitet. Kurzfassung: **neue englische Oberfläche auf eigenem Branch, SMS-Simulation, Pitch-Folien und eine laufende Live-Demo.** Nichts wurde in `main` oder `claude/waterlink-mvp` zusammengeführt; das soll erst passieren, wenn du zugestimmt hast.
 
 ## Wo was liegt

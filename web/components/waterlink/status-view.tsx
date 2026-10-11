@@ -84,6 +84,7 @@ function PointRow({ point: p, state, now, offline, highlighted, onReport, onFocu
           <div>
             <strong>{confirmed ? `${d.status === "working" || d.certainty !== "fresh" ? "Confirmed" : "Reported"} ${clock(p.confirmedAt)}` : "Never confirmed"}</strong>
             <span>{validityText(p, d, now)}</span>
+            {confirmed && <small className="print-expiry">Check: {stamp(p.confirmedAt)} EAT. Recheck by {stamp(new Date(Date.parse(p.confirmedAt!) + STATUS_TTL_MS).toISOString())} EAT.</small>}
           </div>
         </div>
         <div className="point-walk">

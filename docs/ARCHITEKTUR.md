@@ -4,7 +4,7 @@
 
 Die Anwendung verwendet React und TypeScript mit dem Vinext/Sites-Starter. Ein Cloudflare Worker stellt Oberfläche und API bereit. Cloudflare D1 speichert die Demonstrationsdaten serverseitig; lokal verwendet der Starter eine persistente D1-Emulation. Browserfenster lesen dieselbe API alle drei Sekunden.
 
-Dies ersetzt den ursprünglich vorgeschlagenen Supabase-Dienst. Für die private Demonstration sind damit keine zusätzlichen Zugangsdaten zu einem externen Backend nötig. Die Datenbankregeln liegen vollständig im Repository.
+Dies ersetzt den ursprünglich vorgeschlagenen Supabase-Dienst. Die ursprüngliche Sites-Demonstration benötigt dadurch keinen separaten Backend-Anbieter; die zusätzliche Cloudflare-Bereitstellung braucht einen eigenen Cloudflare-Kontozugang. Die Datenbankregeln liegen vollständig im Repository.
 
 ## Ein konsistenter Vorgang
 
@@ -16,15 +16,15 @@ Für die kleine Demo ist dieser Aufbau absichtlich einfach. Vor größerem Betri
 
 ## Anmeldung: Sites oder Zugangscode
 
-`web/lib/access.ts` entscheidet, wer Daten ändern darf. Ohne weitere Einstellung gilt die Anmeldung der Sites-Plattform über deren vertrauenswürdige Header. Mit `WATERLINK_AUTH=code` (die Cloudflare-Bereitstellung, siehe [Bereitstellung](BEREITSTELLUNG.md)) werden diese Header ignoriert, weil sie außerhalb von Sites jeder Besucher setzen könnte. Dann gilt nur ein HttpOnly-Cookie, das `POST /api/access` gegen den geheimen `DEMO_ACCESS_CODE` ausgibt (HMAC-signiert, 30 Tage, `SameSite=Strict`). `GET /api/access` meldet den Modus; die Oberfläche zeigt entsprechend den Plattform-Link oder ein Codefeld. Lesen (`GET /api/waterlink`) braucht in beiden Fällen keine Anmeldung.
+`web/lib/access.ts` entscheidet, wer Daten ändern darf. Ohne weitere Einstellung gilt die Anmeldung der Sites-Plattform über deren vertrauenswürdige Header. Mit `WATERLINK_AUTH=code` (die Cloudflare-Bereitstellung, siehe [Bereitstellung](BEREITSTELLUNG.md)) werden diese Header ignoriert, weil sie außerhalb von Sites jeder Besucher setzen könnte. Dann gilt nur ein HttpOnly-Cookie, das `POST /api/access` gegen den geheimen `DEMO_ACCESS_CODE` ausgibt (statischer HMAC, Browser-Max-Age 30 Tage, `SameSite=Strict`; serverseitige Ablaufprüfung ist noch offen, siehe Review). `GET /api/access` meldet den Modus; die Oberfläche zeigt entsprechend den Plattform-Link oder ein Codefeld. Lesen (`GET /api/waterlink`) braucht in beiden Fällen keine Anmeldung.
 
-## Rollen und private Demo
+## Rollen und Demo-Zugang
 
-Die geplante Bereitstellung ist privat; die gehostete Demo ist zum gesicherten Zwischenstand noch nicht bereitgestellt. Sites übernimmt die Anmeldung. Eine angemeldete Person darf für die Demo zwischen drei fiktiven Rollen wechseln. Der Server stellt dafür kurzlebige, zufällige Sitzungstoken aus und speichert nur deren Hash. Bei jeder Änderung werden Plattformidentität, Sitzung, Rolle, Übergang und gegebenenfalls Auftragszuordnung geprüft. Ein frei mitgeschicktes Rollenfeld reicht nicht.
+Die Cloudflare-Demo ist öffentlich lesbar; Änderungen verlangen den Demo-Code. Die optionale Sites-Bereitstellung wäre privat mit Plattformanmeldung. Eine angemeldete Person darf für die Demo zwischen drei fiktiven Rollen wechseln. Der Server stellt dafür kurzlebige, zufällige Sitzungstoken aus und speichert nur deren Hash. Bei jeder Änderung werden Plattformidentität, Sitzung, Rolle, Übergang und gegebenenfalls Auftragszuordnung geprüft. Ein frei mitgeschicktes Rollenfeld reicht nicht.
 
 Das beweist technische Trennung der Aktionen, aber keine echten lokalen Berechtigungen. Der Rollenwechsel ist eine gekennzeichnete Demonstrationsfunktion und darf nicht unverändert als öffentliche Pilotanwendung betrieben werden.
 
-## Oberfläche (Branch `claude/waterlink-redesign`)
+## Oberfläche (Redesign, Weiterarbeit auf `codex/waterlink-review`)
 
 Die Oberfläche ist auf Englisch und in fünf Ansichten getrennt, alle in `web/components/waterlink/`:
 
@@ -63,10 +63,14 @@ Die Regionsdaten werden beim Laden erneut geprüft; fehlerhafte Einträge werden
 
 ## Sensordaten als Wiedergabe (Kwale)
 
-`web/scripts/import-kwale.mjs` lädt echte wöchentliche Fördermengen von Smart Handpumps in Kwale (openwashdata/waterpumpkwale, CC BY 4.0, auf einen Commit festgelegt) und schreibt `web/data/kwale-sensors.json`: standardmäßig die Pumpe „Tiwi – Mshikeni“ mit drei Nachbarpumpen für 2014. Die Demo-Werkzeuge spielen den Verlauf ab. `web/lib/sensor.ts` erkennt einen Hinweis erst nach zwei Wochen in Folge unter 10 % des üblichen Werts; fehlende Werte (Funksignal) gelten nie als Ausfall.
+`web/scripts/import-kwale.mjs` lädt echte wöchentliche Fördermengen von Smart Handpumps in Kwale (openwashdata/waterpumpkwale, CC BY 4.0, auf einen Commit festgelegt) und schreibt `web/data/kwale-sensors.json`: standardmäßig die Pumpe „Tiwi – Mshikeni“ mit drei Nachbarpumpen für 2014. Die Demo-Werkzeuge spielen den Verlauf ab. `web/lib/sensor.ts` erkennt einen Hinweis erst nach zwei Wochen in Folge unter 10 % des üblichen Werts; fehlende Werte mit unbekannter Ursache gelten nie als Ausfall.
 
 Ein Sensorhinweis ist nie ein Betriebszustand. Das Demo-Szenario „sensor“ setzt bei Wasserstelle A nur `sensorAlert`; die Anzeige zeigt „Unklar – Sensorhinweis“, es entsteht kein Auftrag. Erst eine Meldung oder Prüfung vor Ort löst den Hinweis auf. Die Daten sind historisch und werden nie als Live-Zustand dargestellt.
 
 ## Bewusst nicht angeschlossen
 
 Keine SMS, Live-Sensorik, KI-Sprachverarbeitung, Bezahlung oder Live-Kartendienst. Die Störungsbeschreibung kann optional über die Spracherkennung des Browsers diktiert werden; der Status wird dabei nie automatisch gesetzt. Diese Integrationen werden auch nicht als funktionierend dargestellt. Der manuelle Kernablauf ist unabhängig davon vollständig nutzbar.
+
+## SMS-Verlässlichkeit (Codex-Review)
+
+SMS bleibt eine Browser-Simulation. Abfragen ohne Live-Verbindung liefern UNCLEAR und keine bestätigte Alternative. Meldungen benötigen eine Beschreibung; OK/FAIL/PARTLY zusätzlich eine ausdrückliche Vor-Ort-Testbestätigung in einer Vorschau. Der Text wird nicht als Testnachweis erfunden. Das Zustandsmodell und die Rollenprüfung auf dem Server bleiben maßgeblich. Die SMS-Ansicht bietet denselben Anmeldeweg wie die Field app.

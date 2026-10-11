@@ -23,8 +23,10 @@ const PEOPLE: Record<FieldRole, { name: string; job: string }> = {
 export function FieldApp({ role, onRole, initialPoint, framed = false }: { role: FieldRole; onRole?: (role: FieldRole) => void; initialPoint?: string | null; framed?: boolean }) {
   const { state, connection, now, feedback, clear } = useWaterLink();
   const [screen, setScreen] = useState<Screen>(initialPoint ? { kind: "report", pointId: initialPoint, step: 1 } : { kind: "home" });
-  useEffect(() => { if (initialPoint) setScreen({ kind: "report", pointId: initialPoint, step: 1 }); }, [initialPoint]);
-  useEffect(() => { setScreen({ kind: "home" }); clear(role); }, [role]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    setScreen(role === "operator" && initialPoint ? { kind: "report", pointId: initialPoint, step: 1 } : { kind: "home" });
+    clear(role);
+  }, [role, initialPoint]); // eslint-disable-line react-hooks/exhaustive-deps
   const fb = feedback(role);
   const offline = connection !== "online";
   const go = (next: Screen) => { clear(role); setScreen(next); };

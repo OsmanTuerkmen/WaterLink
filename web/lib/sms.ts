@@ -38,11 +38,13 @@ export function pointByRef(state: State, ref: string | null): WaterPoint | null 
 }
 
 /** Turns an operator intent into the app's command; the server applies the usual rules. */
-export function smsCommand(state: State, intent: SmsIntent): Command | { error: string } {
+export function smsCommand(state: State, intent: SmsIntent, tested = false): Command | { error: string } {
   if (intent.kind !== "report" && intent.kind !== "confirm") return { error: "Not an operator command." };
   const point = pointByRef(state, intent.ref);
   if (!point) return { error: `No water point "${intent.ref.toUpperCase()}". Text STATUS for the list.` };
-  const note = intent.note.length >= 3 ? intent.note : intent.kind === "report" ? "Reported by SMS without details." : "Tested on site, confirmed by SMS.";
+  const note = intent.note.trim();
+  if (note.length < 3) return { error: intent.kind === "confirm" ? "Describe what you tested on site. Nothing has been saved." : "Describe what you observed. Nothing has been saved." };
+  if (intent.kind === "confirm" && !tested) return { error: "Explicitly confirm the on-site test before sending. Nothing has been saved." };
   return intent.kind === "report"
     ? { type: "report", pointId: point.id, status: intent.status, note: `${note} (via SMS)` }
     : { type: "confirm", pointId: point.id, status: intent.status, note: `${note} (via SMS)`, tested: true };
@@ -59,11 +61,12 @@ function shortState(point: WaterPoint, state: State, now: number): string {
 export const HELP_TEXT = "WaterLink: text STATUS for all water points, or A, B, C for one. Operators: DOWN A what you saw, OK A what you tested. Working = water can be drawn, not a quality test.";
 
 /** The reply a household or operator would receive for a read-only intent. */
-export function smsReply(state: State, intent: SmsIntent, now: number): string {
+export function smsReply(state: State, intent: SmsIntent, now: number, offline = false): string {
   const tracked = state.points.filter((p) => (p.tracked ?? true) && /^[a-z]$/.test(p.id));
   if (intent.kind === "help") return HELP_TEXT;
   if (intent.kind === "unknown") return "Sorry, WaterLink did not understand. Text HELP for the commands.";
   if (intent.kind !== "status") return "";
+  if (offline) return "WaterLink: no live connection. Current status is UNCLEAR. No confirmed alternative can be given. Check with the local operator before walking.";
   if (!intent.ref) {
     const list = tracked.map((p) => `${p.id.toUpperCase()} ${shortState(p, state, now)}`).join(", ");
     return `WaterLink ${clock(now)}: ${list}. Reply with a letter for details.`;

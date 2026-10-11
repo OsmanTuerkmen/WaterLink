@@ -1,3 +1,4 @@
+<!-- Priorität laut Osman: erst funktionierende App; dieses Skript erst zum Schluss ausarbeiten. -->
 # WaterLink in drei Minuten
 
 Alle Personen, Meldungen, Bestätigungen und Wegangaben sind simuliert. Die Orte stammen aus WPdx-Erhebungen in Busia; deren Status ist historisch. Straßen auf der Karte: © OpenStreetMap-Mitwirkende. Der Prototyp wurde nicht in Kenia validiert. „Working“ beschreibt den Betrieb, nicht die Trinkwasserqualität. Die Oberfläche ist auf Englisch (Branch `claude/waterlink-redesign`).
@@ -22,7 +23,7 @@ Das Band oben auf der Bühne zeigt die vier Schritte und hebt automatisch den n�
 | 2:05–2:35 | Amina: bei A **Test and confirm** → **Works** → Notiz, „I tested it on site“ → **Confirm result**. | „Erst der Test vor Ort macht A wieder grün und schließt den Auftrag.“ |
 | 2:35–3:00 | In einem zweiten Fenster unter **Coordination → Demo tools** „Let A's confirmation expire“ oder die Verbindungssimulation zeigen. | „Alte Informationen bleiben nicht grün. Wir zeigen Unsicherheit offen.“ |
 
-**Optionaler Zusatz (ca. 20 s), SMS:** Auf dem SMS-Handy als „Household“ **STATUS** und dann **A** tippen. Aussage: „Wer kein Smartphone hat, schreibt STATUS und bekommt dieselbe Antwort in einer SMS.“ Als „Amina“ funktioniert auch `DOWN A …` und `OK A …` nach denselben Regeln.
+**Optionaler Zusatz (ca. 20 s), SMS:** Auf dem SMS-Handy als „Household“ **STATUS** und dann **A** tippen. Aussage: „Wer kein Smartphone hat, schreibt STATUS und bekommt dieselbe Antwort in einer SMS.“ Als „Amina“ funktioniert auch `DOWN A …` und `OK A …` nach denselben Regeln. Im Codex-Review-Branch verlangt OK eine Beschreibung und eine ausdrückliche Bestätigung des Vor-Ort-Tests vor dem Senden; offline liefert STATUS keine aktuelle Zusicherung.
 
 **Optionaler Zusatz (ca. 30 s), echte Sensordaten:** Unter **Coordination → Demo tools** die Wiedergabe „Tiwi – Mshikeni, Kwale“ abspielen. Ab Woche 13/2014 fällt die Fördermenge auf null, ab der zweiten Woche erscheint der Sensorhinweis. Aussage: „Das sind echte Daten einer Pumpe in Kenia. Ein Sensor kann einen Ausfall vermuten, aber nicht bestätigen. WaterLink macht daraus ‚Prüfung nötig‘.“ Optional **Send this hint to water point A** und die Tafel zeigen.
 

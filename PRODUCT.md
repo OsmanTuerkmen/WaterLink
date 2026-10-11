@@ -13,7 +13,7 @@ Three groups with different situations, plus the pitch audience. The redesign mu
 - **Households** in a rural Kenyan neighbourhood (demo region: Marachi East, Busia). They decide before walking whether their water point works today and, if not, where to go instead. Many have no smartphone; around half of rural people own a mobile phone at all (Communications Authority of Kenya, 2023/24). They reach WaterLink through a public status board at a shop or meeting point, or a simple phone.
 - **Operators** (one named person per water point) who confirm on site that water can be drawn, report outages and test repairs. Outdoors, on a phone, weak network.
 - **Technicians** who claim repair jobs, document progress and blockers (parts, funding, staff) and report a repair.
-- **Coordination** (county water office, NGO or maintenance service): overview of outages, jobs, blockers and response times. The likely payer.
+- **Coordination** (county water office, NGO or maintenance service): overview of outages, jobs, blockers and response times. A possible paying customer; willingness to pay is unvalidated.
 - **Hackathon jury** (Zero One Hackathon, WU Vienna, 22 Oct 2026, track Social Impact): must grasp the story in a three-minute demo.
 
 ## Product Purpose
@@ -63,5 +63,5 @@ Pump monitoring already exists. WaterLink covers what comes after: public inform
 ## Accessibility & Inclusion
 
 - Status never by colour alone: word plus symbol plus colour.
-- Large type on the public board, readable from a distance and by people with low literacy; plain English.
+- Large type and plain English on the public board; comprehension at a distance and across literacy levels still needs field testing.
 - Touch targets sized for outdoor phone use; must work on slow connections.

@@ -629,3 +629,7 @@ select, textarea, input[type="search"] { border-radius: 12px; background: var(--
 .unlock small { color: #8a1f1b; font-size: 14px; }
 .stage-error .unlock { color: var(--ink); max-width: 360px; }
 .stage-error .unlock label { color: #fff; }
+
+/* Explicit SMS test review, also usable in the compact stage phone. */
+.sms-review{padding:16px;border-top:1px solid var(--line);overflow-wrap:anywhere}.sms-review p{margin:8px 0}.sms-review .check{margin:12px 0}.sms-review .btn{margin-top:8px}
+.print-expiry{display:none}@media print{.print-expiry{display:block;font-size:10pt;max-width:240px}}

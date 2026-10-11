@@ -42,9 +42,32 @@ test("an SMS report goes through the normal rules and the reply names the altern
 
 test("an SMS confirmation cannot skip the repair step", () => {
   const reported = applyCommand(createSeedState(NOW), { type: "report", pointId: "a", status: "down", note: "No water at all." }, operator, NOW);
-  const command = smsCommand(reported, parseSms("OK A works again"));
+  const command = smsCommand(reported, parseSms("OK A works again"), true);
   assert.ok(!("error" in command));
   assert.throws(() => applyCommand(reported, command, operator, NOW), /technician has to report the repair first/);
   assert.ok("error" in smsCommand(reported, parseSms("OK Q works")));
   assert.equal(pointByRef(reported, "a")?.id, "a");
+});
+
+test("offline SMS never presents the saved green status or an alternative as current", () => {
+  const state = createSeedState(NOW);
+  for (const text of ["STATUS", "A", "C"]) {
+    const reply = smsReply(state, parseSms(text), NOW, true);
+    assert.match(reply, /no live connection.*UNCLEAR/);
+    assert.doesNotMatch(reply, /WORKING|Go to/);
+  }
+  assert.equal(smsReply(state, parseSms("HELP"), NOW, true), HELP_TEXT);
+});
+
+test("SMS cannot invent an observation or an on-site test", () => {
+  const state = createSeedState(NOW);
+  for (const text of ["DOWN A", "OK A", "FAIL A", "PARTLY A"]) {
+    assert.ok("error" in smsCommand(state, parseSms(text), true));
+  }
+  for (const text of ["OK A pumped water", "FAIL A no flow", "PARTLY A slow flow"]) {
+    assert.ok("error" in smsCommand(state, parseSms(text)));
+    const command = smsCommand(state, parseSms(text), true);
+    assert.ok(!("error" in command));
+    assert.equal(command.type, "confirm");
+  }
 });

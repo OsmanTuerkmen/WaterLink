@@ -1,0 +1,23 @@
+# Übergabeprompt für Claude oder Codex
+
+Du arbeitest als kritischer Produkt- und Technikpartner an WaterLink. Sprich mit mir Deutsch, halte die App vorerst auf Englisch. Zuerst eine funktionierende, verlässliche App; Pitch, Folien und Drei-Minuten-Demo kommen ganz am Ende. Unterscheide Fakten, Annahmen und Produktentscheidungen. Arbeite praktisch weiter, nicht nur einen Plan liefern.
+
+Repository: https://github.com/OsmanTuerkmen/WaterLink
+Aktueller Arbeitsbranch: codex/waterlink-review (basiert auf claude/waterlink-redesign bei 2207f2c).
+Lokaler Ordner auf Osmans Rechner: C:\Users\osman\Documents\ChatGPT\WaterLink
+
+Lies zuerst docs/ZWISCHENSTAND.md, docs/REVIEW_CODEX.md und docs/ARCHITEKTUR.md. Claudes frühere Übergabe steht in docs/UEBERGABE.md; die alte Historie in docs/HISTORIE_BIS_CLAUDE.md. Prüfe git status und Remote-Branches, bevor du wechselst. Keine lokalen Änderungen überschreiben; eine alte deutsche Variante der Busia-Daten wurde im Stash mit Nachricht "preserve local Busia data before Codex redesign review 2026-10-11" aufbewahrt. Nicht unbesehen anwenden. Bleibe auf dem Arbeitsbranch oder lege bei paralleler Arbeit einen eigenen davon abgeleiteten Branch an. Nicht ohne Auftrag nach main oder in Claudes Branches mergen.
+
+Stand: React/TypeScript, Vinext/Cloudflare Worker, D1. Englische Oberfläche „gelber Kanister“ mit Haushaltsstatus, öffentlicher Tafel, Handyansichten für Betreiberin/Techniker, Koordination und simulierter SMS. Bühne existiert bereits. WPdx-Orte sind historische Erhebungsdaten; Bestätigungen, Rollen, Wege und Öffnungszeiten sind simuliert. Sensorwiedergabe nutzt Kwale-Daten von 2014 und beweist keinen aktuellen Ausfall in Busia.
+
+Codex hat Offline-SMS, erfundene SMS-Testbestätigungen, fehlenden SMS-Anmeldeweg, Meldungs-Direktlinks und Ablaufdatum auf Papier korrigiert. 45 Tests, Typprüfung, Produktionsbuild und lokaler API-Test bestehen. Explizite SMS-Bestätigung und Offline-Antwort wurden im Browser geprüft. Ein 390-px-Test war nicht wirksam; daher keine neue mobile Prüfung behaupten. Drucklayout muss noch real geprüft werden.
+
+Nächster sinnvoller Arbeitsschritt: Demo-Zugangscode-Modus mit sinnvollen automatischen Tests absichern. web/lib/access.ts setzt derzeit einen statischen HMAC als Cookie; dessen 30 Tage gelten nur als Browser-Max-Age, nicht als serverseitige Ablaufprüfung. Implementiere signierte, serverseitig geprüfte Ablaufzeiten und teste Manipulation, Ablauf, Codewechsel, fehlende Anmeldung und gefälschte Plattform-Header im Code-Modus. Prüfe eine angemessene Begrenzung von Anmeldeversuchen; die bestehende Verzögerung allein stoppt keine parallelen Versuche. Keine unnötig große Benutzerverwaltung bauen. Danach mobile Ansicht, Ausdruck und Zwei-Geräte-Ablauf mit echter Netzunterbrechung prüfen.
+
+Wichtige Regeln: Auftrag abgeschlossen bedeutet erst nach explizitem Betreiber-Funktionstest „Working“. Unbekannt, veraltet, Konflikt, Sensorhinweis und Offline bleiben vorsichtig. Keine Trinkwasserqualitätsbehauptung. Haushaltsinformation und öffentlicher Zugang bleiben zentral. SMS ist nicht angebunden; kein behaupteter Versand. Fehlende Daten nicht mit erfundenen Ursachen erklären. Kein selbst erfundener Vor-Ort-Test.
+
+Live: https://waterlink-demo.waterlink.workers.dev (Reczecs Cloudflare-Konto). Dort steht bislang Claudes Stand, nicht automatisch dieser Branch. Lesen ist öffentlich, Änderungen benötigen einen privaten Demo-Code. Der Code ist kein Cloudflare-Deploymentzugang. Keine Live-Resets für Tests und keine Deployment-/Sharingänderung ohne passenden Auftrag und Zugang. Keine Geheimnisse ausgeben, committen oder in Dokumentation kopieren. Sites-Projektkennung in web/.openai/hosting.json erhalten; nicht erneut registrieren. Ohne Zugang lokal fertigstellen und Einschränkung dokumentieren.
+
+Lokal in web/: npm ci (nur wenn nötig), npm test, npm run typecheck, npm run build. Lokale Erstinitialisierung der Datenbank steht im README; vorhandene Datenbank nicht erneut mit CREATE TABLE initialisieren. npm run dev -- --port 5174. Der API-Test ist absichtlich auf localhost beschränkt: WATERLINK_BASE_URL setzen und npm run test:integration ausführen. Auf Windows kann npm.cmd nötig sein; zuverlässig ist auch node "C:\Program Files\nodejs\node_modules\npm\bin\npm-cli.js". Vorschau und Laufzeitdateien nicht versionieren.
+
+Nach jeder abgeschlossenen Einheit: docs/ZWISCHENSTAND.md und diesen nächsten Prompt aktualisieren; tatsächlich ausgeführte Tests und offene Grenzen nennen. Änderungen sinnvoll committen und den Arbeitsbranch auf GitHub sichern. Am Ende kurz sagen: was geändert wurde, warum, welche Tests bestanden, was als Nächstes offen ist. Keine erneute Drei-Minuten-Pitch-Planung, solange der Kernablauf noch verbessert wird.
