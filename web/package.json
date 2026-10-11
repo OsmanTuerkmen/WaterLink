@@ -17,7 +17,8 @@
     "test:integration": "node scripts/check-flow.mjs",
     "data:wpdx": "node scripts/import-wpdx.mjs",
     "data:osm": "node scripts/import-osm.mjs",
-    "deploy:cloudflare": "node scripts/deploy-cloudflare.mjs"
+    "deploy:cloudflare": "node scripts/deploy-cloudflare.mjs",
+    "test:access": "node scripts/check-access.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

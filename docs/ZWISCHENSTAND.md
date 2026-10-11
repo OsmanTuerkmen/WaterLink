@@ -1,6 +1,6 @@
 # Arbeitsstand WaterLink
 
-**Zuletzt aktualisiert: 11. Oktober 2026 · Codex · Branch `codex/waterlink-review`.**
+**Zuletzt aktualisiert: 11. Oktober 2026, Nachmittag · Claude · Branch `codex/waterlink-review`.**
 
 ## Ziel
 
@@ -11,10 +11,24 @@ Zuerst eine verlässlich funktionierende App: Haushalte sehen den letzten bestä
 - Basis: Claudes englisches Redesign bei Commit `2207f2c`. Codex arbeitet auf einem eigenen Branch und empfiehlt, die neue Oberfläche als Grundlage zu behalten.
 - Haushaltsstatus, öffentliche Tafel, Betreiber-/Technikeransicht, Koordination, simulierte SMS und Bühne sind implementiert. WPdx-Orte und historische Sensordaten sind enthalten; aktuelle Bestätigungen, Wege und Rollen bleiben simuliert.
 - Codex hat SMS-Offline-Antworten, ausdrückliche SMS-Funktionsprüfung, SMS-Anmeldung, Direktlinks zu Meldungen, Ablaufzeiten auf dem Druckblatt und mehrere irreführende Texte korrigiert.
-- **Live-Adresse:** https://waterlink-demo.waterlink.workers.dev – läuft auf Reczecs Cloudflare-Konto und enthält bislang Claudes Stand, nicht die Änderungen dieses Branches.
+- **Demo-Zugang gehärtet (Claude):** Das Cookie trägt einen signierten Ablaufzeitpunkt, den der Server prüft. Anmeldeversuche sind pro Client und global begrenzt und werden vor der Codeprüfung atomar gezählt. Details in [Architektur](ARCHITEKTUR.md). Auf der Live-Seite noch **nicht** bereitgestellt.
+- **Live-Adresse:** https://waterlink-demo.waterlink.workers.dev – läuft auf Reczecs Cloudflare-Konto und enthält bislang Claudes früheren Stand, nicht die Änderungen dieses Branches.
 - Kein Merge und kein neues Deployment vorgenommen. Vollständiger Bericht: [Review](REVIEW_CODEX.md).
 
 ## Aktuell selbst ausgeführte Prüfungen
+
+**Claude, 11.10.2026 nachmittags (nach Härtung des Zugangs):**
+
+| Prüfung | Ergebnis |
+|---|---|
+| `npm test` | 53/53 bestanden (8 neue Zugangstests) |
+| `npm run typecheck` | bestanden |
+| `npm run build` | bestanden |
+| `WATERLINK_BASE_URL=http://127.0.0.1:5174 npm run test:integration` (Sites-Modus, lokale DB) | bestanden |
+| `npm run test:access` gegen lokalen Worker im Code-Modus mit Test-Code (lokale D1) | 11/11 bestanden: gefälschte Header 401, richtiger Code 200 mit `v2`-Cookie, verlängertes Cookie abgewiesen, 15 parallele Fehlversuche ergeben 10× 401 und 5× 429 mit `Retry-After`, Sperre gilt auch für den richtigen Code, bestehendes Cookie funktioniert weiter |
+| `npm run lint` | 7 Befunde, alle vorbestehend und außerhalb der geänderten Dateien (siehe Aufgaben) |
+
+**Codex, 11.10.2026 vormittags:**
 
 | Prüfung | Ergebnis |
 |---|---|
@@ -34,10 +48,13 @@ Zuerst eine verlässlich funktionierende App: Haushalte sehen den letzten bestä
 
 | Priorität | Aufgabe | Abnahmekriterium |
 |---|---|---|
-| P1 | Demo-Zugang härten und im Code-Modus automatisiert prüfen | Server weist abgelaufene/manipulierte Cookies und gefälschte Sites-Header ab; richtige Anmeldung funktioniert |
+| ~~P1~~ erledigt | Demo-Zugang härten und im Code-Modus automatisiert prüfen | Lokal erfüllt (Unit-Tests und `test:access`); Live-Bereitstellung siehe nächste Zeile |
+| P1 | Gehärteten Zugang auf die Live-Seite bringen (Reczecs Cloudflare-Konto, `npm run deploy:cloudflare`) | Danach: Freischalten funktioniert, alte Cookies sind ungültig (einmal neu freischalten), gefälschte Header 401. **Kein** `test:access` gegen Live |
 | P1 | Änderungen bei echter Handybreite und als A4-Ausdruck prüfen | Alle Bedienelemente erreichbar, keine horizontale Überbreite, Prüf- und Ablaufdatum lesbar |
 | P1 | Vollständiger Ablauf auf zwei Geräten inklusive echter Netzunterbrechung | Reparaturmeldung allein schaltet nicht grün; klare Unsicherheit offline; Entwürfe bleiben bei Fehler erhalten |
 | P1 | Eigenen Branch zur Prüfung bereitstellen und später Deploymentzuständigkeit klären | GitHub-Stand gesichert; gemeinsamer Live-Stand nur mit passendem Kontozugang aktualisiert |
+| P2 | Zugangscode stärker machen: Der erzeugte Code hat rund 1,3 Mio. Möglichkeiten. Mit der Begrenzung reicht das für die Demo; beim nächsten Codewechsel einen längeren Code wählen | Entscheidung Reczec/Osman; ein Codewechsel meldet alle ab |
+| P2 | Vorbestehende Lint-Befunde beheben (setState in Effects in `page.tsx`, `field.tsx`, `store.tsx`; `any` in `domain.ts`; ungenutzte Variable in `coordination.tsx`) | `npm run lint` ohne Fehler, Verhalten unverändert |
 | P2 | WPdx-Mehrfacherfassungen und Quellenattribute prüfen | Dokumentierte Trennung von Datensätzen und eindeutigen Standorten; keine Live-Statusbehauptung |
 | P2 | SMS-Simulation fachlich schärfen | Historische Antworten klar, Segmentanzahl als Schätzung oder korrekt nach Encoding, Vor-Ort-Prüfung weiterhin zwingend |
 | Später | Pitch, Folien, Beamer und finales Zurücksetzen | Erst nach stabilem App-Ablauf |
@@ -50,6 +67,15 @@ Zuerst eine verlässlich funktionierende App: Haushalte sehen den letzten bestä
 Lokale uncommittete Busia-Daten vom alten Branch wurden vor dem Wechsel im Git-Stash gesichert (Details im Review). Keine Zugangscodes in Dokumente übernehmen.
 
 ## Protokoll
+
+### 11.10.2026, Nachmittag – Claude: Demo-Zugang gehärtet
+
+- `web/lib/access-token.ts` (neu, ohne Plattformimporte): Cookie `v2.<Ablauf>.<HMAC>`. Der Ablauf wird auf dem Server geprüft; weit in der Zukunft liegende Ablaufzeiten und alte statische Cookies werden abgewiesen; ein Codewechsel macht alle Cookies ungültig. Im Code-Modus werden Plattform-Header vollständig ignoriert.
+- `web/lib/access-limit.ts` (neu): Begrenzung in D1 mit 10 Versuchen pro Client in 15 Minuten und 100 insgesamt pro Stunde, atomar vor der Codeprüfung gezählt. Die IP wird nur als gekürzter Hash gespeichert. Die Tabelle wird bei Bedarf angelegt. Die frühere Verzögerung von 800 ms entfällt.
+- `web/tests/access.test.ts`: 8 Tests; die Begrenzung läuft dabei gegen echtes SQLite (`node:sqlite`). `web/scripts/check-access.mjs` (`npm run test:access`) prüft den Code-Modus Ende-zu-Ende, nur auf localhost.
+- `.dev.vars*` in `web/.gitignore` aufgenommen; die lokale Test-`.dev.vars` wurde nach dem Test gelöscht.
+- Befund: `npm run lint` meldet 7 vorbestehende Probleme; in dieser Einheit nicht behoben.
+- Bewusst offen: Live-Bereitstellung (Kontozugang Reczec), stärkerer Code, mobile/Druck/Zwei-Geräte-Prüfung als nächste Einheit.
 
 ### 11.10.2026 – Codex übernimmt auf eigenem Branch
 

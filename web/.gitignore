@@ -55,3 +55,6 @@ next-env.d.ts
 /outputs/
 /work/
 *.tsbuildinfo
+
+# Local Cloudflare variables (may hold a demo access code)
+.dev.vars*

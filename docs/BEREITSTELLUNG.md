@@ -16,7 +16,7 @@ Stand: Branch `claude/waterlink-redesign`, bereitgestellt am 11. Oktober 2026.
 ## Wer darf was
 
 - **Ansehen** kann jeder mit dem Link, ohne Anmeldung. Gezeigt werden nur Demo-Daten: echte Orte aus WPdx, simulierte Personen und Bestätigungen.
-- **Ändern** (melden, reparieren, bestätigen, Szenarien, zurücksetzen) geht erst nach Eingabe des **Demo-Zugangscodes**. Das Feld erscheint, sobald man eine Aktion versucht. Der Code gilt danach 30 Tage im jeweiligen Browser (Cookie).
+- **Ändern** (melden, reparieren, bestätigen, Szenarien, zurücksetzen) geht erst nach Eingabe des **Demo-Zugangscodes**. Das Feld erscheint, sobald man eine Aktion versucht. Der Code gilt danach 30 Tage im jeweiligen Browser (signiertes Cookie, Ablauf wird auf dem Server geprüft). Nach der ersten Bereitstellung dieses Stands sind ältere Cookies ungültig: Einmal neu freischalten.
 - Der Code liegt **nur lokal** in `web/.env.demo-access` auf dem Rechner, auf dem bereitgestellt wurde (Reczec). Die Datei ist per `.gitignore` vom Repo ausgeschlossen. Den Code im Team nur privat weitergeben, nie ins Repo, in Folien oder in öffentliche Chats.
 - Neuer Code: Zeile in `web/.env.demo-access` ändern (mindestens 8 Zeichen) und neu bereitstellen. Alte Cookies werden damit ungültig.
 
@@ -26,7 +26,7 @@ Stand: Branch `claude/waterlink-redesign`, bereitgestellt am 11. Oktober 2026.
 - Cloudflare-Konto: das von Reczec. Worker `waterlink-demo`, Datenbank `waterlink-demo`, Subdomain `waterlink.workers.dev`.
 - **Zwei Anmeldearten im selben Code** (`web/lib/access.ts`):
   - *Sites* (Standard, Osmans OpenAI-Sites-Projekt): Die Plattform meldet an und setzt vertrauenswürdige Header.
-  - *Code* (`WATERLINK_AUTH=code`, diese Cloudflare-Bereitstellung): Die Plattform-Header werden **ignoriert**, weil sie außerhalb von Sites jeder fälschen könnte. Es zählt nur ein signiertes HttpOnly-Cookie, das man mit dem Code bekommt. Ein falscher Code wird verzögert beantwortet.
+  - *Code* (`WATERLINK_AUTH=code`, diese Cloudflare-Bereitstellung): Die Plattform-Header werden **ignoriert**, weil sie außerhalb von Sites jeder fälschen könnte. Es zählt nur ein signiertes HttpOnly-Cookie, das man mit dem Code bekommt. Anmeldeversuche sind begrenzt (10 pro Client in 15 Minuten, 100 insgesamt pro Stunde, Antwort 429); bestehende Cookies bleiben davon unberührt. Prüfung lokal mit `npm run test:access` (Anleitung im Skript), nie gegen die Live-Seite.
 - Geprüft auf der Live-Seite: Seiten laden (200), Datenstand mit 60 Wasserstellen, Code-Modus aktiv, gefälschte Anmelde-Header werden abgewiesen (401). Lokal auf dem Produktions-Build zusätzlich: falscher Code 401, richtiger Code 201, Freischalten im Browser.
 
 ## Neu bereitstellen
