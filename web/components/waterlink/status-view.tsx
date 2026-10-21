@@ -48,7 +48,10 @@ export function StatusView({ state, now, offline, lastSync, onReport }: ViewProp
             route={firstDown && routeTo ? { from: firstDown.id, to: routeTo.id } : null} />
         </aside>
       </div>
-      <p className="quality-note"><a className="link" href="#sms">No smartphone? Text STATUS to WaterLink</a> (simulated SMS). Working means water can be drawn. It says nothing about drinking-water quality. A confirmation is valid for 12 hours, then it shows as unclear until someone checks again.</p>
+      <div className="quality-note">
+        <a className="link" href="#sms">No smartphone? Text STATUS to WaterLink <ArrowRight size={15} aria-hidden="true" /></a>
+        <p>Simulated SMS. Working means water can be drawn. It says nothing about drinking-water quality. A confirmation is valid for 12 hours, then it shows as unclear until someone checks again.</p>
+      </div>
       {region && <RecordedPoints points={state.points.filter((p) => !isTracked(p))} region={region} onReport={onReport} />}
     </div>
   );

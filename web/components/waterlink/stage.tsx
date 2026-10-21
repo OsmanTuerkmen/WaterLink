@@ -33,6 +33,7 @@ export function Stage() {
   const coord = feedback("coordinator");
   return (
     <div className="stage">
+      <h1 className="sr-only">WaterLink pitch stage: both phones and the public board on one screen</h1>
       <header className="stage-head">
         <div className="stage-brand"><CanMark size={30} /><span>WaterLink</span><small>Live demo · Marachi East, Busia</small></div>
         <ol className="stage-script" aria-label="Demo steps">

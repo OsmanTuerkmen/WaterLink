@@ -13,7 +13,7 @@ colors:
   water: "#4a84e6"
   ink: "#1b1c1e"
   ink-2: "#4c483f"
-  ink-3: "#6c675b"
+  ink-3: "#5f5a4f"
   stone: "#ebe7dc"
   stone-2: "#e1dccd"
   stone-3: "#d3ccb9"
@@ -21,7 +21,7 @@ colors:
   line: "#ddd7c8"
   ok: "#1b7a42"
   ok-tint: "#e1f1e6"
-  limit: "#b25000"
+  limit: "#a34700"
   limit-tint: "#fbe9d8"
   limit-text: "#7a3900"
   down: "#c0302a"
@@ -182,7 +182,7 @@ Motion is rare and authored. The board has one moment (a changed row fills like 
 - One heavy semi-condensed grotesk (Archivo, 800, width 85-92%) for display and numerals; Atkinson Hyperlegible Next for all running text.
 - Rows and coupons, not card grids; the yellow letter tile anchors every point.
 - The jerrycan mark at every scale, including the CanMeter signature.
-- One authored motion per surface; reduced motion removes all of it.
+- One authored motion per surface; reduced motion removes all movement, and a changed board row keeps a still tint that fades out.
 
 ## Colors
 
@@ -334,7 +334,8 @@ Full-width 84px paper tiles with a 2px inset ring, a 50px tinted status circle a
 - **Do** pair every confirmation time with the CanMeter and use tabular figures.
 - **Do** use Cap Blue for every non-destructive action and link, with the 3px Cap Blue focus outline.
 - **Do** arrange points as rows with the yellow letter tile, and repairs as coupons with stamped steps.
-- **Do** keep touch targets at 48px or more and the public board sized in em from one root.
+- **Do** keep touch targets at 48px or more and the public board sized in em from one root. Map tiles stay at least 46px on screen, however small the map is drawn.
+- **Do** set type in rem so the browser's text size applies, and take every colour in a rule from a token (the ink and tint pairs for status text included). Printing is the one exception and stays black on white.
 - **Do** tint all shadows with Jerrycan Ink (`rgba(58, 44, 0, …)`).
 
 ### Don't:
@@ -342,5 +343,5 @@ Full-width 84px paper tiles with a 2px inset ring, a 50px tinted status circle a
 - **Don't** show a stale, offline or sensor-only state in Working Green.
 - **Don't** lay points out as a grid of identical cards or build a white dashboard with a dark sidebar.
 - **Don't** introduce a third typeface or set running text in Archivo.
-- **Don't** add motion beyond the pour, the meter level, the settle mark and short state transitions (150-400ms); reduced motion removes all of it.
+- **Don't** add motion beyond the pour, the meter level, the settle mark and short state transitions (150-400ms); reduced motion removes the movement and leaves only the still tint on a changed board row.
 - **Don't** remove a completed stamp from a coupon.

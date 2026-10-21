@@ -183,7 +183,7 @@
       "ink-3": {
         "role": "neutral",
         "displayName": "Ink 3",
-        "canonical": "#6c675b",
+        "canonical": "#5f5a4f",
         "oklch": "oklch(51.5% 0.019 88)",
         "tonalRamp": [
           "#0f0b03",
@@ -311,7 +311,7 @@
       "limit": {
         "role": "tertiary",
         "displayName": "Burnt Orange Limited",
-        "canonical": "#b25000",
+        "canonical": "#a34700",
         "oklch": "oklch(54.7% 0.147 49)",
         "tonalRamp": [
           "#1d0200",

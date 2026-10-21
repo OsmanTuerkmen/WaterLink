@@ -1,5 +1,5 @@
 "use client";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { getPointDisplay, type State, type WaterPoint } from "@/lib/domain";
 import osm from "@/data/osm-area.json";
 import { isTracked, letter, toneOf } from "./format";
@@ -49,6 +49,20 @@ export function NeighbourhoodMap({ state, now, offline, extent = "near", selecte
     return { x, y, width, height, located };
   }, [state.points, extent]);
 
+  // Pixels on screen per map unit. A small map (a phone) would shrink the tiles below a tappable size.
+  const svgRef = useRef<SVGSVGElement>(null);
+  const [pxPerUnit, setPxPerUnit] = useState<number | null>(null);
+  const [frameW, frameH] = geo ? [geo.width, geo.height] : [0, 0];
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg || !frameW) return;
+    const measure = () => { const box = svg.getBoundingClientRect(); setPxPerUnit(Math.max(box.width / frameW, box.height / frameH) || null); };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(svg);
+    return () => observer.disconnect();
+  }, [frameW, frameH]);
+
   if (!geo) return null;
   const { x, y, width, height, located } = geo;
   const scale = width / 900; // marker sizes stay readable at any extent
@@ -57,7 +71,8 @@ export function NeighbourhoodMap({ state, now, offline, extent = "near", selecte
   const place = (p: WaterPoint) => ({ px: x(p.lon!), py: y(p.lat!) });
 
   // Points recorded at the same spot fan out with a leader line instead of hiding each other.
-  const r = (extent === "all" ? 22 : 30) * scale;
+  const MIN_TILE_PX = 46; // a little over 44 so the outline does not eat into the target
+  const r = Math.max((extent === "all" ? 22 : 30) * scale, pxPerUnit ? MIN_TILE_PX / 2 / pxPerUnit : 0);
   const markers: { p: WaterPoint; px: number; py: number; ox: number; oy: number }[] = [];
   for (const p of tracked) {
     const { px, py } = place(p);
@@ -76,7 +91,7 @@ export function NeighbourhoodMap({ state, now, offline, extent = "near", selecte
 
   return (
     <figure className={`nmap ${className}`}>
-      <svg viewBox={`0 0 ${width.toFixed(0)} ${height.toFixed(0)}`} role="img" aria-label={label ?? "Map of the neighbourhood with the water points"} preserveAspectRatio="xMidYMid slice">
+      <svg ref={svgRef} viewBox={`0 0 ${width.toFixed(0)} ${height.toFixed(0)}`} role="img" aria-label={label ?? "Map of the neighbourhood with the water points"} preserveAspectRatio="xMidYMid slice">
         <rect width={width} height={height} className="nmap-ground" />
         {WAYS.filter((w) => w.kind === "water").map((w, i) => <path key={`w${i}`} d={path(w.line)} className="nmap-stream" />)}
         {WAYS.filter((w) => w.kind === "road").sort((a, b) => b.rank - a.rank).map((w, i) => (
