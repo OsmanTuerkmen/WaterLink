@@ -22,7 +22,7 @@ Stand: Branch `claude/waterlink-redesign`, bereitgestellt am 11. Oktober 2026.
 
 ## Technik
 
-- **Cloudflare Workers + D1**, kostenloser Tarif (Free Plan), keine Kreditkarte. Für eine Demo reichen die Freikontingente deutlich (Workers: 100.000 Anfragen pro Tag; D1: 5 Mio. gelesene Zeilen pro Tag). Jedes geöffnete Fenster fragt alle 3 Sekunden ab, das sind rund 29.000 Anfragen pro Fenster und Tag. Für eine mehrstündige Demo mit wenigen Geräten unkritisch, aber eine Tafel nicht tagelang dauerhaft laufen lassen.
+- **Cloudflare Workers + D1**, kostenloser Tarif (Free Plan), keine Kreditkarte. Für eine Demo reichen die Freikontingente deutlich (Workers: 100.000 Anfragen pro Tag; D1: 5 Mio. gelesene Zeilen pro Tag). Jedes geöffnete, sichtbare Fenster fragt alle 3 Sekunden ab, das sind rund 29.000 Anfragen pro Fenster und Tag (versteckte Tabs fragen nicht; ohne Änderung ist die Antwort nur rund 400 Byte groß, die Anfragen zählen aber weiter). Für eine mehrstündige Demo mit wenigen Geräten unkritisch, aber eine Tafel nicht tagelang dauerhaft laufen lassen.
 - Cloudflare-Konto: das von Reczec. Worker `waterlink-demo`, Datenbank `waterlink-demo`, Subdomain `waterlink.workers.dev`.
 - **Zwei Anmeldearten im selben Code** (`web/lib/access.ts`):
   - *Sites* (Standard, Osmans OpenAI-Sites-Projekt): Die Plattform meldet an und setzt vertrauenswürdige Header.
@@ -45,7 +45,7 @@ Wer von einem **anderen Konto** aus bereitstellen will (z. B. Osman): `npx wrang
 ## Vor dem Pitch (22. Oktober)
 
 1. Live-Seite auf dem Präsentationsrechner öffnen und einmal mit dem Code freischalten.
-2. Auf der Bühne **Reset demo**. Die simulierten Bestätigungen gelten 12 Stunden; nach dem Zurücksetzen ist A und B wieder frisch bestätigt.
+2. Auf der Bühne **Reset demo**. Die simulierten Bestätigungen gelten 12 Stunden; nach dem Zurücksetzen ist A und B wieder frisch bestätigt. (Nach vier Stunden ohne jede Aktion setzt sich die Demo ab dieser Version selbst neu an; für den Pitch trotzdem zurücksetzen, damit der Verlauf leer ist.)
 3. Ablauf nach [Demo-Skript](DEMO.md). Bei Netzproblemen: Folie „Live demo“ mit Screenshot.
 
 ## Und Sites?

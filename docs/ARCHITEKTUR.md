@@ -39,7 +39,9 @@ Die Oberfläche ist auf Englisch und in fünf Ansichten getrennt, alle in `web/c
 | Coordination | `/#coordination/overview`, `/history`, `/demo` | Karte aller Stellen, offene Aufträge mit Hindernissen, Verlauf, Demo-Werkzeuge |
 | Pitch-Bühne | `/?view=stage` | Beide Handys und die Tafel auf einem Bildschirm |
 
-`store.tsx` hält den gemeinsamen Datenstand (Abfrage alle drei Sekunden, Lesekopie im Browser) und für jede Demo-Rolle eine eigene Sitzung. Eine Rolle bekommt ihre Sitzung beim ersten Handeln; so kann die Bühne Betreiberin, Techniker und Koordination gleichzeitig zeigen. Schreibvorgänge laufen nacheinander und tragen weiter die erwartete Revision und eine Anfragekennung.
+`store.tsx` hält den gemeinsamen Datenstand (Abfrage alle drei Sekunden, solange der Tab sichtbar ist; Lesekopie im Browser) und für jede Demo-Rolle eine eigene Sitzung. Eine Rolle bekommt ihre Sitzung beim ersten Handeln; so kann die Bühne Betreiberin, Techniker und Koordination gleichzeitig zeigen. Schreibvorgänge laufen nacheinander und tragen weiter die erwartete Revision und eine Anfragekennung.
+
+Abfrage und Startdaten: `GET /api/waterlink?since=<Revision>` antwortet mit `{ unchanged: true, … }` (rund 400 Byte), wenn der Bildschirm die aktuelle Revision schon hat; sonst kommt der ganze Zustand (rund 47 KB). Wurde der Demo-Zustand vier Stunden lang nicht angefasst (kein Ereignis), setzt `lib/store.ts` ihn beim nächsten Lesen mit frischen simulierten Bestätigungen neu an (Revision + 1, ein Hinweis im Verlauf). Ohne das stünde die Live-Seite nach 12 Stunden Stillstand auf „Confirmation expired“. Der Zustand liegt weiter als eine Zeile in D1; Schreibzugriffe prüfen die erwartete Revision (siehe `tests/store.test.ts`).
 
 Gestaltung: Kanister-Gelb als Rahmen, Deckel-Blau für Aktionen, vier Statusfarben, immer zusammen mit Wort und Symbol. Das Statuszeichen ist ein Kanister, dessen Wasserstand genau den Rest der 12-Stunden-Gültigkeit zeigt. Schriften: Archivo und Atkinson Hyperlegible Next, lokal eingebunden über Fontsource (OFL). Gestaltungsregeln stehen in `DESIGN.md`, Produktgrundlagen in `PRODUCT.md`.
 

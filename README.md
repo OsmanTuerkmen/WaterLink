@@ -61,7 +61,7 @@ npm run typecheck
 npm run test:integration
 ```
 
-Stand 11. Oktober 2026 (Codex-Review): 45 Tests, TypeScript-Prüfung, Produktionsbuild und lokaler API-Integrationstest bestanden. SMS-Prüfschritt, Offline-SMS und Meldungs-Direktlink wurden im Browser geprüft. Neue mobile Prüfung und Druckprüfung stehen noch aus. Aktueller Stand, offene Aufgaben und Protokoll aller Schritte stehen im [Arbeitsstand](docs/ZWISCHENSTAND.md).
+Stand 21. Oktober 2026 (Tiefenprüfung Claude, Branch `claude/waterlink-p1-ui-review`): 62 Tests, Lint ohne Befund, CI-Datei in `.github/workflows/ci.yml`. Stand 11. Oktober 2026 (Codex-Review): 45 Tests, TypeScript-Prüfung, Produktionsbuild und lokaler API-Integrationstest bestanden. SMS-Prüfschritt, Offline-SMS und Meldungs-Direktlink wurden im Browser geprüft. Neue mobile Prüfung und Druckprüfung stehen noch aus. Aktueller Stand, offene Aufgaben und Protokoll aller Schritte stehen im [Arbeitsstand](docs/ZWISCHENSTAND.md).
 
 ## Bereitstellen
 
