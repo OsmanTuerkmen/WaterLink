@@ -124,6 +124,12 @@ Lokale uncommittete Busia-Daten vom alten Branch wurden vor dem Wechsel im Git-S
 
 ## Protokoll
 
+### 21.10.2026, nachts – Claude: Branch-Vergleich und Push (Basis `4b2ee90`)
+
+- Neuen Branch `claude/waterlink-p1-ui-review` (5 Commits auf `12ba4a6`) nach GitHub gepusht; Autorenangabe `Recezc <basreci@gmail.com>` nur per Parameter gesetzt, keine Git-Konfiguration geändert.
+- Alle sechs Branches liegen in einer Kette (jeder enthält den vorigen vollständig): main → codex/waterlink-mvp → claude/waterlink-mvp → claude/waterlink-redesign → codex/waterlink-review → claude/waterlink-p1-ui-review. Keine Abweichung, jeder Merge wäre ein Vorspulen. Testanzahl je Branch (Zählung von `test(` in `web/tests`): 0 / 22 / 39 / 43 / 53 / 62. Die CI-Datei gibt es nur auf dem neuen Branch.
+- Keine Änderung am Code in diesem Schritt; Eintrag nicht gepusht.
+
 ### 21.10.2026, nachts – Claude: P1 und Oberfläche umgesetzt (Basis `12ba4a6`, Branch `claude/waterlink-p1-ui-review`)
 
 - **Anmeldesperre** (`lib/access-limit.ts`): Ein Client, der sein eigenes Limit erreicht hat, erhöht den globalen Zähler nicht mehr. Vorher konnten 100 Versuche von einer Adresse die Anmeldung für alle eine Stunde sperren. Test ergänzt.
