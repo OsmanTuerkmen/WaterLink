@@ -1,5 +1,5 @@
-import raw from "../data/region.json";
-import { parseRegion, type RegionData } from "./domain";
+import raw from "../data/region.json" with { type: "json" };
+import { parseRegion, type RegionData } from "./domain.ts";
 
 /**
  * Real water points for the demo region, written by `scripts/import-wpdx.mjs`.

@@ -1,14 +1,15 @@
-import { DomainError } from "./domain";
+import { DomainError } from "./domain.ts";
 
 /** Small, shared HTTP boundary for the two demo endpoints. */
 export class HttpError extends Error {
-  constructor(
-    public readonly status: number,
-    message: string,
-    public readonly code = "request_failed",
-  ) {
+  // Plain fields, not parameter properties, so the tests can run the file with Node's type stripping.
+  readonly status: number;
+  readonly code: string;
+  constructor(status: number, message: string, code = "request_failed") {
     super(message);
     this.name = "HttpError";
+    this.status = status;
+    this.code = code;
   }
 }
 
@@ -57,12 +58,12 @@ export function isRecord(value: unknown): value is Record<string, unknown> {
 export async function readJsonBody(request: Request): Promise<Record<string, unknown>> {
   const contentType = request.headers.get("content-type")?.split(";", 1)[0].trim().toLowerCase();
   if (contentType !== "application/json") {
-    throw new HttpError(415, "Die Anfrage muss JSON enthalten.", "invalid_content_type");
+    throw new HttpError(415, "The request must contain JSON.", "invalid_content_type");
   }
   const limit = 16_384;
   const declaredLength = request.headers.get("content-length");
   if (declaredLength && Number(declaredLength) > limit) {
-    throw new HttpError(413, "Die Meldung ist zu lang.", "body_too_large");
+    throw new HttpError(413, "The request is too large.", "body_too_large");
   }
   if (!request.body) throw new HttpError(400, "The request contains no data.", "invalid_body");
   const reader = request.body.getReader();
@@ -75,7 +76,7 @@ export async function readJsonBody(request: Request): Promise<Record<string, unk
       length += value.byteLength;
       if (length > limit) {
         await reader.cancel();
-        throw new HttpError(413, "Die Meldung ist zu lang.", "body_too_large");
+        throw new HttpError(413, "The request is too large.", "body_too_large");
       }
       chunks.push(value);
     }
@@ -94,6 +95,6 @@ export async function readJsonBody(request: Request): Promise<Record<string, unk
   } catch {
     throw new HttpError(400, "The request is not valid JSON.", "invalid_json");
   }
-  if (!isRecord(value)) throw new HttpError(400, "Die Anfrage muss ein JSON-Objekt enthalten.", "invalid_body");
+  if (!isRecord(value)) throw new HttpError(400, "The request must contain a JSON object.", "invalid_body");
   return value;
 }

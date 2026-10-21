@@ -1,7 +1,7 @@
-import { applyCommand, createSeedState, type Actor, type Command, type State } from "./domain";
-import { HttpError, isRecord } from "./http";
-import { REGION } from "./region";
-import { sha256 } from "./session";
+import { applyCommand, createSeedState, type Actor, type Command, type State } from "./domain.ts";
+import { HttpError, isRecord } from "./http.ts";
+import { REGION } from "./region.ts";
+import { sha256 } from "./session.ts";
 
 export type MutationCommand = Command | { type: "reset" };
 
@@ -71,6 +71,16 @@ function decodeRow(row: StateRow): StoredEnvelope {
   return value;
 }
 
+/**
+ * The shared demo has no staff to confirm anything. After this long without activity every
+ * simulated confirmation would read "expired" (they last 12 hours), so the demo starts over.
+ */
+export const IDLE_RESEED_MS = 4 * 60 * 60 * 1000;
+
+function lastActivityMs(state: State): number {
+  return state.events.reduce((latest, event) => Math.max(latest, Date.parse(event.at) || 0), 0);
+}
+
 async function loadEnvelope(db: D1Database, now: Date): Promise<StoredEnvelope> {
   let row = await db.prepare("SELECT revision, payload FROM demo_state WHERE id = ?").bind("demo").first<StateRow>();
   if (!row) {
@@ -81,7 +91,24 @@ async function loadEnvelope(db: D1Database, now: Date): Promise<StoredEnvelope> 
     row = await db.prepare("SELECT revision, payload FROM demo_state WHERE id = ?").bind("demo").first<StateRow>();
   }
   if (!row) throw new Error("Demo state initialization failed.");
-  return decodeRow(row);
+  const envelope = decodeRow(row);
+  if (now.getTime() - lastActivityMs(envelope.state) <= IDLE_RESEED_MS) return envelope;
+
+  const state = createSeedState(now, REGION);
+  state.revision = envelope.state.revision + 1; // clients ignore a lower revision
+  state.events = [{
+    id: `event-refresh-${state.revision}`, pointId: null, jobId: null, type: "reset",
+    message: "Demo refreshed after 4 hours without activity. Confirmations, routes, people and reports are simulated.",
+    actorId: "demo", actorName: "WaterLink Demo", at: now.toISOString(),
+  }];
+  const refreshed: StoredEnvelope = { state, receipts: [] };
+  const result = await db.prepare("UPDATE demo_state SET revision = ?, payload = ? WHERE id = ? AND revision = ?")
+    .bind(state.revision, JSON.stringify(refreshed), "demo", envelope.state.revision).run();
+  if (result.meta.changes === 1) return refreshed;
+  // Another request refreshed or changed it first: read what was committed.
+  const latest = await db.prepare("SELECT revision, payload FROM demo_state WHERE id = ?").bind("demo").first<StateRow>();
+  if (!latest) throw new Error("Demo state disappeared.");
+  return decodeRow(latest);
 }
 
 export async function getState(db: D1Database, now = new Date()): Promise<State> {

@@ -42,6 +42,10 @@ assert.equal(operator.actor.role, 'operator');
 await request('/api/session', { method: 'POST', body: { role: 'operator' }, headers: { Origin: 'https://unrelated.example' }, expected: 403 });
 const initial = await request('/api/waterlink');
 revision = initial.state.revision;
+const same = await request(`/api/waterlink?since=${revision}`);
+assert.equal(same.unchanged, true, 'A screen that holds the current revision gets no state again.');
+assert.equal(same.state, undefined);
+assert.equal((await request(`/api/waterlink?since=${revision + 1}`)).state.revision, revision, 'An unknown revision gets the full state.');
 await send(coordinator.token, { type: 'reset' });
 
 try {

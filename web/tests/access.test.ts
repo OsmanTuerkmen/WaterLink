@@ -96,6 +96,13 @@ test("a correct code clears the client's count; the global window still limits m
   assert.equal(allowed, GLOBAL_LIMIT.attempts);
 });
 
+test("one locked-out address cannot use up the shared budget and lock everybody out", async () => {
+  const db = sqlite(), noisy = await clientKey("203.0.113.7");
+  for (let i = 0; i < GLOBAL_LIMIT.attempts * 2; i++) await registerAttempt(db, noisy, NOW);
+  assert.equal((await registerAttempt(db, noisy, NOW)).allowed, false);
+  assert.equal((await registerAttempt(db, await clientKey("198.51.100.4"), NOW)).allowed, true, "a different visitor can still sign in");
+});
+
 test("raw IP addresses are not stored", async () => {
   const key = await clientKey("203.0.113.7");
   assert.ok(!key.includes("203.0.113.7"));

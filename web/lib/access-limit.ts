@@ -39,11 +39,12 @@ export async function registerAttempt(db: LimitDatabase, client: string, nowMs: 
   await db.prepare(CREATE).run();
   await db.prepare("DELETE FROM access_attempts WHERE window_start <= ?").bind(nowMs - GLOBAL_LIMIT.windowMs).run();
   const own = await count(db, client, nowMs, CLIENT_LIMIT.windowMs);
-  const all = await count(db, "global", nowMs, GLOBAL_LIMIT.windowMs);
-  const waits = [
-    own.count > CLIENT_LIMIT.attempts ? own.windowStart + CLIENT_LIMIT.windowMs - nowMs : 0,
-    all.count > GLOBAL_LIMIT.attempts ? all.windowStart + GLOBAL_LIMIT.windowMs - nowMs : 0,
-  ];
+  // A client that is already locked out must not use up the shared budget, or one address could lock everybody out.
+  const waits = [own.count > CLIENT_LIMIT.attempts ? own.windowStart + CLIENT_LIMIT.windowMs - nowMs : 0];
+  if (waits[0] <= 0) {
+    const all = await count(db, "global", nowMs, GLOBAL_LIMIT.windowMs);
+    waits.push(all.count > GLOBAL_LIMIT.attempts ? all.windowStart + GLOBAL_LIMIT.windowMs - nowMs : 0);
+  }
   const wait = Math.max(...waits);
   return { allowed: wait <= 0, retryAfterS: Math.max(1, Math.ceil(wait / 1000)) };
 }

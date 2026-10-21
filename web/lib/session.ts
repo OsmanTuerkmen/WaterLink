@@ -1,5 +1,5 @@
-import type { Actor, Role } from "./domain";
-import { HttpError } from "./http";
+import type { Actor, Role } from "./domain.ts";
+import { HttpError } from "./http.ts";
 
 const SESSION_TTL_MS = 8 * 60 * 60 * 1000;
 
