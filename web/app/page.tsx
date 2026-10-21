@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { ArrowUpRight, RefreshCw, Wifi, WifiOff } from "lucide-react";
 import { WaterLinkProvider, useWaterLink } from "@/components/waterlink/store";
 import { CanMark } from "@/components/waterlink/marks";
@@ -34,11 +34,11 @@ export default function Home() {
 }
 
 function App() {
-  const [mode, setMode] = useState<"app" | "display" | "stage" | null>(null);
+  // null while rendering on the server; the query string is read on the client only.
+  const view = useSyncExternalStore(() => () => {}, () => new URLSearchParams(location.search).get("view") ?? "", () => null);
+  const mode = view === null ? null : view === "display" ? "display" : view === "stage" ? "stage" : "app";
   const [route, setRoute] = useState<Route>({ view: "status" });
   useEffect(() => {
-    const view = new URLSearchParams(location.search).get("view");
-    setMode(view === "display" ? "display" : view === "stage" ? "stage" : "app");
     // Links, bookmarks and the back button change only the hash; follow them.
     const follow = () => setRoute(parseHash(location.hash));
     follow();
@@ -132,7 +132,8 @@ function Content({ route, navigate }: { route: Route; navigate: (r: Route) => vo
       {route.view === "status" && <StatusView state={state} now={now} offline={offline} lastSync={lastSync} onReport={(id) => navigate({ view: "field", role: "operator", point: id })} />}
       {route.view === "field" && (
         <div className="field-page">
-          <FieldApp role={route.role} initialPoint={route.point} onRole={(role) => navigate({ view: "field", role, point: null })} />
+          <h1 className="sr-only">Field app for operators and technicians</h1>
+          <FieldApp key={`${route.role}:${route.point ?? ""}`} role={route.role} initialPoint={route.point} onRole={(role) => navigate({ view: "field", role, point: null })} />
           <aside className="field-aside">
             <h2>The app for people at the water point</h2>
             <p>One step per screen and big buttons, so it works outdoors on a cheap phone. The same steps fit an SMS flow for phones without internet, which is planned but not connected yet.</p>

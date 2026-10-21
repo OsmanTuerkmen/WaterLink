@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, useSyncExternalStore, type ReactNode } from "react";
 import { ArrowLeft, ArrowRight, Check, ClipboardCheck, Droplet, Droplets, Mic, TriangleAlert, Wrench, X } from "lucide-react";
 import { getPointDisplay, type Blocker, type Job, type Role, type State, type WaterPoint } from "@/lib/domain";
 import { useWaterLink } from "./store";
@@ -39,11 +39,9 @@ const PEOPLE: Record<FieldRole, { name: string; job: string }> = {
 /** Phone-first app for people at the water point. One step per screen, large targets. */
 export function FieldApp({ role, onRole, initialPoint, framed = false }: { role: FieldRole; onRole?: (role: FieldRole) => void; initialPoint?: string | null; framed?: boolean }) {
   const { state, connection, now, feedback, clear } = useWaterLink();
-  const [screen, setScreen] = useState<Screen>(initialPoint ? { kind: "report", pointId: initialPoint, step: 1 } : { kind: "home" });
-  useEffect(() => {
-    setScreen(role === "operator" && initialPoint ? { kind: "report", pointId: initialPoint, step: 1 } : { kind: "home" });
-    clear(role);
-  }, [role, initialPoint]); // eslint-disable-line react-hooks/exhaustive-deps
+  const [screen, setScreen] = useState<Screen>(role === "operator" && initialPoint ? { kind: "report", pointId: initialPoint, step: 1 } : { kind: "home" });
+  // The page remounts this component when the role or the linked point changes (see its key), so the screen starts fresh.
+  useEffect(() => { clear(role); }, [role, initialPoint]); // eslint-disable-line react-hooks/exhaustive-deps
   const fb = feedback(role);
   const offline = connection !== "online";
   const go = (next: Screen) => { clear(role); setScreen(next); };
@@ -159,9 +157,9 @@ function Choice({ selected, onClick, icon, title, text, tone, disabled }: { sele
 type Recognition = { lang: string; interimResults: boolean; start(): void; onresult: (e: { results: ArrayLike<ArrayLike<{ transcript: string }>> }) => void; onend: () => void; onerror: () => void };
 /** Browser dictation only fills the text; the person reviews it and chooses the status. */
 function useDictation(onText: (text: string) => void) {
-  const [supported, setSupported] = useState(false), [listening, setListening] = useState(false);
+  const [listening, setListening] = useState(false);
   const Ctor = () => { const w = window as unknown as Record<string, (new () => Recognition) | undefined>; return w.SpeechRecognition ?? w.webkitSpeechRecognition; };
-  useEffect(() => setSupported(Boolean(Ctor())), []);
+  const supported = useSyncExternalStore(() => () => {}, () => Boolean(Ctor()), () => false);
   function start() {
     const R = Ctor(); if (!R) return;
     const r = new R(); r.lang = "en-KE"; r.interimResults = false;

@@ -8,7 +8,7 @@ import { useWaterLink } from "./store";
 import { SignInPrompt } from "./signin";
 import { NeighbourhoodMap } from "./map";
 import { PointTile, StatusChip } from "./marks";
-import { BLOCKER, JOB_STEP, ago, isTracked, letter, stamp } from "./format";
+import { BLOCKER, JOB_STEP, ago, isTracked, stamp } from "./format";
 
 export type CoordTab = "overview" | "history" | "demo";
 

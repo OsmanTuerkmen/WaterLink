@@ -5,6 +5,7 @@ import type { Actor, Command, Role, State } from "@/lib/domain";
 export type Mutation = Command | { type: "reset" };
 type Session = { token: string; actor: Actor; expiresAt: string };
 type Snapshot = { state: State; serverNow: string };
+type Unchanged = { unchanged: true; revision: number; serverNow: string };
 export type Connection = "loading" | "online" | "offline";
 export interface RoleFeedback { busy: boolean; error: string; notice: string; signInNeeded: boolean }
 
@@ -44,19 +45,41 @@ export function useWaterLink(): Store {
   return store;
 }
 
+/** The last copy this device saved. Nothing renders from it before the page has mounted, so reading it while creating the provider is safe. */
+function readSavedCopy(): { state: State; syncedAt: string | null; offset: number } | null {
+  try {
+    const saved = JSON.parse(localStorage.getItem(CACHE) || "null");
+    return saved && validState(saved.state)
+      ? { state: saved.state, syncedAt: saved.syncedAt ?? null, offset: Number.isFinite(saved.offset) ? saved.offset : 0 }
+      : null;
+  } catch { return null; }
+}
+
+function readSavedSessions(): Partial<Record<Role, Session>> {
+  const restored: Partial<Record<Role, Session>> = {};
+  try {
+    for (const role of ROLES) {
+      const s = JSON.parse(sessionStorage.getItem(SESSION(role)) || "null");
+      if (s?.token && s.actor?.role === role && Date.parse(s.expiresAt) > Date.now()) restored[role] = s;
+    }
+  } catch { /* Invalid storage is discarded. */ }
+  return restored;
+}
+
 export function WaterLinkProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<State | null>(null);
-  const current = useRef<State | null>(null);
+  const [saved] = useState(readSavedCopy);
+  const [state, setState] = useState<State | null>(saved?.state ?? null);
+  const current = useRef<State | null>(saved?.state ?? null);
   const [connection, setConnection] = useState<Connection>("loading");
-  const [lastSync, setLastSync] = useState<string | null>(null);
+  const [lastSync, setLastSync] = useState<string | null>(saved?.syncedAt ?? null);
   const [now, setNow] = useState(() => Date.now());
-  const offset = useRef(0);
-  const [sessions, setSessions] = useState<Partial<Record<Role, Session>>>({});
-  const sessionRef = useRef<Partial<Record<Role, Session>>>({});
+  const offset = useRef(saved?.offset ?? 0);
+  const [sessions, setSessions] = useState<Partial<Record<Role, Session>>>(readSavedSessions);
+  const sessionRef = useRef<Partial<Record<Role, Session>>>(sessions);
   const [feedback, setFeedback] = useState<Record<Role, RoleFeedback>>({ operator: IDLE, technician: IDLE, coordinator: IDLE });
   const [simulatedOffline, setSimulatedOffline] = useState(false);
   const [authMode, setAuthMode] = useState<"sites" | "code">("sites");
-  const simulated = useRef(false), fetching = useRef(false), writing = useRef(false);
+  const simulated = useRef(false), fetching = useRef(false), writing = useRef(false), cachedAt = useRef(0);
   const active = useRef<AbortController | null>(null);
   const requestIds = useRef(new Map<string, string>());
   const lastErrors = useRef<Partial<Record<Role, string>>>({});
@@ -72,11 +95,28 @@ export function WaterLinkProvider({ children }: { children: ReactNode }) {
     const syncedAt = new Date().toISOString();
     offset.current = Date.parse(data.serverNow) - Date.now();
     current.current = data.state;
+    cachedAt.current = Date.now();
     setState(data.state);
     setNow(Date.now() + offset.current);
     setLastSync(syncedAt);
     setConnection("online");
     try { localStorage.setItem(CACHE, JSON.stringify({ state: data.state, syncedAt, offset: offset.current })); } catch { /* The cache is optional. */ }
+  }, []);
+
+  /** Same revision as before: only the clock offset and the sync time move; the saved copy is refreshed once in a while. */
+  const confirmUnchanged = useCallback((data: Unchanged) => {
+    if (!current.current || current.current.revision !== data.revision || !Number.isFinite(Date.parse(data.serverNow))) throw new Error("Invalid server answer.");
+    const nowMs = Date.now();
+    offset.current = Date.parse(data.serverNow) - nowMs;
+    setConnection("online");
+    // Nothing on screen changed, so skip re-rendering every consumer: the clock has its own 15 s tick, and
+    // "last synced" is only shown to the minute. Update it, and the saved copy, every 30 s.
+    if (nowMs - cachedAt.current > 30_000) {
+      cachedAt.current = nowMs;
+      const syncedAt = new Date(nowMs).toISOString();
+      setLastSync(syncedAt);
+      try { localStorage.setItem(CACHE, JSON.stringify({ state: current.current, syncedAt, offset: offset.current })); } catch { /* The cache is optional. */ }
+    }
   }, []);
 
   const refresh = useCallback(async () => {
@@ -86,10 +126,13 @@ export function WaterLinkProvider({ children }: { children: ReactNode }) {
     active.current = controller;
     const timeout = setTimeout(() => controller.abort(), 7000);
     try {
-      const response = await fetch("/api/waterlink", { cache: "no-store", signal: controller.signal });
+      const since = current.current ? `?since=${current.current.revision}` : "";
+      const response = await fetch(`/api/waterlink${since}`, { cache: "no-store", signal: controller.signal });
       if (!response.ok) throw new Error("Unreachable");
-      const data = (await response.json()) as Snapshot;
-      if (!simulated.current) accept(data);
+      const data = (await response.json()) as Snapshot | Unchanged;
+      if (!simulated.current) {
+        if ("unchanged" in data) confirmUnchanged(data); else accept(data);
+      }
     } catch {
       setConnection("offline");
     } finally {
@@ -97,28 +140,13 @@ export function WaterLinkProvider({ children }: { children: ReactNode }) {
       active.current = null;
       fetching.current = false;
     }
-  }, [accept]);
+  }, [accept, confirmUnchanged]);
 
   useEffect(() => {
-    try {
-      const saved = JSON.parse(localStorage.getItem(CACHE) || "null");
-      if (saved && validState(saved.state)) {
-        current.current = saved.state;
-        setState(saved.state);
-        setLastSync(saved.syncedAt);
-        offset.current = Number.isFinite(saved.offset) ? saved.offset : 0;
-      }
-      const restored: Partial<Record<Role, Session>> = {};
-      for (const role of ROLES) {
-        const s = JSON.parse(sessionStorage.getItem(SESSION(role)) || "null");
-        if (s?.token && s.actor?.role === role && Date.parse(s.expiresAt) > Date.now()) restored[role] = s;
-      }
-      sessionRef.current = restored;
-      setSessions(restored);
-    } catch { /* Invalid storage is discarded. */ }
     fetch("/api/access", { cache: "no-store" }).then((r) => r.json() as Promise<{ mode?: string }>).then((d) => { if (d?.mode === "code") setAuthMode("code"); }).catch(() => {});
-    void refresh();
-    const poll = setInterval(() => void refresh(), 3000);
+    const first = setTimeout(() => void refresh(), 0);
+    // A hidden tab stops asking; it catches up as soon as it is shown again (see `visible`).
+    const poll = setInterval(() => { if (!document.hidden) void refresh(); }, 3000);
     const tick = setInterval(() => setNow(Date.now() + offset.current), 15_000);
     const online = () => void refresh();
     const offline = () => { active.current?.abort(); setConnection("offline"); };
@@ -127,7 +155,7 @@ export function WaterLinkProvider({ children }: { children: ReactNode }) {
     window.addEventListener("offline", offline);
     document.addEventListener("visibilitychange", visible);
     return () => {
-      clearInterval(poll); clearInterval(tick); active.current?.abort();
+      clearTimeout(first); clearInterval(poll); clearInterval(tick); active.current?.abort();
       window.removeEventListener("online", online);
       window.removeEventListener("offline", offline);
       document.removeEventListener("visibilitychange", visible);

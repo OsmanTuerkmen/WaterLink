@@ -239,20 +239,23 @@ export function waterSourceLabel(value: string): string {
 }
 
 /** Validates imported data; malformed entries are dropped rather than trusted. */
+const record = (value: unknown): Record<string, unknown> | null =>
+  value && typeof value === "object" && !Array.isArray(value) ? (value as Record<string, unknown>) : null;
+
 export function parseRegion(value: unknown): RegionData | null {
-  if (!value || typeof value !== "object") return null;
-  const raw = value as Record<string, any>;
-  const meta = raw.meta, demo = raw.demo;
-  if (!meta || !demo || !Array.isArray(raw.points)) return null;
-  const meeting = meta.meetingPoint;
+  const raw = record(value), meta = record(raw?.meta), demo = record(raw?.demo);
+  if (!raw || !meta || !demo || !Array.isArray(raw.points)) return null;
+  const meeting = record(meta.meetingPoint);
   if (!meeting || !finite(meeting.lat) || !finite(meeting.lon)) return null;
   const seen = new Set<string>();
-  const points = (raw.points as any[]).flatMap((item) => {
-    const rowId = text(item?.rowId, 40);
+  const points = (raw.points as unknown[]).flatMap((entry) => {
+    const item = record(entry);
+    if (!item) return [];
+    const rowId = text(item.rowId, 40);
     if (!/^[0-9A-Za-z_-]{1,40}$/.test(rowId) || seen.has(rowId) || !finite(item.lat) || !finite(item.lon)
       || Math.abs(item.lat) > 90 || Math.abs(item.lon) > 180) return [];
-    const status = ["functional", "non_functional", "unknown"].includes(item.status) ? item.status : "unknown";
-    const reportDate = Number.isFinite(Date.parse(item.reportDate)) ? new Date(item.reportDate).toISOString() : "";
+    const status = (["functional", "non_functional", "unknown"] as const).find((s) => s === item.status) ?? "unknown";
+    const reportDate = Number.isFinite(Date.parse(String(item.reportDate))) ? new Date(String(item.reportDate)).toISOString() : "";
     seen.add(rowId);
     return [{
       source: "WPdx" as const, rowId, dataset: text(item.dataset, 120), reportDate, status, statusText: text(item.statusText, 80),
