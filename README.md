@@ -27,6 +27,7 @@ Mehr dazu: [Produktgrundlagen](PRODUCT.md) (Englisch), [Demo in drei Minuten](do
 | Teil | Stand |
 |---|---|
 | Ablauf Meldung → Auftrag → Reparatur → Funktionstest, Rollenprüfung, Verlauf | Umgesetzt und getestet |
+| Weg, Zugang und Öffnungszeiten prüfen (erst danach nennt WaterLink eine Wasserstelle als Alternative), Wasserstellen anlegen und entfernen | Umgesetzt und getestet; die Besuche vor Ort sind in der Demo simuliert |
 | Orte der Wasserstellen | **Echt:** 60 Einträge aus Erhebungen der Water Point Data Exchange in Busia, Kenia. Der Zustand darin ist historisch und nie ein aktueller Status. |
 | Sensordaten | **Echt, aber alt:** wöchentliche Fördermengen einer Handpumpe in Kwale aus dem Jahr 2014, als Wiedergabe. Sie liefern nur einen Hinweis zur Prüfung, nie einen Status. |
 | Personen, Bestätigungen, Wege, Öffnungszeiten | **Simuliert** und überall gekennzeichnet |
@@ -85,7 +86,8 @@ Wenn etwas nicht klappt:
 
 1. Öffne `/?view=stage` (und melde dich wie oben beschrieben an).
 2. Folge den Schritten oben auf der Bühne: Amina meldet, dass Wasserstelle A kein Wasser hat → die Tafel zeigt den Ausfall und Alternative B → Daniel übernimmt und meldet die Reparatur → die Tafel bleibt auf „Not working“ → erst Aminas Funktionstest macht sie wieder grün.
-3. **Reset demo** setzt alles zurück. Unter `/#coordination/demo` gibt es Sonderfälle: abgelaufene Bestätigung, widersprüchliche Meldungen, keine Alternative, Sensorhinweis.
+3. Unter **Coordination → Overview** kannst du eine **eigene Wasserstelle anlegen** und ihren **Weg prüfen**: Erst danach nennt WaterLink sie als Alternative, wenn eine andere ausfällt.
+4. **Reset demo** setzt alles zurück. Unter `/#coordination/demo` gibt es Sonderfälle: abgelaufene Bestätigung, widersprüchliche Meldungen, keine Alternative, Sensorhinweis.
 
 Mit „Cut the connection in this window“ in den Demo-Werkzeugen siehst du, wie ein Fenster bei fehlender Verbindung alles auf „Unclear“ setzt und keine Alternative mehr nennt.
 
@@ -98,10 +100,10 @@ Alle im Ordner `web/`:
 | `npm run dev` | Entwicklungsserver mit Neuladen (Port 5173) |
 | `npm run build` | Produktions-Build |
 | `npm start` | Gebauten Stand lokal über Wrangler starten (ohne simulierte Anmeldung) |
-| `npm test` | 70 Unit-Tests (Fachregeln, Speicher, Sitzungen, Zugang, SMS, Sensor, Region, Sprachtexte, QR-Code, Ausprobier-Modus) |
+| `npm test` | 78 Unit-Tests (Fachregeln, Speicher, Sitzungen, Zugang, SMS, Sensor, Region, Sprachtexte, QR-Code, Ausprobier-Modus) |
 | `npm run typecheck` | TypeScript-Prüfung |
 | `npm run lint` | Code-Stil und Fehlerprüfung |
-| `npm run test:e2e` | 30 Browser-Tests mit dem installierten Chrome (startet selbst einen lokalen Server auf Port 5199): der ganze Ablauf Meldung → Reparatur → Test auf zwei Fenstern, Offline-Verhalten, Seite ohne JavaScript, Sprachumschalter, Ausprobier-Modus, Barrierefreiheit (axe) auf allen Ansichten, Handybreite und Druckblatt |
+| `npm run test:e2e` | 32 Browser-Tests mit dem installierten Chrome (startet selbst einen lokalen Server auf Port 5199): der ganze Ablauf Meldung → Reparatur → Test auf zwei Fenstern, Offline-Verhalten, Seite ohne JavaScript, Sprachumschalter, Ausprobier-Modus, Barrierefreiheit (axe) auf allen Ansichten, Handybreite und Druckblatt |
 | `npm run test:integration` | API-Ablauf gegen einen **lokalen** `npm run dev`-Server (`WATERLINK_BASE_URL=http://127.0.0.1:5173`); setzt nur die Demo-Daten zurück |
 | `npm run test:access` | Zugangscode-Modus gegen einen lokalen Server, siehe Kopf von `scripts/check-access.mjs`. Nie gegen die Live-Seite. |
 | `npm run data:wpdx -- --list` | Counties aus der Water Point Data Exchange auflisten; `-- --county Busia` lädt eine Nachbarschaft nach `data/region.json` |

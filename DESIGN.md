@@ -311,6 +311,9 @@ Under the board's notes: the QR code to the SMS view (a black-on-white SVG on a 
 ### Sandbox Bar and Try Button
 A full-width band in Cap Tint with Cap Deep text (8.6:1) under the top bar, or at the top of the stage: a flask icon, one plain sentence that says practice data on this device only, and two quiet small buttons (Reset practice data, Leave sandbox). The entry is a small primary button, "Try it yourself", in the demo strip and the stage header. Small buttons are 44px tall on touch screens.
 
+### Route Check and Add-Point Forms
+Under a point in the coordination list: one line of text with a small footprint icon says whether route and access are checked (green ink when valid, until when) and a small quiet button opens the form. The form is a stone panel with white inset-ring inputs (44px tall, Cap Blue ring on focus), labels above the fields in bold, an opening-hours group (an "Open all day" checkbox or two time fields) and the can-wash check "I walked the route ..." before the primary Save button; a quiet second button withdraws access. The Add-a-water-point form is the same panel.
+
 ### Repair Coupon (signature)
 Paper with an inset hairline, 16px corners. Head in Can Wash with a 2px dashed ochre tear line. Below, a stamped sequence: 26px dots joined by 2px connectors; done stamps fill Working Green with a white check and keep their time; the next stamp has a 3px Cap Blue ring and blue label. Steps never disappear. Closed coupons drop to 72% opacity with a green closed note.
 

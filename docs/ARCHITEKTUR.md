@@ -45,6 +45,8 @@ Abfrage und Startdaten: `GET /api/waterlink?since=<Revision>` antwortet mit `{ u
 
 Gestaltung: Kanister-Gelb als Rahmen, Deckel-Blau für Aktionen, vier Statusfarben, immer zusammen mit Wort und Symbol. Das Statuszeichen ist ein Kanister, dessen Wasserstand genau den Rest der 12-Stunden-Gültigkeit zeigt. Schriften: Archivo und Atkinson Hyperlegible Next, lokal eingebunden über Fontsource (OFL). Gestaltungsregeln stehen in `DESIGN.md`, Produktgrundlagen in `PRODUCT.md`.
 
+Die Zahl der SMS eines Textes (`smsParts`) folgt der Kodierung: GSM-Alphabet mit 160 Zeichen (153 je Teil), die Erweiterungszeichen `^ { } \\ [ ~ ] | €` zählen doppelt, ein Zeichen außerhalb des Alphabets (Emoji, geschwungener Apostroph) schaltet auf UCS-2 mit 70 (67 je Teil). Kosten sind nicht modelliert.
+
 Die SMS-Simulation steckt in `web/lib/sms.ts` (reine Funktionen, getestet in `tests/sms.test.ts`): `STATUS`, ein Buchstabe oder `HELP` liefern eine Antwort aus dem zuletzt geladenen Stand, möglichst in einer SMS (160 Zeichen). `DOWN A …`, `OK A …` und `FAIL A …` werden für die registrierte Betreiberin in die normalen Befehle übersetzt und laufen über denselben Server mit denselben Regeln; ein „OK“ vor der Reparaturmeldung wird abgelehnt. Swahili-Stichwörter `HALI` und `MSAADA` werden verstanden. Es ist kein SMS-Anbieter angeschlossen; nichts verlässt die Seite außer den Befehlen der Betreiberin an den eigenen Server.
 
 Die öffentliche Tafel hält den Bildschirm wach (Screen Wake Lock, wo der Browser es kann) und hat einen Vollbild-Knopf. Ohne Verbindung zeigt sie alle Stellen als „Unclear“ mit einem roten Hinweis und lässt die einzelnen Alternativen weg. Die Pitch-Bühne zeigt ab 1700 px Breite Tafel und SMS-Handy nebeneinander, darunter per Umschalter.
@@ -57,13 +59,28 @@ Die Karte (`map.tsx`) wird als SVG aus den WPdx-Koordinaten und Straßen aus Ope
 
 **Sicherheitsnetz gegen ein „eingefrorenes Grün“:** Ein Server-Schnappschuss altert nicht von selbst. Deshalb lädt sich die Seite neu, wenn ihre Skripte nach 30 Sekunden nicht gestartet sind (Skript in `app/layout.tsx`, die Seite setzt `data-hydrated` auf `<html>`, sobald sie läuft), und ohne JavaScript fordert ein `<noscript>`-Meta-Refresh alle 60 Sekunden neues HTML an. Getestet in `e2e/board.spec.ts`.
 
+## Weg und Zugang prüfen, Wasserstellen anlegen
+
+Eine Alternative nennt WaterLink nur, wenn die Wasserstelle frisch als funktionierend bestätigt ist **und** jemand Weg und Zugang vor Ort geprüft hat und die Öffnungszeiten zur Ankunft passen. Damit das nicht nur für den Beispieldatensatz gilt, gibt es vier Befehle (alle nur für die Rolle Koordination, serverseitig geprüft, in `domain.ts`):
+
+| Befehl | Wirkung |
+|---|---|
+| `verify_access` | Gehzeit (1 bis 180 Minuten), Wegbeschreibung (3 bis 200 Zeichen), Öffnungszeiten (ganztägig oder `HH:MM`–`HH:MM`) und die ausdrückliche Bestätigung „ich bin den Weg gegangen“; setzt Weg und Zugang auf geprüft, speichert Zeit und Person (`accessCheckedBy`) |
+| `close_access` | Zugang gesperrt oder Weg blockiert: nimmt die Stelle sofort aus den Alternativen |
+| `add_point` | neue Wasserstelle (Name, Ort, Art, geschätzte Gehzeit); nimmt den nächsten freien Buchstaben, beginnt **unbestätigt und ungeprüft**, höchstens `MAX_TRACKED` (8) in der Betreuung |
+| `remove_point` | nur für angelegte Stellen (`custom`) und nur ohne offenen Auftrag |
+
+Die Prüfung gilt wie eine Betriebsbestätigung zwölf Stunden (`ACCESS_TTL_MS`, ein Demo-Wert); danach nennt keine Alternative die Stelle mehr, bis neu geprüft wurde. Gehzeiten von Erhebungsorten gelten als geschätzt, bis eine Person den Weg geprüft hat (Statusansicht, „Details and directions“). Die Oberfläche steht in `components/waterlink/points-admin.tsx` (Koordination → Overview); Server (`parseCommand`) und Ausprobier-Modus nutzen dieselben Regeln.
+
+**Mögliche Doppelerfassungen:** `getPossibleDuplicate` zeigt in den Details einen Erhebungseintrag aus einer anderen Erhebung im Umkreis von 50 m an („kann dieselbe Wasserstelle in einem anderen Jahr sein“). Nichts wird zusammengeführt oder versteckt. Im Busia-Datensatz liegen 22 Paare höchstens 50 m auseinander, **alle** aus verschiedenen Erhebungen, 35 der 60 Einträge sind beteiligt; die 60 Einträge sind also wohl deutlich weniger verschiedene Wasserstellen (zum Beispiel liegen A und C 40 m auseinander).
+
 ## Ausprobier-Modus (Sandbox)
 
 Wer keinen Zugangscode hat, kann den ganzen Ablauf selbst durchspielen. `lib/sandbox.ts` führt dieselben Regeln aus wie der Server (`applyCommand` aus `domain.ts`, mit denselben drei erfundenen Personen aus `lib/actors.ts`) auf dem Gerät aus: Rollen, Übergänge und Fehlermeldungen sind identisch, auch das Zurücksetzen (nur Koordination, gemeinsame Funktion `resetState`). `store.tsx` schaltet dafür um: Im Ausprobier-Modus gehen **keine Schreib- und keine Abfragen** an den Server (keine Sitzungen, kein Abfragen im Takt, das Offline-Ereignis des Browsers wird ignoriert), der Stand liegt in `sessionStorage` des Tabs. Der Modus steht in der Adresse (`?sandbox=1`); der Server rendert dann die erste Ansicht aus den Startdaten, ohne die Datenbank zu lesen. Ein Banner (`sandbox.tsx`) sagt auf jeder Ansicht, dass Übungsdaten benutzt werden, und bietet **Reset practice data** und **Leave sandbox**; beim Verlassen wird der Serverstand neu geladen (er kann eine niedrigere Revision haben als der Übungsstand). **Zeit:** Der Ausprobier-Modus rechnet nur mit der Uhr des Geräts (Zeitstempel und „jetzt“ aus derselben Quelle); sonst würden die eigenen Einträge eines Geräts, dessen Uhr von der des Servers abweicht, nach einem Neuladen „in der Zukunft“ liegen und als unklar erscheinen. Einstieg: der Knopf **Try it yourself** (Kopfzeile jeder Ansicht und Bühne) und ein Hinweis im Anmeldefeld, wenn eine Aktion einen Code verlangt. Grenzen: Der Modus gilt **je Tab**; die öffentliche Tafel in einem zweiten Tab zeigt weiter das gemeinsame Demo, die Bühne zeigt die ganze Geschichte in einem Tab. Getestet in `tests/sandbox.test.ts` und `e2e/sandbox.spec.ts` (unter anderem: Server-Revision bleibt unverändert).
 
 ## Tafel in zwei Sprachen und QR-Code
 
-`web/lib/i18n.ts` enthält alle Texte der öffentlichen Tafel auf Englisch und Kiswahili (ohne Framework, getestet in `tests/i18n.test.ts`: gleiche Schlüssel, nichts unübersetzt). Die Statuslogik bleibt in `domain.ts` unverändert; `format.ts` bekommt nur einen Sprachparameter. Der Umschalter unten auf der Tafel schreibt die Sprache in die Adresse (`?lang=sw`), damit sich eine Tafel in einer Sprache als Lesezeichen speichern lässt, und setzt `lang` am Tafel-Element für Screenreader. **Die Kiswahili-Texte sind ein Entwurf ohne Prüfung durch Muttersprachler** (siehe Roadmap).
+`web/lib/i18n.ts` enthält alle Texte der öffentlichen Tafel auf Englisch und Kiswahili (ohne Framework, getestet in `tests/i18n.test.ts`: gleiche Schlüssel, nichts unübersetzt). Die Statuslogik bleibt in `domain.ts` unverändert; `format.ts` bekommt nur einen Sprachparameter. Der Umschalter unten auf der Tafel schreibt die Sprache in die Adresse (`?lang=sw`), damit sich eine Tafel in einer Sprache als Lesezeichen speichern lässt, und setzt `lang` am Tafel-Element für Screenreader. **Die Kiswahili-Texte sind ein Entwurf ohne Prüfung durch Muttersprachler** (siehe Roadmap); die Tafel sagt das selbst („Tafsiri ya awali (draft translation) …“), solange das so ist (`draft` in `i18n.ts`).
 
 Der QR-Code (`lib/qr.ts`, `components/waterlink/qr.tsx`, Bibliothek `qrcode-generator`) führt zur SMS-Ansicht dieser Seite (`<Adresse>/#sms`) und wird als ein SVG-Pfad gezeichnet, ohne Bild und ohne Netzzugriff. Ein Test zeichnet ihn in ein Bitmap und liest ihn mit einem QR-Leser (`jsqr`) zurück. Auf dem Server fehlt er, weil dort die Adresse des Besuchers nicht bekannt ist; er erscheint, sobald die Seite läuft.
 
@@ -73,9 +90,9 @@ Das Ereignisprotokoll im Zustand ist auf die letzten 200 Einträge begrenzt (`MA
 
 ## Tests
 
-- `npm test` (70): Fachregeln, Speicher mit echtem SQLite (Revisionsprüfung, Wiederholung, Neuansatz), Sitzungen, Zugang, SMS, Sensor, Region, Sprachtexte, QR-Code, Ausprobier-Modus.
+- `npm test` (78): Fachregeln, Speicher mit echtem SQLite (Revisionsprüfung, Wiederholung, Neuansatz), Sitzungen, Zugang, SMS, Sensor, Region, Sprachtexte, QR-Code, Ausprobier-Modus, Weg-/Zugangsprüfung und Anlegen von Wasserstellen, SMS-Teile nach Kodierung.
 - `npm run test:integration` und `npm run test:access`: API und Zugangscode gegen einen laufenden lokalen Server.
-- `npm run test:e2e` (30, Playwright mit dem installierten Chrome): ganzer Ablauf auf zwei Fenstern, Offline, Seite ohne JavaScript, Sicherheitsnetz, Sprachumschalter und QR-Code, Ausprobier-Modus (ganze Geschichte ohne Code, Server unverändert, auch mit einer Geräteuhr, die falsch geht), axe-Prüfung (WCAG A/AA) auf allen elf Ansichten, Handybreite (keine Überbreite, keine Tippfläche unter 44 px), Druckblatt (eine A4-Seite). Läuft in der CI als eigener Auftrag.
+- `npm run test:e2e` (32, Playwright mit dem installierten Chrome): ganzer Ablauf auf zwei Fenstern, Offline, Seite ohne JavaScript, Sicherheitsnetz, Sprachumschalter und QR-Code, Ausprobier-Modus (ganze Geschichte ohne Code, Server unverändert, auch mit einer Geräteuhr, die falsch geht), axe-Prüfung (WCAG A/AA) auf allen elf Ansichten, Handybreite (keine Überbreite, keine Tippfläche unter 44 px), Druckblatt (eine A4-Seite). Läuft in der CI als eigener Auftrag.
 
 ## Abhängigkeiten und Sicherheitsmeldungen
 

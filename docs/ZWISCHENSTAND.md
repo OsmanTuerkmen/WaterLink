@@ -1,6 +1,6 @@
 # Arbeitsstand WaterLink
 
-**Zuletzt aktualisiert: 22. Oktober 2026, abends · Branch `main`.**
+**Zuletzt aktualisiert: 22. Oktober 2026 · Codex-Kontextabgleich 14:03 Europe/Vienna · Branch `main` bei `d4fcba1`.**
 
 Offene Aufgaben und Ideen stehen in der [Roadmap](ROADMAP.md). Hier steht nur, wie der Stand ist und was zuletzt geprüft wurde. Ältere Berichte und das vollständige Protokoll bis 21.10.2026: [Archiv](archiv/).
 
@@ -10,11 +10,13 @@ Zuerst eine verlässlich funktionierende App: Haushalte sehen den letzten bestä
 
 ## Stand
 
+- **Kontextabgleich durch Codex:** Am 22.10. Remote-Branches und Tags erfolgreich abgerufen; lokaler HEAD und `origin/main` bei `d4fcba1`. GitHub liefert nur `main`, keine Issues oder Pull Requests. Parallel entstehen lokale Änderungen an Fachregeln und Tests; diese sind laufende Arbeit und noch kein bestätigter GitHub-/Live-Funktionsumfang.
 - **Repository:** Alles liegt auf `main`. Die früheren fünf Branches wurden hineingeführt (reines Vorspulen, kein Commit verloren) und gelöscht; Übersicht und Wiederherstellung in der [Branch-Geschichte](archiv/BRANCH-GESCHICHTE.md).
 - **App:** Haushaltsstatus mit Karte, öffentliche Tafel, Feld-App für Betreiberin und Techniker, Koordination, simulierte SMS und Pitch-Bühne sind implementiert. Orte stammen aus echten WPdx-Erhebungen (Busia), historische Sensordaten aus Kwale 2014; Bestätigungen, Personen und Wege sind simuliert und gekennzeichnet.
 - **Zugang:** Signiertes Cookie mit serverseitig geprüftem Ablauf, Anmeldeversuche pro Client und global begrenzt; ein gesperrter Client sperrt nicht mehr alle anderen.
 - **Demo-Daten:** Nach vier Stunden ohne Aktivität setzt sich die Demo mit frischen simulierten Bestätigungen selbst neu an.
 - **Erste Ansicht vom Server:** Das HTML enthält schon den aktuellen Stand (auch ohne JavaScript und bei langsamer Verbindung). Eine Seite, deren Skripte nach 30 s nicht starten, lädt sich neu; ohne JavaScript fordert ein Meta-Refresh alle 60 s neues HTML an (Sicherheitsnetz gegen ein „eingefrorenes Grün“).
+- **Weg und Zugang prüfen, Wasserstellen anlegen:** Koordination kann den Weg einer Stelle prüfen (Gehzeit, Beschreibung, Öffnungszeiten, ausdrückliches „ich bin den Weg gegangen“), Zugang als gesperrt melden und Stellen anlegen oder (angelegte) entfernen. Erst danach nennt WaterLink eine neue Stelle als Alternative. Vorher gab es dafür keinen Befehl; die Alternative hing am Beispieldatensatz. Außerdem: Hinweis auf mögliche Doppelerfassungen im Datensatz, SMS-Teile nach Kodierung, Hinweis „draft translation“ auf der Kiswahili-Tafel, beschriftete Bühne im Ausprobier-Modus.
 - **Ausprobier-Modus (Sandbox):** Jeder kann den ganzen Ablauf ohne Zugangscode mit Übungsdaten durchspielen, nur auf dem eigenen Gerät (`/?view=stage&sandbox=1`, Knopf „Try it yourself“, Angebot im Anmeldefeld). Dieselben Regeln laufen im Browser, der Server sieht nichts.
 - **Tafel auf Kiswahili und QR-Code:** Umschalter unten auf der Tafel (`?lang=sw`), QR-Code zur SMS-Ansicht. **Die Kiswahili-Texte sind ein Entwurf ohne Prüfung durch Muttersprachler.**
 - **Sicherheitsmeldungen der Abhängigkeiten:** `npm audit --omit=dev` meldet nichts mehr (Next 16.4.2, React 19.3.1); 20 Meldungen in Entwicklungswerkzeugen bleiben (Roadmap, P3). Ereignisprotokoll auf 200 Einträge begrenzt.
@@ -28,6 +30,7 @@ Zuerst eine verlässlich funktionierende App: Haushalte sehen den letzten bestä
 
 | Prüfung | Datum | Ergebnis |
 |---|---|---|
+| GitHub Actions, Lauf #11 zu `d4fcba1`, direkt über GitHub abgefragt | 22.10.2026, Codex-Kontextabgleich | `web (22)`, `web (24)` und `e2e` jeweils erfolgreich. Keine lokalen App-Prüfungen in dieser Einheit ausgeführt |
 | `npm test`, `npm run typecheck`, `npm run lint`, `npm run build` nach dem Entfernen des ungenutzten Codes | 22.10.2026 | 62/62 Tests, Typprüfung, Lint und Build ohne Fehler |
 | `npm test` | 22.10.2026, frischer Klon | 62/62 bestanden |
 | `npm ci`, `npm run build`, lokale Datenbank anlegen, `npm run dev` (Port 5173) in einem frischen Klon nach der README-Anleitung | 22.10.2026 | bestanden. Zuerst scheiterte das Anlegen der Datenbank mit `SQLITE_CANTOPEN`, weil der Klon in einem zu langen Pfad lag (Windows); im kurzen Pfad funktioniert es, die Anleitung weist darauf hin |
@@ -36,6 +39,8 @@ Zuerst eine verlässlich funktionierende App: Haushalte sehen den letzten bestä
 | `npm run test:access` gegen `npm run dev` im Code-Modus (lokal, Test-Code) | 21.10.2026 | 11/11 bestanden |
 | 375 px (Emulation), 7 Ansichten: Tippflächen, Überschriften, Überbreite bei 100/150/200 % Text | 21.10.2026 | keine Bedienelemente unter 44 px, eine h1, keine Überbreite |
 | Kontrast aller Text-/Hintergrundpaare der Farb-Tokens | 21.10.2026 | alle ≥ 4,5:1 |
+| `npm test` (nach Weg-/Zugangsprüfung, Anlegen von Stellen, SMS-Kodierung) | 22.10.2026 abends | 78/78 bestanden |
+| `npm run test:e2e` (nach den neuen Funktionen), `npm run lint`, `npm run build` | 22.10.2026 abends | 32/32 bestanden, Lint und Build Exit-Code 0. Neu: Stelle anlegen → bestätigen → Alternative bleibt B, bis der Weg geprüft ist → danach die nähere neue Stelle → Sperre nimmt sie heraus → entfernen; axe auf beiden neuen Formularen |
 | Browser-Tests ohne Datenänderung **gegen die Live-Seite** (`E2E_BASE_URL`: Ausprobier-Modus, Tafel, Sprache, QR-Code, Sicherheitsnetz, axe, Handybreite, Druck) | 22.10.2026 abends, nach der Bereitstellung mit der Uhr-Korrektur | 28/28 bestanden; der gemeinsame Zustand blieb unverändert (Revision vorher und nachher gleich). Der erste Lauf davor fand den Uhr-Fehler |
 | `npm test` (nach dem Ausprobier-Modus) | 22.10.2026 abends | 70/70 bestanden (neu: 3 Tests für die Regeln im Ausprobier-Modus) |
 | `npm run test:e2e` (nach dem Ausprobier-Modus und der Uhr-Korrektur) | 22.10.2026 abends | 30/30 bestanden; zuvor 29/29 (die Zeile darunter beschreibt die ersten drei) (neu: 3 Tests: ganze Geschichte auf der Bühne ohne Code bei unveränderter Server-Revision; Knopf, Neuladen und Verlassen; Angebot im Anmeldefeld; axe auf der Sandbox-Bühne). Der Test fing einen zu kleinen Knopf (36 px) ab, behoben |
@@ -52,6 +57,20 @@ Zuerst eine verlässlich funktionierende App: Haushalte sehen den letzten bestä
 | **Nicht geprüft** | | Physische Geräte, echter Screenreader, Bewegungsreduktion im echten Browser, Papierausdruck, Kiswahili durch Muttersprachler, der CI-Auftrag für die Browser-Tests auf GitHub (auf Ubuntu noch nicht gelaufen; in der Ansicht auf GitHub nachsehen), der Ablauf Melden → Reparieren → Bestätigen auf der Live-Seite mit dem Zugangscode |
 
 ## Protokoll
+
+### 22.10.2026, 14:03 Europe/Vienna – Codex: Kontext für Projektbeschreibung und Einreichung abgeglichen (Basis `d4fcba1`, ohne Commit)
+
+- GitHub abgerufen und Branches, Issues, PRs sowie letzten CI-Lauf geprüft; README, Dokumentationswegweiser, Produkt, Arbeitsstand, Roadmap, Übergabe, Branch-Geschichte, Architektur, Demo und Produktgrenzen gelesen. Änderungen seit dem früheren Review anhand der Historie und zentraler Implementierung nachvollzogen.
+- CI-Lauf #11: Node 22, Node 24 und Browser-Tests erfolgreich. Lokale Tests, Build und Live-Prüfungen nicht wiederholt. Ältere Angaben wie „25 Browser-Tests“ im Stand sind durch die neueren Prüfzeilen mit 30 Tests überholt.
+- Parallele lokale Entwicklung an `web/lib/domain.ts` und `web/tests/domain.test.ts` erkannt (unter anderem Wege-/Zugangsprüfung, eigene Wasserstellen und Hinweise auf mögliche doppelte Erhebungen). Nicht verändert und nicht als fertig oder bereitgestellt bewertet. Keine Codeänderung, kein Commit, Push, Merge oder Deployment durch Codex.
+- Zweck: anschließendes Ausfüllen der Projektangaben anhand belegter Fähigkeiten, mit klarer Trennung zwischen Umsetzung, Simulation und geplanten Erweiterungen. Offene Aufgaben bleiben in der Roadmap.
+
+### 22.10.2026, abends (später) – Funktion vervollständigt
+
+- **Lücke gefunden:** Die Fachregeln kannten keinen Befehl, der Weg, Zugang oder Öffnungszeiten setzt. Alternativen gab es deshalb nur für die fest eingetragene Stelle B. Neu: `verify_access`, `close_access`, `add_point`, `remove_point` (nur Koordination), Oberfläche in der Koordination, Server-Prüfung in `parseCommand`, Ausprobier-Modus automatisch mit.
+- **Datenfund:** 22 Paare von Erhebungseinträgen liegen höchstens 50 m auseinander, alle aus verschiedenen Erhebungen (35 von 60 Einträgen beteiligt). Die „60 Wasserstellen“ sind also deutlich weniger verschiedene Orte. Jetzt als Hinweis in den Details, Auflösung in der Roadmap (P3).
+- **SMS-Zählung** nach Kodierung (GSM-7, Erweiterungstabelle, UCS-2), mit Test. **Kiswahili-Tafel** sagt selbst, dass die Übersetzung ein Entwurf ist. **Bühne im Ausprobier-Modus** heißt jetzt „Practice mode“ und „Reset practice data“.
+- **Nicht umgesetzt:** Prüfung der Übersetzung (braucht Muttersprachler), Koordinaten beim Anlegen (Karte kennt nur Busia), Weg-/Zugangsmeldung durch Betreiber:innen.
 
 ### 22.10.2026, abends – Ausprobier-Modus
 

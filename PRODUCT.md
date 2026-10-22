@@ -35,7 +35,7 @@ Pump monitoring already exists. WaterLink covers what comes after: public inform
 
 - Implemented and tested: report → job → claim → progress/blockers → repair report → explicit on-site function test; status and job state separate; server-side role checks; history; revision conflict protection.
 - Uncertainty rules: a confirmation is valid 12 hours (demo parameter); stale, conflicting, offline and sensor-hint states never show as working.
-- Alternatives only when freshly confirmed working, route/access verified and open on arrival.
+- Alternatives only when freshly confirmed working, route/access verified and open on arrival. Coordination can add a water point, check its route and access (walking time, directions, opening hours, an explicit "I walked the route" confirmation), mark access as closed, and remove points it added. A new point starts unconfirmed and unchecked.
 - Stack: React 19 + TypeScript on Vinext (Cloudflare Worker), D1 storage, Tailwind 4. Business rules in `web/lib/domain.ts` stay; the redesign replaces the frontend.
 - **All UI text in English** (user decision, 11 Oct 2026). The one exception is the public board, which can also be shown in Kiswahili (draft translation, not yet reviewed by a native speaker). Further languages are not decided.
 - A practice mode (sandbox) lets anyone play the whole flow with practice data on their own device, without a code; the same rules run in the browser and nothing reaches the server.
