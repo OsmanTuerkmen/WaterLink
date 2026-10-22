@@ -82,7 +82,7 @@ if (keepExisting) {
 } else {
   if (!code) {
     const words = ["pump", "river", "borehole", "jerrycan", "rain", "well", "tap", "spring", "bucket", "valley", "maji", "kisima"];
-    code = `${words[randomInt(words.length)]}-${words[randomInt(words.length)]}-${randomInt(1000, 10000)}`;
+    code = `${words[randomInt(words.length)]}-${words[randomInt(words.length)]}-${words[randomInt(words.length)]}-${randomInt(1000, 10000)}`;
     writeFileSync(new URL(`../${codeFile}`, import.meta.url), `# Shared demo access code for the Cloudflare deployment. Do not commit.\nDEMO_ACCESS_CODE=${code}\n`);
   }
   run(["secret", "put", "DEMO_ACCESS_CODE", "--config", deployConfig], { input: `${code}\n`, quiet: true });
