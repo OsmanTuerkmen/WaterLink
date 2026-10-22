@@ -4,7 +4,9 @@
 
 > **In short (English):** WaterLink tells households in rural Kenya whether their water point works *today* and where to go instead, and it tracks every outage from the first report to a repair that only counts once an operator has tested it on site. Old "green" statuses expire after 12 hours and turn into "unclear", never into a false promise. It is a hackathon prototype: the places are real survey data, the people, confirmations and routes are simulated and labelled as such. "Working" means water can be drawn, never that it is safe to drink.
 
-**Live-Demo:** https://waterlink-demo.waterlink.workers.dev · Pitch-Bühne: [`/?view=stage`](https://waterlink-demo.waterlink.workers.dev/?view=stage) · Ansehen ist offen, Ändern nur mit Demo-Zugangscode ([Bereitstellung](docs/BEREITSTELLUNG.md)). Die Live-Seite wurde am 22. Oktober 2026 mit dem Stand dieses Repositorys bereitgestellt.
+**Live-Demo:** https://waterlink-demo.waterlink.workers.dev · Pitch-Bühne: [`/?view=stage`](https://waterlink-demo.waterlink.workers.dev/?view=stage) · Ansehen ist offen, Ändern im gemeinsamen Demo nur mit Demo-Zugangscode ([Bereitstellung](docs/BEREITSTELLUNG.md)).
+
+**▶ Ohne Code und ohne Installation selbst ausprobieren:** [https://waterlink-demo.waterlink.workers.dev/?view=stage&sandbox=1](https://waterlink-demo.waterlink.workers.dev/?view=stage&sandbox=1). Das ist der **Ausprobier-Modus**: Du spielst den ganzen Ablauf (Meldung, Reparatur, Test vor Ort) mit Übungsdaten durch. Alles passiert nur auf deinem Gerät, nichts wird gespeichert, und niemand sonst sieht es. Die Live-Seite wurde am 22. Oktober 2026 mit dem Stand dieses Repositorys bereitgestellt.
 
 ## Worum geht es?
 
@@ -33,6 +35,10 @@ Mehr dazu: [Produktgrundlagen](PRODUCT.md) (Englisch), [Demo in drei Minuten](do
 Es gibt keinen Pilotpartner und keine Wirkungszahlen. Die ganze Liste der Grenzen steht in der [Roadmap](docs/ROADMAP.md#3-bewusste-grenzen).
 
 ## Selbst ausprobieren
+
+**Am schnellsten, ohne Installation:** den [Ausprobier-Modus auf der Live-Seite](https://waterlink-demo.waterlink.workers.dev/?view=stage&sandbox=1) öffnen. Auf jeder Seite der App gibt es außerdem oben den Knopf **Try it yourself**; wer in der Feld-App etwas ändern will und keinen Code hat, bekommt dort ebenfalls den Weg in den Ausprobier-Modus angeboten. Die Übungsdaten liegen nur in diesem Browser-Tab (**Reset practice data** setzt sie zurück, **Leave sandbox** verlässt den Modus). Ein zweiter Tab, etwa die öffentliche Tafel, zeigt weiter das gemeinsame Demo; die ganze Geschichte mit Tafel auf einem Bildschirm zeigt die Pitch-Bühne.
+
+**Auf dem eigenen Rechner**, mit allen Daten lokal:
 
 Voraussetzung: [Node.js](https://nodejs.org) ab Version 22.13 (enthält npm). Die Schritte unten wurden am 22. Oktober 2026 in einem frischen Klon geprüft (Windows, Node 24): Installation, Build, Datenbank, Start, `npm test` (62 von 62) und der API-Test laufen durch.
 
@@ -92,10 +98,10 @@ Alle im Ordner `web/`:
 | `npm run dev` | Entwicklungsserver mit Neuladen (Port 5173) |
 | `npm run build` | Produktions-Build |
 | `npm start` | Gebauten Stand lokal über Wrangler starten (ohne simulierte Anmeldung) |
-| `npm test` | 67 Unit-Tests (Fachregeln, Speicher, Sitzungen, Zugang, SMS, Sensor, Region, Sprachtexte, QR-Code) |
+| `npm test` | 70 Unit-Tests (Fachregeln, Speicher, Sitzungen, Zugang, SMS, Sensor, Region, Sprachtexte, QR-Code, Ausprobier-Modus) |
 | `npm run typecheck` | TypeScript-Prüfung |
 | `npm run lint` | Code-Stil und Fehlerprüfung |
-| `npm run test:e2e` | 25 Browser-Tests mit dem installierten Chrome (startet selbst einen lokalen Server auf Port 5199): der ganze Ablauf Meldung → Reparatur → Test auf zwei Fenstern, Offline-Verhalten, Seite ohne JavaScript, Sprachumschalter, Barrierefreiheit (axe) auf allen Ansichten, Handybreite und Druckblatt |
+| `npm run test:e2e` | 29 Browser-Tests mit dem installierten Chrome (startet selbst einen lokalen Server auf Port 5199): der ganze Ablauf Meldung → Reparatur → Test auf zwei Fenstern, Offline-Verhalten, Seite ohne JavaScript, Sprachumschalter, Ausprobier-Modus, Barrierefreiheit (axe) auf allen Ansichten, Handybreite und Druckblatt |
 | `npm run test:integration` | API-Ablauf gegen einen **lokalen** `npm run dev`-Server (`WATERLINK_BASE_URL=http://127.0.0.1:5173`); setzt nur die Demo-Daten zurück |
 | `npm run test:access` | Zugangscode-Modus gegen einen lokalen Server, siehe Kopf von `scripts/check-access.mjs`. Nie gegen die Live-Seite. |
 | `npm run data:wpdx -- --list` | Counties aus der Water Point Data Exchange auflisten; `-- --county Busia` lädt eine Nachbarschaft nach `data/region.json` |

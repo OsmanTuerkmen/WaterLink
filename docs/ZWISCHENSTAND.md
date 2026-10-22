@@ -15,6 +15,7 @@ Zuerst eine verlässlich funktionierende App: Haushalte sehen den letzten bestä
 - **Zugang:** Signiertes Cookie mit serverseitig geprüftem Ablauf, Anmeldeversuche pro Client und global begrenzt; ein gesperrter Client sperrt nicht mehr alle anderen.
 - **Demo-Daten:** Nach vier Stunden ohne Aktivität setzt sich die Demo mit frischen simulierten Bestätigungen selbst neu an.
 - **Erste Ansicht vom Server:** Das HTML enthält schon den aktuellen Stand (auch ohne JavaScript und bei langsamer Verbindung). Eine Seite, deren Skripte nach 30 s nicht starten, lädt sich neu; ohne JavaScript fordert ein Meta-Refresh alle 60 s neues HTML an (Sicherheitsnetz gegen ein „eingefrorenes Grün“).
+- **Ausprobier-Modus (Sandbox):** Jeder kann den ganzen Ablauf ohne Zugangscode mit Übungsdaten durchspielen, nur auf dem eigenen Gerät (`/?view=stage&sandbox=1`, Knopf „Try it yourself“, Angebot im Anmeldefeld). Dieselben Regeln laufen im Browser, der Server sieht nichts.
 - **Tafel auf Kiswahili und QR-Code:** Umschalter unten auf der Tafel (`?lang=sw`), QR-Code zur SMS-Ansicht. **Die Kiswahili-Texte sind ein Entwurf ohne Prüfung durch Muttersprachler.**
 - **Sicherheitsmeldungen der Abhängigkeiten:** `npm audit --omit=dev` meldet nichts mehr (Next 16.4.2, React 19.3.1); 20 Meldungen in Entwicklungswerkzeugen bleiben (Roadmap, P3). Ereignisprotokoll auf 200 Einträge begrenzt.
 - **Browser-Tests:** 25 Tests mit Playwright und Chrome (`npm run test:e2e`), auch als CI-Auftrag.
@@ -35,6 +36,8 @@ Zuerst eine verlässlich funktionierende App: Haushalte sehen den letzten bestä
 | `npm run test:access` gegen `npm run dev` im Code-Modus (lokal, Test-Code) | 21.10.2026 | 11/11 bestanden |
 | 375 px (Emulation), 7 Ansichten: Tippflächen, Überschriften, Überbreite bei 100/150/200 % Text | 21.10.2026 | keine Bedienelemente unter 44 px, eine h1, keine Überbreite |
 | Kontrast aller Text-/Hintergrundpaare der Farb-Tokens | 21.10.2026 | alle ≥ 4,5:1 |
+| `npm test` (nach dem Ausprobier-Modus) | 22.10.2026 abends | 70/70 bestanden (neu: 3 Tests für die Regeln im Ausprobier-Modus) |
+| `npm run test:e2e` (nach dem Ausprobier-Modus) | 22.10.2026 abends | 29/29 bestanden (neu: 3 Tests: ganze Geschichte auf der Bühne ohne Code bei unveränderter Server-Revision; Knopf, Neuladen und Verlassen; Angebot im Anmeldefeld; axe auf der Sandbox-Bühne). Der Test fing einen zu kleinen Knopf (36 px) ab, behoben |
 | `npm test` | 22.10.2026 nachmittags | 67/67 bestanden (neu: Ereignisgrenze, Sprachtexte, QR-Code liest sich zurück) |
 | `npm run typecheck`, `npm run lint`, `npm run build` | 22.10.2026 nachmittags | alle drei Exit-Code 0 |
 | `npm run test:e2e` (neu) | 22.10.2026 nachmittags, lokal | 25/25 bestanden: ganzer Ablauf auf zwei Fenstern (Meldung → Übernahme → Reparatur → Tafel bleibt „Not working“ → Test → „Working“), Offline mit Wiedererholung, Seite ohne JavaScript, Sicherheitsnetz, Sprachumschalter und QR-Code, axe (WCAG A/AA) auf 10 Ansichten ohne Fund, Handybreite ohne Überbreite und ohne Tippfläche unter 44 px auf 9 Ansichten, Druckblatt eine A4-Seite. Frühere Läufe fanden echte Fehler: Karte mit fokussierbaren Markern in einer Bild-Rolle, zu blasser „Full screen“-Knopf, zu kleiner Knopf bei Handybreite |
@@ -48,6 +51,12 @@ Zuerst eine verlässlich funktionierende App: Haushalte sehen den letzten bestä
 | **Nicht geprüft** | | Physische Geräte, echter Screenreader, Bewegungsreduktion im echten Browser, Papierausdruck, Kiswahili durch Muttersprachler, der CI-Auftrag für die Browser-Tests auf GitHub (auf Ubuntu noch nicht gelaufen; in der Ansicht auf GitHub nachsehen), der Ablauf Melden → Reparieren → Bestätigen auf der Live-Seite mit dem Zugangscode |
 
 ## Protokoll
+
+### 22.10.2026, abends – Ausprobier-Modus
+
+- **Anlass:** Das Produkt wird eingereicht und von Beurteilern benutzt, die den Zugangscode nicht haben; ohne Modus könnten sie nur zuschauen.
+- **Umsetzung:** `lib/sandbox.ts` (dieselben Regeln, `applyLocal`), `lib/actors.ts` (die drei Personen, vorher in `session.ts`), `resetState` in `domain.ts` (vorher doppelt in `store.ts`), Umschaltung in `store.tsx`, `sandbox.tsx` (Banner, Knopf), Angebot in `signin.tsx`, `?sandbox=1` auf dem Server (erste Ansicht aus den Startdaten, ohne Datenbankzugriff).
+- **Bewusste Grenze:** Je Tab, nicht zwischen Tabs oder Geräten geteilt (Roadmap).
 
 ### 22.10.2026, nachmittags – Weiterentwicklung: Server-Ansicht, Browser-Tests, Kiswahili, QR-Code
 

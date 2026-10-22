@@ -308,6 +308,9 @@ The same anatomy on whole grid cells, sized in em, with a 4.2em status circle an
 ### Board Tools
 Under the board's notes: the QR code to the SMS view (a black-on-white SVG on a hairline ring, 6.2em, with a one-line bold caption) and a two-button language switch in a pill (min height 44px; the pressed button is ink with can-yellow text). Only on the full board, never on the stage's small copy. The board element carries the chosen `lang`.
 
+### Sandbox Bar and Try Button
+A full-width band in Cap Tint with Cap Deep text (8.6:1) under the top bar, or at the top of the stage: a flask icon, one plain sentence that says practice data on this device only, and two quiet small buttons (Reset practice data, Leave sandbox). The entry is a small primary button, "Try it yourself", in the demo strip and the stage header. Small buttons are 44px tall on touch screens.
+
 ### Repair Coupon (signature)
 Paper with an inset hairline, 16px corners. Head in Can Wash with a 2px dashed ochre tear line. Below, a stamped sequence: 26px dots joined by 2px connectors; done stamps fill Working Green with a white check and keep their time; the next stamp has a 3px Cap Blue ring and blue label. Steps never disappear. Closed coupons drop to 72% opacity with a green closed note.
 

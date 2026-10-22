@@ -38,6 +38,7 @@ Pump monitoring already exists. WaterLink covers what comes after: public inform
 - Alternatives only when freshly confirmed working, route/access verified and open on arrival.
 - Stack: React 19 + TypeScript on Vinext (Cloudflare Worker), D1 storage, Tailwind 4. Business rules in `web/lib/domain.ts` stay; the redesign replaces the frontend.
 - **All UI text in English** (user decision, 11 Oct 2026). The one exception is the public board, which can also be shown in Kiswahili (draft translation, not yet reviewed by a native speaker). Further languages are not decided.
+- A practice mode (sandbox) lets anyone play the whole flow with practice data on their own device, without a code; the same rules run in the browser and nothing reaches the server.
 - Not connected: SMS, live sensors, AI service, payments, real user accounts.
 
 ## Brand Commitments

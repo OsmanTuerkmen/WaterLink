@@ -7,6 +7,7 @@
 | `/` | Status für Haushalte |
 | `/?view=display` | Öffentliche Tafel (Vollbild-Knopf unten rechts) |
 | `/?view=stage` | Pitch-Bühne: beide Handys, Tafel und SMS-Handy |
+| `/?view=stage&sandbox=1` | **Ausprobier-Modus**: dieselbe Bühne mit Übungsdaten, ohne Code, nur auf dem eigenen Gerät |
 | `/#field/operator`, `/#field/technician` | Handy-App für Betreiberin und Techniker |
 | `/#sms` | Simulierte SMS für Tastenhandys |
 | `/#coordination/demo` | Demo-Werkzeuge, Zurücksetzen, Sensor-Wiedergabe |
@@ -16,7 +17,8 @@
 ## Wer darf was
 
 - **Ansehen** kann jeder mit dem Link, ohne Anmeldung. Gezeigt werden nur Demo-Daten: echte Orte aus WPdx, simulierte Personen und Bestätigungen.
-- **Ändern** (melden, reparieren, bestätigen, Szenarien, zurücksetzen) geht erst nach Eingabe des **Demo-Zugangscodes**. Das Feld erscheint, sobald man eine Aktion versucht. Der Code gilt danach 30 Tage im jeweiligen Browser (signiertes Cookie, Ablauf wird auf dem Server geprüft). Nach der ersten Bereitstellung dieses Stands sind ältere Cookies ungültig: Einmal neu freischalten.
+- **Ausprobieren ohne Code:** Im **Ausprobier-Modus** (`?sandbox=1` oder der Knopf „Try it yourself“) kann jeder den ganzen Ablauf mit Übungsdaten durchspielen. Die Daten bleiben im Browser-Tab, der Server sieht nichts und das gemeinsame Demo bleibt unberührt.
+- **Ändern im gemeinsamen Demo** (melden, reparieren, bestätigen, Szenarien, zurücksetzen) geht erst nach Eingabe des **Demo-Zugangscodes**. Das Feld erscheint, sobald man eine Aktion versucht. Der Code gilt danach 30 Tage im jeweiligen Browser (signiertes Cookie, Ablauf wird auf dem Server geprüft). Nach der ersten Bereitstellung dieses Stands sind ältere Cookies ungültig: Einmal neu freischalten.
 - Der Code liegt **nur lokal** in `web/.env.demo-access` auf dem Rechner, auf dem zuletzt bereitgestellt wurde. Seit dem 22. Oktober 2026 ist das der Desktop-Rechner von Reczec (`C:\Users\basre\Desktop\WaterLink\web\.env.demo-access`); der Code vom 11. Oktober wurde an diesem Tag ersetzt, weil die damalige Datei nicht mehr zugänglich war. Bei Cloudflare lässt sich ein gesetzter Code nicht auslesen, nur ersetzen. Die Datei ist per `.gitignore` vom Repo ausgeschlossen. Den Code im Team nur privat weitergeben, nie ins Repo, in Folien oder in öffentliche Chats.
 - Neuer Code: Zeile in `web/.env.demo-access` ändern (mindestens 8 Zeichen) und neu bereitstellen. Alte Cookies werden damit ungültig.
 

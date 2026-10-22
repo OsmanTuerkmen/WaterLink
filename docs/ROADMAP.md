@@ -32,6 +32,7 @@ Sortiert nach Thema, nicht nach Reihenfolge. Was davon sinnvoll ist, hängt von 
 - **Echte Konten und Rollen pro Wasserstelle** statt des gemeinsamen Demo-Codes: Wer darf wo bestätigen? Anmeldung, die auch mit einfachem Handy geht.
 - **Offline-fähige Feld-App** (installierbare Web-App mit Warteschlange): Meldungen und Tests aus Gebieten mit schwachem Netz werden nachgeschickt.
 - **Foto bei Meldung und Test**, damit Techniker die Lage vor dem Weg einschätzen können.
+- **Ausprobier-Modus ausbauen:** geführte Tour mit Hinweisen („Als Nächstes: Amina meldet …“), ein Sandbox-Zustand, den man zwischen Geräten oder Tabs teilen kann (zum Beispiel über einen Link), und ein Zurücksetzen nach einer Zeit ohne Nutzung.
 - **Plausibilitätsprüfung** bei widersprüchlichen Meldungen (zwei Betreiber, ein Sensor).
 
 ### Daten und Technik
@@ -62,7 +63,7 @@ Das ist kein Fehler, sondern Absicht, und darf nicht als „funktioniert schon�
 - **Personen, Bestätigungen, Wege und Öffnungszeiten sind simuliert** und überall so gekennzeichnet. Nur die Orte kommen aus echten Erhebungen (WPdx), deren Zustand historisch ist.
 - **„Funktioniert“ heißt: Wasser kann entnommen werden.** WaterLink macht nie eine Aussage zur Trinkwasserqualität.
 - **SMS, Live-Sensoren, KI-Dienst, Bezahlung und echte Konten sind nicht angeschlossen.**
-- **Alle Demo-Nutzer teilen einen Datensatz** und können nach dem Freischalten alle Rollen wählen. Das ist kein Mehrmandanten- und kein Feldbetrieb.
+- **Alle Demo-Nutzer teilen einen Datensatz** und können nach dem Freischalten alle Rollen wählen. Das ist kein Mehrmandanten- und kein Feldbetrieb. Der **Ausprobier-Modus** (ohne Code) ist davon getrennt: Übungsdaten nur im eigenen Browser-Tab, nie auf dem Server, nicht zwischen Tabs oder Geräten geteilt.
 - **Die 12-Stunden-Gültigkeit einer Bestätigung ist ein Demo-Wert**, keine belegte Feldregel.
 - **Es gibt keinen Pilotpartner und keine Wirkungszahlen.** Zahlungsbereitschaft ist unbestätigt.
 

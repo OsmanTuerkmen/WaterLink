@@ -57,6 +57,10 @@ Die Karte (`map.tsx`) wird als SVG aus den WPdx-Koordinaten und Straßen aus Ope
 
 **Sicherheitsnetz gegen ein „eingefrorenes Grün“:** Ein Server-Schnappschuss altert nicht von selbst. Deshalb lädt sich die Seite neu, wenn ihre Skripte nach 30 Sekunden nicht gestartet sind (Skript in `app/layout.tsx`, die Seite setzt `data-hydrated` auf `<html>`, sobald sie läuft), und ohne JavaScript fordert ein `<noscript>`-Meta-Refresh alle 60 Sekunden neues HTML an. Getestet in `e2e/board.spec.ts`.
 
+## Ausprobier-Modus (Sandbox)
+
+Wer keinen Zugangscode hat, kann den ganzen Ablauf selbst durchspielen. `lib/sandbox.ts` führt dieselben Regeln aus wie der Server (`applyCommand` aus `domain.ts`, mit denselben drei erfundenen Personen aus `lib/actors.ts`) auf dem Gerät aus: Rollen, Übergänge und Fehlermeldungen sind identisch, auch das Zurücksetzen (nur Koordination, gemeinsame Funktion `resetState`). `store.tsx` schaltet dafür um: Im Ausprobier-Modus gehen **keine Schreib- und keine Abfragen** an den Server (keine Sitzungen, kein Abfragen im Takt, das Offline-Ereignis des Browsers wird ignoriert), der Stand liegt in `sessionStorage` des Tabs. Der Modus steht in der Adresse (`?sandbox=1`); der Server rendert dann die erste Ansicht aus den Startdaten, ohne die Datenbank zu lesen. Ein Banner (`sandbox.tsx`) sagt auf jeder Ansicht, dass Übungsdaten benutzt werden, und bietet **Reset practice data** und **Leave sandbox**; beim Verlassen wird der Serverstand neu geladen (er kann eine niedrigere Revision haben als der Übungsstand). Einstieg: der Knopf **Try it yourself** (Kopfzeile jeder Ansicht und Bühne) und ein Hinweis im Anmeldefeld, wenn eine Aktion einen Code verlangt. Grenzen: Der Modus gilt **je Tab**; die öffentliche Tafel in einem zweiten Tab zeigt weiter das gemeinsame Demo, die Bühne zeigt die ganze Geschichte in einem Tab. Getestet in `tests/sandbox.test.ts` und `e2e/sandbox.spec.ts` (unter anderem: Server-Revision bleibt unverändert).
+
 ## Tafel in zwei Sprachen und QR-Code
 
 `web/lib/i18n.ts` enthält alle Texte der öffentlichen Tafel auf Englisch und Kiswahili (ohne Framework, getestet in `tests/i18n.test.ts`: gleiche Schlüssel, nichts unübersetzt). Die Statuslogik bleibt in `domain.ts` unverändert; `format.ts` bekommt nur einen Sprachparameter. Der Umschalter unten auf der Tafel schreibt die Sprache in die Adresse (`?lang=sw`), damit sich eine Tafel in einer Sprache als Lesezeichen speichern lässt, und setzt `lang` am Tafel-Element für Screenreader. **Die Kiswahili-Texte sind ein Entwurf ohne Prüfung durch Muttersprachler** (siehe Roadmap).
@@ -69,9 +73,9 @@ Das Ereignisprotokoll im Zustand ist auf die letzten 200 Einträge begrenzt (`MA
 
 ## Tests
 
-- `npm test` (67): Fachregeln, Speicher mit echtem SQLite (Revisionsprüfung, Wiederholung, Neuansatz), Sitzungen, Zugang, SMS, Sensor, Region, Sprachtexte, QR-Code.
+- `npm test` (70): Fachregeln, Speicher mit echtem SQLite (Revisionsprüfung, Wiederholung, Neuansatz), Sitzungen, Zugang, SMS, Sensor, Region, Sprachtexte, QR-Code, Ausprobier-Modus.
 - `npm run test:integration` und `npm run test:access`: API und Zugangscode gegen einen laufenden lokalen Server.
-- `npm run test:e2e` (25, Playwright mit dem installierten Chrome): ganzer Ablauf auf zwei Fenstern, Offline, Seite ohne JavaScript, Sicherheitsnetz, Sprachumschalter und QR-Code, axe-Prüfung (WCAG A/AA) auf allen zehn Ansichten, Handybreite (keine Überbreite, keine Tippfläche unter 44 px), Druckblatt (eine A4-Seite). Läuft in der CI als eigener Auftrag.
+- `npm run test:e2e` (29, Playwright mit dem installierten Chrome): ganzer Ablauf auf zwei Fenstern, Offline, Seite ohne JavaScript, Sicherheitsnetz, Sprachumschalter und QR-Code, Ausprobier-Modus (ganze Geschichte ohne Code, Server unverändert), axe-Prüfung (WCAG A/AA) auf allen elf Ansichten, Handybreite (keine Überbreite, keine Tippfläche unter 44 px), Druckblatt (eine A4-Seite). Läuft in der CI als eigener Auftrag.
 
 ## Abhängigkeiten und Sicherheitsmeldungen
 
