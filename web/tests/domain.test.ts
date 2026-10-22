@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   ACCESS_TTL_MS, STATUS_TTL_MS, DomainError, applyCommand, createSeedState,
-  findAlternative, getAlternatives, getPointDisplay, isPointOpen,
+  MAX_EVENTS, findAlternative, getAlternatives, getPointDisplay, isPointOpen,
 } from "../lib/domain.ts";
 import type { Actor, Command, State, WaterPoint } from "../lib/domain.ts";
 
@@ -228,4 +228,12 @@ test("invalid commands fail atomically and do not mutate the prior audit history
   rejects(() => transition(state, null as unknown as Command), 400);
   rejects(() => transition(state, working, operator, NOW - 1), 409);
   assert.equal(JSON.stringify(state), before);
+});
+
+test("the history keeps only the latest events", () => {
+  let state = createSeedState(NOW);
+  for (let i = 0; i < MAX_EVENTS + 15; i++) state = transition(state, { ...report, note: `Report number ${i}` });
+  assert.equal(state.events.length, MAX_EVENTS);
+  assert.match(state.events.at(-1)!.message, new RegExp(`Report number ${MAX_EVENTS + 14}`), "the newest event is kept");
+  assert.equal(new Set(state.events.map((event) => event.id)).size, MAX_EVENTS, "ids stay unique");
 });

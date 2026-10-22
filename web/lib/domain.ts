@@ -1,6 +1,8 @@
 /** Pure WaterLink rules. Times and thresholds are explicit demo assumptions. */
 export const STATUS_TTL_MS = 12 * 60 * 60 * 1000;
 export const ACCESS_TTL_MS = STATUS_TTL_MS;
+/** The state is one stored row that every screen downloads, so the history keeps only the latest events. */
+export const MAX_EVENTS = 200;
 export const PILOT_TIME_ZONE = "Africa/Nairobi";
 
 export type Time = Date | string | number;
@@ -530,5 +532,6 @@ export function applyCommand(state: State, command: Command, actor: Actor, now: 
     }
     default: throw new DomainError("Unknown action.");
   }
+  if (next.events.length > MAX_EVENTS) next.events = next.events.slice(-MAX_EVENTS);
   return next;
 }
