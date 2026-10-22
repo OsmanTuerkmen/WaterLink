@@ -16,9 +16,23 @@ Mark column "OK?" with `yes` or `no`. Numbers and times in the examples (2, 4, 1
 **Safety lines (the most important ones).** "Working" means that the water flows. It says nothing about whether the water is safe to drink.
 Please check especially `workingNote` and `canNote`, and that no line can be read as "the water is clean".
 
+**Already compared with Swahili texts** (by the team, with published Swahili sources, not by a native speaker; details in `docs/KISWAHILI-QUELLENPRUEFUNG.md`):
+*ubora wa maji* (water quality), *maji ya kunywa* (drinking water), *kuchota maji* (to draw water), *chanzo cha maji* (water source),
+*kihisi* (sensor), *halali* (valid), *skrini nzima* (full screen), *nje ya mtandao* (offline), *badala* (instead), *thibitisha* (confirm), *kagua* (check).
+
+**Questions the sources could not settle. Please decide:**
+
+1. Is *chanzo cha maji* what people in Busia call a water point, or *kituo cha maji*? (We use *chanzo*; *kituo* means a stop or station.)
+2. `line.down`: *usitembee* ("do not walk") or *usiende* ("do not go")?
+3. `line.unclear`, `noAlternative`: is *uliza hapo* clear for "ask on site", or is there a more natural wording?
+4. `canNote`: *kopo* means a tin can. The picture shows a water jerrycan. Is there a better word (*jerikani*, *dumu*)?
+5. `qrCaption`: is *changanua* the word people use for scanning a QR code with a phone?
+6. `validHours`, `lessThanHour`: is *ni halali* natural for "this confirmation is still valid", or is there a better phrase?
+7. `sensor`: *kihisi* or *kihisio*?
+
 | Text | English | Kiswahili (draft) | OK? | Better wording |
 |---|---|---|---|---|
-| boardTitle | Does our water point work today? | Je, kituo chetu cha maji kinafanya kazi leo? | | |
+| boardTitle | Does our water point work today? | Je, chanzo chetu cha maji kinafanya kazi leo? | | |
 | neighbourhood | Demo neighbourhood | Mtaa wa majaribio | | |
 | offlineTitle | No connection. Today’s state is not confirmed. | Hakuna mtandao. Hali ya leo haijathibitishwa. | | |
 | offlineBody(…) | Please ask on site before you walk. Last update 10:15 EAT. The board updates itself when the connection is back. | Tafadhali uliza hapo kabla ya kutembea. Sasisho la mwisho 10:15 EAT. Ubao hujisasisha mtandao ukirudi. | | |
@@ -31,7 +45,7 @@ Please check especially `workingNote` and `canNote`, and that no line can be rea
 | line.limited | Expect a wait or little water | Tarajia kusubiri au maji kidogo | | |
 | line.down | Please don’t walk here for now | Tafadhali usitembee hapa kwa sasa | | |
 | line.unclear | Ask on site before you go | Uliza hapo kabla ya kwenda | | |
-| line.sensor | Sensor hint: ask before you go | Kipimo kinaonyesha tatizo: uliza kabla ya kwenda | | |
+| line.sensor | Sensor hint: ask before you go | Kihisi kinaonyesha tatizo: uliza kabla ya kwenda | | |
 | confirmed | Confirmed | Imethibitishwa | | |
 | lastConfirmed | Last confirmed | Ilithibitishwa mwisho | | |
 | reported | Reported | Imeripotiwa | | |
@@ -43,16 +57,16 @@ Please check especially `workingNote` and `canNote`, and that no line can be rea
 | dayAgo(…) | 2 days ago | siku 2 zilizopita | | |
 | noConfirmation | No confirmation yet | Bado haijathibitishwa | | |
 | expired | Expired, needs a new check | Muda umeisha, inahitaji ukaguzi mpya | | |
-| lessThanHour | Valid for less than 1 hour | Inatumika kwa chini ya saa 1 | | |
-| validHours(…) | Valid for 2 more hours | Inatumika kwa saa 2 zaidi | | |
+| lessThanHour | Valid for less than 1 hour | Ni halali kwa chini ya saa 1 | | |
+| validHours(…) | Valid for 2 more hours | Ni halali kwa saa 2 zaidi | | |
 | conflict | Reports disagree | Taarifa zinapingana | | |
-| sensor | Sensor hint | Kipimo kinaonyesha tatizo | | |
+| sensor | Sensor hint | Kihisi kinaonyesha tatizo | | |
 | offline | No connection | Hakuna mtandao | | |
 | notConfirmed | Not confirmed | Haijathibitishwa | | |
 | goTo(…) | Go to ⟨name of the water point⟩ instead, about 4 min. Confirmed 13:30. | Nenda ⟨name of the water point⟩ badala yake, takriban dakika 4. Ilithibitishwa 13:30. | | |
 | noAlternative | No confirmed alternative. Please ask on site. | Hakuna mbadala uliothibitishwa. Tafadhali uliza hapo. | | |
-| workingNote | Working means water can be drawn. It says nothing about drinking-water quality. | Inafanya kazi inamaanisha maji yanaweza kuchotwa. Haisemi chochote kuhusu usafi wa maji ya kunywa. | | |
-| canNote | The can empties in 12 hours. After that a point shows as unclear until someone checks on site. | Kopo hupungua baada ya saa 12. Baada ya hapo kituo huonyesha “haijulikani” hadi mtu akague hapo. | | |
+| workingNote | Working means water can be drawn. It says nothing about drinking-water quality. | Inafanya kazi inamaanisha maji yanaweza kuchotwa. Haisemi chochote kuhusu ubora wa maji ya kunywa. | | |
+| canNote | The can empties in 12 hours. After that a point shows as unclear until someone checks on site. | Kopo hupungua baada ya saa 12. Baada ya hapo chanzo cha maji huonyeshwa kama “haijulikani” hadi mtu akague hapo. | | |
 | fullscreen | Full screen | Skrini nzima | | |
 | places(…) | Places: Roads © OpenStreetMap contributors. Confirmations and people are simulated. | Maeneo: Roads © OpenStreetMap contributors. Uthibitisho na watu ni wa kuigwa. | | |
 | fictional | Demo with fictional example data. | Onyesho lenye data ya mfano ya kubuni. | | |

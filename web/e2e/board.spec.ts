@@ -9,7 +9,7 @@ test("the first screen is in the HTML, before any script runs", async ({ browser
     await expect(page.getByText("Borehole A").first()).toBeVisible();
 
     await page.goto("/?view=display&lang=sw");
-    await expect(page.getByRole("heading", { level: 1, name: "Je, kituo chetu cha maji kinafanya kazi leo?" })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1, name: "Je, chanzo chetu cha maji kinafanya kazi leo?" })).toBeVisible();
     await expect(page.getByText("Borehole A").first()).toBeVisible();
   } finally {
     await context.close();
@@ -25,7 +25,7 @@ test("the board switches to Kiswahili, keeps it in the address, and offers a QR 
   await expect(qr).toBeVisible();
 
   await page.getByRole("button", { name: "Kiswahili" }).click();
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Je, kituo chetu cha maji kinafanya kazi leo?");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Je, chanzo chetu cha maji kinafanya kazi leo?");
   await expect(page).toHaveURL(/lang=sw/);
   await expect(page.locator(".board")).toHaveAttribute("lang", "sw");
   await expect(page.getByRole("button", { name: "Kiswahili" })).toHaveAttribute("aria-pressed", "true");
@@ -33,7 +33,7 @@ test("the board switches to Kiswahili, keeps it in the address, and offers a QR 
   await expect(page.getByText(/draft translation/)).toBeVisible();
 
   await page.reload();
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Je, kituo chetu cha maji kinafanya kazi leo?");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Je, chanzo chetu cha maji kinafanya kazi leo?");
 
   await page.getByRole("button", { name: "English" }).click();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Does our water point work today?");

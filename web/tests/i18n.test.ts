@@ -28,6 +28,11 @@ test("both languages fill every text, and Swahili really differs from English", 
   assert.deepEqual(same.map(([path]) => path), [], "texts that were never translated");
 });
 
+test("the Kiswahili safety sentence speaks of water quality (ubora), not cleanliness (usafi)", () => {
+  assert.match(TEXT.sw.workingNote.join(""), /ubora wa maji ya kunywa/);
+  assert.doesNotMatch(TEXT.sw.workingNote.join(""), /usafi/);
+});
+
 test("texts with numbers and times use them", () => {
   for (const lang of LANGS) {
     const t = TEXT[lang];
@@ -37,6 +42,9 @@ test("texts with numbers and times use them", () => {
     assert.match(t.goTo(4, "13:30").join(""), /4.*13:30/);
   }
   assert.equal(TEXT.en.dayAgo(1), "1 day ago");
+  // Kiswahili: "dakika 2 zilizopita", but "dakika moja iliyopita" (singular relative form)
+  assert.deepEqual([TEXT.sw.minAgo(1), TEXT.sw.minAgo(2)], ["dakika moja iliyopita", "dakika 2 zilizopita"]);
+  assert.deepEqual([TEXT.sw.hourAgo(1), TEXT.sw.dayAgo(1)], ["saa moja iliyopita", "siku moja iliyopita"]);
   assert.equal(TEXT.en.dayAgo(3), "3 days ago");
 });
 

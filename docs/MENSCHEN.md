@@ -37,10 +37,10 @@ Das ist der wertvollste Test, der noch fehlt, und er kostet nur Zeit. Erfahrungs
 
 ## 3. Kiswahili prüfen lassen
 
-Die Tafel gibt es auf Kiswahili, aber die Texte sind ein Entwurf (die Tafel sagt das selbst). Besonders wichtig ist der Satz, dass „Working“ nichts über die Wasserqualität aussagt.
+Die Tafel gibt es auf Kiswahili, aber die Texte sind ein Entwurf (die Tafel sagt das selbst). Vorab sind sie gegen veröffentlichte Kiswahili-Texte abgeglichen und danach verbessert worden ([Quellenprüfung](KISWAHILI-QUELLENPRUEFUNG.md)); eine Muttersprachlerin oder ein Muttersprachler hat sie noch nicht gesehen. Besonders wichtig ist der Satz, dass „Working“ nichts über die Wasserqualität aussagt.
 
 1. Eine Person finden, die Kiswahili als Muttersprache oder sehr gut spricht (Bekannte, Hochschule, Teilnehmende des Hackathons, Diaspora-Gruppen, Freiwillige vor Ort). Wenn möglich jemand aus Westkenia, weil dort Busia liegt.
-2. Ihr den **[Prüfbogen](KISWAHILI-PRUEFBOGEN.md)** geben (englische Anleitung, alle Tafeltexte Englisch/Kiswahili nebeneinander). Das dauert rund 30 Minuten. Gerne zusätzlich die Tafel selbst zeigen: `/?view=display&lang=sw`.
+2. Ihr den **[Prüfbogen](KISWAHILI-PRUEFBOGEN.md)** geben (englische Anleitung, sieben offene Fragen, alle Tafeltexte Englisch/Kiswahili nebeneinander). Das dauert rund 30 Minuten. Gerne zusätzlich die Tafel selbst zeigen: `/?view=display&lang=sw`.
 3. Die Korrekturen einarbeiten; die Schritte stehen am Ende des Prüfbogens (`draft: null` setzen, Test anpassen, `npm run export:sw`).
 4. Name und Datum der Prüfung in den Arbeitsstand schreiben. **Bis dahin nirgends als „geprüft“ bezeichnen.**
 

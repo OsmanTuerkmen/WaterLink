@@ -21,6 +21,7 @@ Alles in diesem Ordner ist auf Deutsch. Den Einstieg ins Projekt (was es ist, wi
 | [Roadmap](ROADMAP.md) | **Offene Aufgaben, mögliche Erweiterungen, bewusste Grenzen, offene Entscheidungen** |
 | [Was nur Menschen tun können](MENSCHEN.md) | Einreichung, Fünf-Personen-Test, Kiswahili prüfen, echte Geräte und Screenreader, Partner ansprechen: Anleitung, Listen, Vorlage |
 | [Prüfbogen Kiswahili](KISWAHILI-PRUEFBOGEN.md) | Alle Tafeltexte Englisch/Kiswahili für eine Muttersprachlerin oder einen Muttersprachler (erzeugt mit `npm run export:sw`) |
+| [Quellenprüfung Kiswahili](KISWAHILI-QUELLENPRUEFUNG.md) | Welche Wörter der Tafel gegen veröffentlichte Kiswahili-Texte geprüft, geändert oder offen sind, mit Quellen |
 | [Arbeitsstand](ZWISCHENSTAND.md) | Was zuletzt geprüft wurde und in welchem Zustand das Repository ist |
 | [Nächster Prompt](NAECHSTER_PROMPT.md) | Fertiger Einstieg für eine KI-Assistenz (Claude oder Codex), die weiterarbeitet |
 
