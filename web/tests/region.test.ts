@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { applyCommand, createSeedState, distanceKm, findAlternative, getNearby, getPointDisplay, parseRegion } from "../lib/domain.ts";
 import type { Actor } from "../lib/domain.ts";
-import { WATER_SEEN, buildRegion, constantCleanStatusDatasets, dedupe, isCleanFunctional, isImprovedSource, mapRecord, mapStatus } from "../scripts/wpdx-lib.mjs";
+import { WATER_SEEN, buildRegion, constantCleanStatusDatasets, dedupe, isCleanFunctional, isImprovedSource, mapRecord, mapStatus, mergeNearby } from "../scripts/wpdx-lib.mjs";
 
 const NOW = Date.parse("2026-10-10T09:00:00Z");
 const operator: Actor = { id: "op", name: "Demo-Betreiberin", role: "operator" };
@@ -149,4 +149,24 @@ test("A and B prefer recent surveys over a denser but outdated cluster", () => {
   ];
   const region = buildRegion(records, { county: "Mixed ages" });
   assert.ok(["46", "47"].includes(region.demo.a) && ["46", "47"].includes(region.demo.b));
+});
+
+test("repeated surveys of one place by another programme become one entry; the demo points and same-programme records stay apart", () => {
+  const at = (rowId: string, lat: number, dataset: string, reportDate: string) => ({
+    rowId, lat, lon: 38, dataset, reportDate, status: "functional" as const, statusText: "Functional",
+    waterSource: "Borehole", technology: "", adm1: "Test", adm2: "Test", adm3: "Test",
+  });
+  // 0.0002 degrees of latitude are about 22 m.
+  const records = [
+    at("old", -1.0, "Survey 2012", "2012-01-01T00:00:00.000Z"),
+    at("new", -1.0002, "Survey 2023", "2023-01-01T00:00:00.000Z"),
+    at("twin", -1.0008, "Survey 2023", "2023-01-02T00:00:00.000Z"),
+    at("far", -1.01, "Survey 2012", "2012-01-01T00:00:00.000Z"),
+  ];
+  const merged = mergeNearby(records, { meters: 50 });
+  assert.deepEqual(merged.map((r) => r.rowId), ["new", "twin", "far"], "the older survey of the same place is merged away");
+  assert.deepEqual(merged[0].alsoSurveyed?.map((o) => [o.dataset, o.meters]), [["Survey 2012", 22]]);
+  assert.equal(merged[1].alsoSurveyed, undefined, "a second point of the same programme is no repeat");
+  const protectedOld = mergeNearby(records, { meters: 50, protect: ["old"] });
+  assert.deepEqual(protectedOld.map((r) => r.rowId), ["old", "twin", "far"], "a protected record is never merged away; it takes the other survey of its place instead");
 });

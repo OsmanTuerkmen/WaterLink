@@ -28,7 +28,17 @@
       "adm1": "Busia",
       "adm2": "Butula",
       "adm3": "Marachi East",
-      "dataset": "Evidence Action_Kenya_2023-2024"
+      "dataset": "Evidence Action_Kenya_2023-2024",
+      "alsoSurveyed": [
+        {
+          "rowId": "820545",
+          "dataset": "USAID_KIWASH_Kenya_2021",
+          "reportDate": "2021-01-24T23:00:00.000Z",
+          "status": "functional",
+          "statusText": "Functional, not in use",
+          "meters": 44
+        }
+      ]
     },
     {
       "rowId": "380418",
@@ -43,20 +53,6 @@
       "adm2": "Butula",
       "adm3": "Marachi East",
       "dataset": "Virtual Kenya_Busia, Kajiado, Kiambu, Kisumu_2012"
-    },
-    {
-      "rowId": "820545",
-      "lat": 0.358347,
-      "lon": 34.32801,
-      "reportDate": "2021-01-24T23:00:00.000Z",
-      "status": "functional",
-      "statusText": "Functional, not in use",
-      "waterSource": "Borehole/Tubewell",
-      "technology": "Public Tapstand",
-      "adm1": "Busia",
-      "adm2": "Butula",
-      "adm3": "Marachi East",
-      "dataset": "USAID_KIWASH_Kenya_2021"
     },
     {
       "rowId": "274977",
@@ -112,21 +108,17 @@
       "adm1": "Busia",
       "adm2": "Butula",
       "adm3": "Elugulu",
-      "dataset": "Evidence Action_Kenya_2023-2024"
-    },
-    {
-      "rowId": "820629",
-      "lat": 0.35985,
-      "lon": 34.33209,
-      "reportDate": "2021-01-25T23:00:00.000Z",
-      "status": "functional",
-      "statusText": "Functional, not in use",
-      "waterSource": "Undefined Well",
-      "technology": "Public Tapstand",
-      "adm1": "Busia",
-      "adm2": "Butula",
-      "adm3": "Elugulu",
-      "dataset": "USAID_KIWASH_Kenya_2021"
+      "dataset": "Evidence Action_Kenya_2023-2024",
+      "alsoSurveyed": [
+        {
+          "rowId": "820629",
+          "dataset": "USAID_KIWASH_Kenya_2021",
+          "reportDate": "2021-01-25T23:00:00.000Z",
+          "status": "functional",
+          "statusText": "Functional, not in use",
+          "meters": 7
+        }
+      ]
     },
     {
       "rowId": "269629",
@@ -171,20 +163,6 @@
       "dataset": "Virtual Kenya_Busia, Kajiado, Kiambu, Kisumu_2012"
     },
     {
-      "rowId": "380450",
-      "lat": 0.353985,
-      "lon": 34.325455,
-      "reportDate": "2012-06-06T22:00:00.000Z",
-      "status": "functional",
-      "statusText": "Functional",
-      "waterSource": "Protected Well",
-      "technology": "",
-      "adm1": "Busia",
-      "adm2": "Butula",
-      "adm3": "Marachi East",
-      "dataset": "Virtual Kenya_Busia, Kajiado, Kiambu, Kisumu_2012"
-    },
-    {
       "rowId": "269621",
       "lat": 0.363812,
       "lon": 34.330231,
@@ -199,20 +177,6 @@
       "dataset": "Evidence Action_Kenya_2023-2024"
     },
     {
-      "rowId": "380451",
-      "lat": 0.353047,
-      "lon": 34.327789,
-      "reportDate": "2012-06-06T22:00:00.000Z",
-      "status": "functional",
-      "statusText": "Functional",
-      "waterSource": "Protected Well",
-      "technology": "",
-      "adm1": "Busia",
-      "adm2": "Butula",
-      "adm3": "Marachi East",
-      "dataset": "Virtual Kenya_Busia, Kajiado, Kiambu, Kisumu_2012"
-    },
-    {
       "rowId": "269612",
       "lat": 0.353877,
       "lon": 34.325237,
@@ -224,7 +188,17 @@
       "adm1": "Busia",
       "adm2": "Butula",
       "adm3": "Marachi East",
-      "dataset": "Evidence Action_Kenya_2023-2024"
+      "dataset": "Evidence Action_Kenya_2023-2024",
+      "alsoSurveyed": [
+        {
+          "rowId": "380450",
+          "dataset": "Virtual Kenya_Busia, Kajiado, Kiambu, Kisumu_2012",
+          "reportDate": "2012-06-06T22:00:00.000Z",
+          "status": "functional",
+          "statusText": "Functional",
+          "meters": 27
+        }
+      ]
     },
     {
       "rowId": "269613",
@@ -238,7 +212,17 @@
       "adm1": "Busia",
       "adm2": "Butula",
       "adm3": "Marachi East",
-      "dataset": "Evidence Action_Kenya_2023-2024"
+      "dataset": "Evidence Action_Kenya_2023-2024",
+      "alsoSurveyed": [
+        {
+          "rowId": "380451",
+          "dataset": "Virtual Kenya_Busia, Kajiado, Kiambu, Kisumu_2012",
+          "reportDate": "2012-06-06T22:00:00.000Z",
+          "status": "functional",
+          "statusText": "Functional",
+          "meters": 4
+        }
+      ]
     },
     {
       "rowId": "380414",
@@ -280,21 +264,17 @@
       "adm1": "Busia",
       "adm2": "Butula",
       "adm3": "Elugulu",
-      "dataset": "Evidence Action_Kenya_2023-2024"
-    },
-    {
-      "rowId": "380441",
-      "lat": 0.364594,
-      "lon": 34.326969,
-      "reportDate": "2012-06-06T22:00:00.000Z",
-      "status": "functional",
-      "statusText": "Functional, needs repair",
-      "waterSource": "Unprotected Well",
-      "technology": "",
-      "adm1": "Busia",
-      "adm2": "Butula",
-      "adm3": "Elugulu",
-      "dataset": "Virtual Kenya_Busia, Kajiado, Kiambu, Kisumu_2012"
+      "dataset": "Evidence Action_Kenya_2023-2024",
+      "alsoSurveyed": [
+        {
+          "rowId": "380441",
+          "dataset": "Virtual Kenya_Busia, Kajiado, Kiambu, Kisumu_2012",
+          "reportDate": "2012-06-06T22:00:00.000Z",
+          "status": "functional",
+          "statusText": "Functional, needs repair",
+          "meters": 1
+        }
+      ]
     },
     {
       "rowId": "269622",
@@ -336,35 +316,17 @@
       "adm1": "Busia",
       "adm2": "Butula",
       "adm3": "Marachi East",
-      "dataset": "Evidence Action_Kenya_2023-2024"
-    },
-    {
-      "rowId": "820495",
-      "lat": 0.35395,
-      "lon": 34.32302,
-      "reportDate": "2021-01-24T23:00:00.000Z",
-      "status": "functional",
-      "statusText": "Functional, not in use",
-      "waterSource": "Borehole/Tubewell",
-      "technology": "Public Tapstand",
-      "adm1": "Busia",
-      "adm2": "Butula",
-      "adm3": "Marachi East",
-      "dataset": "USAID_KIWASH_Kenya_2021"
-    },
-    {
-      "rowId": "380439",
-      "lat": 0.365778,
-      "lon": 34.328785,
-      "reportDate": "2012-06-06T22:00:00.000Z",
-      "status": "functional",
-      "statusText": "Functional",
-      "waterSource": "Protected Well",
-      "technology": "Hand Pump - Afridev",
-      "adm1": "Busia",
-      "adm2": "Butula",
-      "adm3": "Elugulu",
-      "dataset": "Virtual Kenya_Busia, Kajiado, Kiambu, Kisumu_2012"
+      "dataset": "Evidence Action_Kenya_2023-2024",
+      "alsoSurveyed": [
+        {
+          "rowId": "820495",
+          "dataset": "USAID_KIWASH_Kenya_2021",
+          "reportDate": "2021-01-24T23:00:00.000Z",
+          "status": "functional",
+          "statusText": "Functional, not in use",
+          "meters": 13
+        }
+      ]
     },
     {
       "rowId": "269631",
@@ -378,7 +340,17 @@
       "adm1": "Busia",
       "adm2": "Butula",
       "adm3": "Elugulu",
-      "dataset": "Evidence Action_Kenya_2023-2024"
+      "dataset": "Evidence Action_Kenya_2023-2024",
+      "alsoSurveyed": [
+        {
+          "rowId": "380439",
+          "dataset": "Virtual Kenya_Busia, Kajiado, Kiambu, Kisumu_2012",
+          "reportDate": "2012-06-06T22:00:00.000Z",
+          "status": "functional",
+          "statusText": "Functional",
+          "meters": 16
+        }
+      ]
     },
     {
       "rowId": "271245",
@@ -395,20 +367,6 @@
       "dataset": "Evidence Action_Kenya_2023-2024"
     },
     {
-      "rowId": "380453",
-      "lat": 0.358048,
-      "lon": 34.320248,
-      "reportDate": "2012-06-06T22:00:00.000Z",
-      "status": "functional",
-      "statusText": "Functional, needs repair",
-      "waterSource": "Unprotected Well",
-      "technology": "",
-      "adm1": "Busia",
-      "adm2": "Butula",
-      "adm3": "Marachi East",
-      "dataset": "Virtual Kenya_Busia, Kajiado, Kiambu, Kisumu_2012"
-    },
-    {
       "rowId": "269611",
       "lat": 0.358043,
       "lon": 34.320225,
@@ -420,21 +378,17 @@
       "adm1": "Busia",
       "adm2": "Butula",
       "adm3": "Marachi East",
-      "dataset": "Evidence Action_Kenya_2023-2024"
-    },
-    {
-      "rowId": "380416",
-      "lat": 0.351515,
-      "lon": 34.332542,
-      "reportDate": "2012-06-05T22:00:00.000Z",
-      "status": "functional",
-      "statusText": "Functional",
-      "waterSource": "Protected Well",
-      "technology": "",
-      "adm1": "Busia",
-      "adm2": "Butula",
-      "adm3": "Marachi East",
-      "dataset": "Virtual Kenya_Busia, Kajiado, Kiambu, Kisumu_2012"
+      "dataset": "Evidence Action_Kenya_2023-2024",
+      "alsoSurveyed": [
+        {
+          "rowId": "380453",
+          "dataset": "Virtual Kenya_Busia, Kajiado, Kiambu, Kisumu_2012",
+          "reportDate": "2012-06-06T22:00:00.000Z",
+          "status": "functional",
+          "statusText": "Functional, needs repair",
+          "meters": 3
+        }
+      ]
     },
     {
       "rowId": "274949",
@@ -448,21 +402,25 @@
       "adm1": "Busia",
       "adm2": "Butula",
       "adm3": "Marachi East",
-      "dataset": "Evidence Action_Kenya_2023-2024"
-    },
-    {
-      "rowId": "422839",
-      "lat": 0.351511,
-      "lon": 34.332565,
-      "reportDate": "2015-05-02T22:00:00.000Z",
-      "status": "non_functional",
-      "statusText": "Non-Functional",
-      "waterSource": "Borehole/Tubewell",
-      "technology": "",
-      "adm1": "Busia",
-      "adm2": "Butula",
-      "adm3": "Marachi East",
-      "dataset": "Evidence Action_Kenya_2012-2016"
+      "dataset": "Evidence Action_Kenya_2023-2024",
+      "alsoSurveyed": [
+        {
+          "rowId": "422839",
+          "dataset": "Evidence Action_Kenya_2012-2016",
+          "reportDate": "2015-05-02T22:00:00.000Z",
+          "status": "non_functional",
+          "statusText": "Non-Functional",
+          "meters": 5
+        },
+        {
+          "rowId": "380416",
+          "dataset": "Virtual Kenya_Busia, Kajiado, Kiambu, Kisumu_2012",
+          "reportDate": "2012-06-05T22:00:00.000Z",
+          "status": "functional",
+          "statusText": "Functional",
+          "meters": 3
+        }
+      ]
     },
     {
       "rowId": "269651",
@@ -476,7 +434,17 @@
       "adm1": "Busia",
       "adm2": "Butula",
       "adm3": "Marachi East",
-      "dataset": "Evidence Action_Kenya_2023-2024"
+      "dataset": "Evidence Action_Kenya_2023-2024",
+      "alsoSurveyed": [
+        {
+          "rowId": "422822",
+          "dataset": "Evidence Action_Kenya_2012-2016",
+          "reportDate": "2015-05-02T22:00:00.000Z",
+          "status": "non_functional",
+          "statusText": "Non-Functional",
+          "meters": 27
+        }
+      ]
     },
     {
       "rowId": "380442",
@@ -493,20 +461,6 @@
       "dataset": "Virtual Kenya_Busia, Kajiado, Kiambu, Kisumu_2012"
     },
     {
-      "rowId": "422822",
-      "lat": 0.352073,
-      "lon": 34.334315,
-      "reportDate": "2015-05-02T22:00:00.000Z",
-      "status": "non_functional",
-      "statusText": "Non-Functional",
-      "waterSource": "Undefined Well",
-      "technology": "",
-      "adm1": "Busia",
-      "adm2": "Butula",
-      "adm3": "Marachi East",
-      "dataset": "Evidence Action_Kenya_2012-2016"
-    },
-    {
       "rowId": "269624",
       "lat": 0.357273,
       "lon": 34.337234,
@@ -518,21 +472,17 @@
       "adm1": "Busia",
       "adm2": "Butula",
       "adm3": "Marachi East",
-      "dataset": "Evidence Action_Kenya_2023-2024"
-    },
-    {
-      "rowId": "380419",
-      "lat": 0.357053,
-      "lon": 34.337212,
-      "reportDate": "2012-06-06T22:00:00.000Z",
-      "status": "functional",
-      "statusText": "Functional",
-      "waterSource": "Protected Well",
-      "technology": "",
-      "adm1": "Busia",
-      "adm2": "Butula",
-      "adm3": "Marachi East",
-      "dataset": "Virtual Kenya_Busia, Kajiado, Kiambu, Kisumu_2012"
+      "dataset": "Evidence Action_Kenya_2023-2024",
+      "alsoSurveyed": [
+        {
+          "rowId": "380419",
+          "dataset": "Virtual Kenya_Busia, Kajiado, Kiambu, Kisumu_2012",
+          "reportDate": "2012-06-06T22:00:00.000Z",
+          "status": "functional",
+          "statusText": "Functional",
+          "meters": 25
+        }
+      ]
     },
     {
       "rowId": "380426",
@@ -563,20 +513,6 @@
       "dataset": "Evidence Action_Kenya_2023-2024"
     },
     {
-      "rowId": "380428",
-      "lat": 0.367424,
-      "lon": 34.332172,
-      "reportDate": "2012-06-06T22:00:00.000Z",
-      "status": "functional",
-      "statusText": "Functional",
-      "waterSource": "Protected Well",
-      "technology": "",
-      "adm1": "Busia",
-      "adm2": "Butula",
-      "adm3": "Elugulu",
-      "dataset": "Virtual Kenya_Busia, Kajiado, Kiambu, Kisumu_2012"
-    },
-    {
       "rowId": "269627",
       "lat": 0.366291,
       "lon": 34.334114,
@@ -602,7 +538,17 @@
       "adm1": "Busia",
       "adm2": "Butula",
       "adm3": "Elugulu",
-      "dataset": "Evidence Action_Kenya_2023-2024"
+      "dataset": "Evidence Action_Kenya_2023-2024",
+      "alsoSurveyed": [
+        {
+          "rowId": "380428",
+          "dataset": "Virtual Kenya_Busia, Kajiado, Kiambu, Kisumu_2012",
+          "reportDate": "2012-06-06T22:00:00.000Z",
+          "status": "functional",
+          "statusText": "Functional",
+          "meters": 10
+        }
+      ]
     },
     {
       "rowId": "380438",
@@ -672,21 +618,25 @@
       "adm1": "Busia",
       "adm2": "Butula",
       "adm3": "Marachi East",
-      "dataset": "Evidence Action_Kenya_2023-2024"
-    },
-    {
-      "rowId": "380446",
-      "lat": 0.34996,
-      "lon": 34.321831,
-      "reportDate": "2012-06-06T22:00:00.000Z",
-      "status": "functional",
-      "statusText": "Functional",
-      "waterSource": "Protected Well",
-      "technology": "",
-      "adm1": "Busia",
-      "adm2": "Butula",
-      "adm3": "Marachi East",
-      "dataset": "Virtual Kenya_Busia, Kajiado, Kiambu, Kisumu_2012"
+      "dataset": "Evidence Action_Kenya_2023-2024",
+      "alsoSurveyed": [
+        {
+          "rowId": "422846",
+          "dataset": "Evidence Action_Kenya_2012-2016",
+          "reportDate": "2015-05-02T22:00:00.000Z",
+          "status": "non_functional",
+          "statusText": "Non-Functional",
+          "meters": 29
+        },
+        {
+          "rowId": "380413",
+          "dataset": "Virtual Kenya_Busia, Kajiado, Kiambu, Kisumu_2012",
+          "reportDate": "2012-06-05T22:00:00.000Z",
+          "status": "functional",
+          "statusText": "Functional",
+          "meters": 38
+        }
+      ]
     },
     {
       "rowId": "269615",
@@ -700,35 +650,17 @@
       "adm1": "Busia",
       "adm2": "Butula",
       "adm3": "Marachi East",
-      "dataset": "Evidence Action_Kenya_2023-2024"
-    },
-    {
-      "rowId": "422846",
-      "lat": 0.351983,
-      "lon": 34.336829,
-      "reportDate": "2015-05-02T22:00:00.000Z",
-      "status": "non_functional",
-      "statusText": "Non-Functional",
-      "waterSource": "Protected Well",
-      "technology": "",
-      "adm1": "Busia",
-      "adm2": "Butula",
-      "adm3": "Marachi East",
-      "dataset": "Evidence Action_Kenya_2012-2016"
-    },
-    {
-      "rowId": "380413",
-      "lat": 0.351955,
-      "lon": 34.33691,
-      "reportDate": "2012-06-05T22:00:00.000Z",
-      "status": "functional",
-      "statusText": "Functional",
-      "waterSource": "Protected Well",
-      "technology": "Hand Pump - Afridev",
-      "adm1": "Busia",
-      "adm2": "Butula",
-      "adm3": "Marachi East",
-      "dataset": "Virtual Kenya_Busia, Kajiado, Kiambu, Kisumu_2012"
+      "dataset": "Evidence Action_Kenya_2023-2024",
+      "alsoSurveyed": [
+        {
+          "rowId": "380446",
+          "dataset": "Virtual Kenya_Busia, Kajiado, Kiambu, Kisumu_2012",
+          "reportDate": "2012-06-06T22:00:00.000Z",
+          "status": "functional",
+          "statusText": "Functional",
+          "meters": 4
+        }
+      ]
     },
     {
       "rowId": "380457",
@@ -784,21 +716,17 @@
       "adm1": "Busia",
       "adm2": "Butula",
       "adm3": "Elugulu",
-      "dataset": "Evidence Action_Kenya_2023-2024"
-    },
-    {
-      "rowId": "380434",
-      "lat": 0.365584,
-      "lon": 34.337524,
-      "reportDate": "2012-06-06T22:00:00.000Z",
-      "status": "functional",
-      "statusText": "Functional, needs repair",
-      "waterSource": "Unprotected Well",
-      "technology": "",
-      "adm1": "Busia",
-      "adm2": "Butula",
-      "adm3": "Elugulu",
-      "dataset": "Virtual Kenya_Busia, Kajiado, Kiambu, Kisumu_2012"
+      "dataset": "Evidence Action_Kenya_2023-2024",
+      "alsoSurveyed": [
+        {
+          "rowId": "380434",
+          "dataset": "Virtual Kenya_Busia, Kajiado, Kiambu, Kisumu_2012",
+          "reportDate": "2012-06-06T22:00:00.000Z",
+          "status": "functional",
+          "statusText": "Functional, needs repair",
+          "meters": 19
+        }
+      ]
     },
     {
       "rowId": "274902",
@@ -812,7 +740,17 @@
       "adm1": "Busia",
       "adm2": "Butula",
       "adm3": "Elugulu",
-      "dataset": "Evidence Action_Kenya_2023-2024"
+      "dataset": "Evidence Action_Kenya_2023-2024",
+      "alsoSurveyed": [
+        {
+          "rowId": "820496",
+          "dataset": "USAID_KIWASH_Kenya_2021",
+          "reportDate": "2021-01-24T23:00:00.000Z",
+          "status": "functional",
+          "statusText": "Functional, not in use",
+          "meters": 4
+        }
+      ]
     },
     {
       "rowId": "423133",
@@ -827,20 +765,6 @@
       "adm2": "Butula",
       "adm3": "Marachi North",
       "dataset": "Evidence Action_Kenya_2012-2016"
-    },
-    {
-      "rowId": "820496",
-      "lat": 0.369844,
-      "lon": 34.332861,
-      "reportDate": "2021-01-24T23:00:00.000Z",
-      "status": "functional",
-      "statusText": "Functional, not in use",
-      "waterSource": "Borehole/Tubewell",
-      "technology": "Public Tapstand",
-      "adm1": "Busia",
-      "adm2": "Butula",
-      "adm3": "Elugulu",
-      "dataset": "USAID_KIWASH_Kenya_2021"
     },
     {
       "rowId": "269609",

@@ -25,6 +25,8 @@ export interface Survey {
   adm1: string;
   adm2: string;
   adm3: string;
+  /** Other surveys of the same place by other programmes, merged by the import (within 50 m). */
+  alsoSurveyed?: { dataset: string; reportDate: string; statusText: string; meters: number }[];
 }
 export interface RegionMeta {
   label: string;
@@ -314,7 +316,15 @@ export function parseRegion(value: unknown): RegionData | null {
     const status = (["functional", "non_functional", "unknown"] as const).find((s) => s === item.status) ?? "unknown";
     const reportDate = Number.isFinite(Date.parse(String(item.reportDate))) ? new Date(String(item.reportDate)).toISOString() : "";
     seen.add(rowId);
+    const also = (Array.isArray(item.alsoSurveyed) ? item.alsoSurveyed : []).flatMap((entry: unknown) => {
+      const other = record(entry);
+      return other && finite(other.meters) ? [{
+        dataset: text(other.dataset, 120), statusText: text(other.statusText, 80), meters: Math.round(other.meters),
+        reportDate: Number.isFinite(Date.parse(String(other.reportDate))) ? new Date(String(other.reportDate)).toISOString() : "",
+      }] : [];
+    }).slice(0, 5);
     return [{
+      ...(also.length ? { alsoSurveyed: also } : {}),
       source: "WPdx" as const, rowId, dataset: text(item.dataset, 120), reportDate, status, statusText: text(item.statusText, 80),
       waterSource: text(item.waterSource, 80), technology: text(item.technology, 80),
       adm1: text(item.adm1, 80), adm2: text(item.adm2, 80), adm3: text(item.adm3, 80), lat: item.lat, lon: item.lon,

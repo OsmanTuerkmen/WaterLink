@@ -13,3 +13,4 @@ export declare function isImprovedSource(record: WpdxRecord): boolean;
 export declare function isCleanFunctional(record: WpdxRecord): boolean;
 export declare function pickNeighbourhood(records: WpdxRecord[], options?: { count?: number; near?: { lat: number; lon: number } | null; radiusKm?: number; walkKm?: number; recentYears?: number }): { a: WpdxRecord; b: WpdxRecord; c: WpdxRecord; points: WpdxRecord[]; stale: boolean };
 export declare function buildRegion(rows: Record<string, unknown>[], options?: { county?: string; count?: number; near?: { lat: number; lon: number } | null; radiusKm?: number; walkKm?: number; recentYears?: number; fetchedAt?: string }): RegionData;
+export declare function mergeNearby(records: WpdxRecord[], options?: { meters?: number; protect?: string[] }): WpdxRecord[];

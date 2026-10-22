@@ -3,12 +3,14 @@
 //   node scripts/import-wpdx.mjs --list                    Counties with record counts
 //   node scripts/import-wpdx.mjs --county Kitui            Neighbourhood around a recent functional point
 //   node scripts/import-wpdx.mjs --county Kitui --near -1.0,38.0 --count 40 --radius 5 --walk 3 --recent 3
+//   node scripts/import-wpdx.mjs --merge-only              Merge repeated surveys of one place in the existing data/region.json
 //
 // Writes data/region.json. WPdx data is CC BY 4.0; the attribution is stored with the data.
 // Survey status is historical. WaterLink never shows it as the current operating status.
 import { writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { WPDX_ENDPOINT, WPDX_FIELDS, buildRegion, distanceKm } from "./wpdx-lib.mjs";
+import { readFileSync } from "node:fs";
+import { WPDX_ENDPOINT, WPDX_FIELDS, buildRegion, distanceKm, mergeNearby } from "./wpdx-lib.mjs";
 
 const args = process.argv.slice(2);
 const option = (name) => {
@@ -22,6 +24,17 @@ async function query(params) {
   const response = await fetch(url, { signal: AbortSignal.timeout(90_000), headers: { Accept: "application/json" } });
   if (!response.ok) throw new Error(`WPdx antwortet mit HTTP ${response.status}: ${(await response.text()).slice(0, 300)}`);
   return response.json();
+}
+
+if (args.includes("--merge-only")) {
+  // No network: the neighbourhood stays as it is, repeated surveys of one place become one entry.
+  const file = fileURLToPath(new URL(option("out") ?? "../data/region.json", import.meta.url));
+  const region = JSON.parse(readFileSync(file, "utf8"));
+  const before = region.points.length;
+  region.points = mergeNearby(region.points, { protect: Object.values(region.demo) });
+  writeFileSync(file, `${JSON.stringify(region, null, 2)}\n`);
+  console.log(`${before} records became ${region.points.length} places (${region.points.filter((p) => p.alsoSurveyed).length} with other surveys of the same place). Saved: ${file}`);
+  process.exit(0);
 }
 
 if (args.includes("--list")) {

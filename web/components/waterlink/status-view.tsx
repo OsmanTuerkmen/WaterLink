@@ -129,6 +129,7 @@ function PointRow({ point: p, state, now, offline, highlighted, onReport, onFocu
             {confirmed && <div><dt>Last check</dt><dd>{p.confirmedBy ? `${p.confirmedBy}, ` : ""}{stamp(p.confirmedAt)} EAT · {Date.parse(p.confirmedAt!) + STATUS_TTL_MS > now ? "valid until" : "expired at"} {stamp(new Date(Date.parse(p.confirmedAt!) + STATUS_TTL_MS).toISOString())}</dd></div>}
             {duplicate && <div><dt>Other record</dt><dd>{duplicate.point.name} ({duplicate.point.survey ? month(duplicate.point.survey.reportDate) : "survey"}, {duplicate.point.survey?.dataset || "WPdx"}) lies {duplicate.meters} m away. It may be the same water point surveyed in another year.</dd></div>}
             {p.survey && <div><dt>Survey</dt><dd>{month(p.survey.reportDate)}: {SURVEY_TEXT[p.survey.status]} ({p.survey.statusText}) · {p.survey.dataset || "WPdx"}</dd></div>}
+            {p.survey?.alsoSurveyed?.map((s) => <div key={s.dataset}><dt>Also surveyed</dt><dd>{month(s.reportDate)}: {s.statusText} · {s.dataset || "WPdx"} · same place, {s.meters} m apart</dd></div>)}
           </dl>
           <div className="point-details-actions">
             {osmLink(p) && <a className="link" href={osmLink(p)!} target="_blank" rel="noopener noreferrer">Open in OpenStreetMap <ArrowUpRight size={15} aria-hidden="true" /></a>}

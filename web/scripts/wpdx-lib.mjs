@@ -85,6 +85,35 @@ export function dedupe(records) {
   return [...byPlace.values()];
 }
 
+/**
+ * The same physical water point is often surveyed again by another programme, with coordinates a few metres off.
+ * Records of different datasets within `meters` of each other become one place: the newest survey stays, the nearest
+ * record of every other dataset moves into `alsoSurveyed`. Records of one dataset are never merged (two taps in one
+ * compound are two points). `protect` lists record ids that stay places of their own (the three demo points).
+ */
+export function mergeNearby(records, { meters = 50, protect = [] } = {}) {
+  const keep = new Set(protect);
+  const order = [...records].sort((x, y) => (keep.has(y.rowId) - keep.has(x.rowId)) || y.reportDate.localeCompare(x.reportDate));
+  const used = new Set();
+  const merged = new Map();
+  for (const rep of order) {
+    if (used.has(rep.rowId)) continue;
+    used.add(rep.rowId);
+    const nearest = new Map();
+    for (const other of order) {
+      if (used.has(other.rowId) || keep.has(other.rowId) || other.dataset === rep.dataset) continue;
+      const m = distanceKm(rep, other) * 1000;
+      if (m <= meters && (!nearest.has(other.dataset) || m < nearest.get(other.dataset).m)) nearest.set(other.dataset, { other, m });
+    }
+    const also = [...nearest.values()].map(({ other, m }) => {
+      used.add(other.rowId);
+      return { rowId: other.rowId, dataset: other.dataset, reportDate: other.reportDate, status: other.status, statusText: other.statusText, meters: Math.round(m) };
+    });
+    merged.set(rep.rowId, also.length ? { ...rep, alsoSurveyed: also } : rep);
+  }
+  return records.filter((r) => merged.has(r.rowId)).map((r) => merged.get(r.rowId));
+}
+
 const byDistance = (origin) => (x, y) => distanceKm(origin, x) - distanceKm(origin, y);
 
 /** Surface water and unnamed sources are not a sensible demo pump or recommendation. */
@@ -140,7 +169,9 @@ export function pickNeighbourhood(records, { count = 60, near = null, radiusKm =
 export function buildRegion(rows, { county, count, near, radiusKm, walkKm, recentYears, fetchedAt = new Date().toISOString() } = {}) {
   const statusIdOnly = constantCleanStatusDatasets(rows);
   const records = dedupe(rows.map((row) => mapRecord(row, { useStatusId: statusIdOnly.has(str(row?.dataset_title)) })).filter(Boolean));
-  const { a, b, c, points } = pickNeighbourhood(records, { count, near, radiusKm, walkKm, recentYears });
+  const picked = pickNeighbourhood(records, { count, near, radiusKm, walkKm, recentYears });
+  const { a, b, c } = picked;
+  const points = mergeNearby(picked.points, { protect: [a.rowId, b.rowId, c.rowId] });
   const datasets = [...new Set(points.map((p) => p.dataset).filter(Boolean))];
   const label = [a.adm3, a.adm2, a.adm1].filter(Boolean).join(", ") || county;
   return {
