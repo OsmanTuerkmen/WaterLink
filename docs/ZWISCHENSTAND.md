@@ -1,6 +1,6 @@
 # Arbeitsstand WaterLink
 
-**Zuletzt aktualisiert: 22. Oktober 2026, nachmittags · Branch `main`.**
+**Zuletzt aktualisiert: 22. Oktober 2026, abends · Branch `main`.**
 
 Offene Aufgaben und Ideen stehen in der [Roadmap](ROADMAP.md). Hier steht nur, wie der Stand ist und was zuletzt geprüft wurde. Ältere Berichte und das vollständige Protokoll bis 21.10.2026: [Archiv](archiv/).
 
@@ -36,6 +36,7 @@ Zuerst eine verlässlich funktionierende App: Haushalte sehen den letzten bestä
 | `npm run test:access` gegen `npm run dev` im Code-Modus (lokal, Test-Code) | 21.10.2026 | 11/11 bestanden |
 | 375 px (Emulation), 7 Ansichten: Tippflächen, Überschriften, Überbreite bei 100/150/200 % Text | 21.10.2026 | keine Bedienelemente unter 44 px, eine h1, keine Überbreite |
 | Kontrast aller Text-/Hintergrundpaare der Farb-Tokens | 21.10.2026 | alle ≥ 4,5:1 |
+| Browser-Tests ohne Datenänderung **gegen die Live-Seite** (`E2E_BASE_URL`: Ausprobier-Modus, Tafel, Sprache, QR-Code, Sicherheitsnetz, axe, Handybreite, Druck) | 22.10.2026 abends, nach der Bereitstellung mit der Uhr-Korrektur | 28/28 bestanden; der gemeinsame Zustand blieb unverändert (Revision vorher und nachher gleich). Der erste Lauf davor fand den Uhr-Fehler |
 | `npm test` (nach dem Ausprobier-Modus) | 22.10.2026 abends | 70/70 bestanden (neu: 3 Tests für die Regeln im Ausprobier-Modus) |
 | `npm run test:e2e` (nach dem Ausprobier-Modus und der Uhr-Korrektur) | 22.10.2026 abends | 30/30 bestanden; zuvor 29/29 (die Zeile darunter beschreibt die ersten drei) (neu: 3 Tests: ganze Geschichte auf der Bühne ohne Code bei unveränderter Server-Revision; Knopf, Neuladen und Verlassen; Angebot im Anmeldefeld; axe auf der Sandbox-Bühne). Der Test fing einen zu kleinen Knopf (36 px) ab, behoben |
 | `npm test` | 22.10.2026 nachmittags | 67/67 bestanden (neu: Ereignisgrenze, Sprachtexte, QR-Code liest sich zurück) |
