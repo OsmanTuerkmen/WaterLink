@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { DatabaseSync } from "node:sqlite";
-import type { Actor } from "../lib/domain.ts";
+import { DomainError, type Actor } from "../lib/domain.ts";
 import { HttpError, readJsonBody } from "../lib/http.ts";
 import { createDemoSession, parseRole, requireDemoSession } from "../lib/session.ts";
 import { getState, IDLE_RESEED_MS, mutateState, parseCommand } from "../lib/store.ts";
@@ -50,6 +50,33 @@ test("parseCommand keeps only the known fields and rejects malformed input", () 
   assert.throws(() => parseCommand({ type: "confirm", pointId: "a", status: "working", note: "ok", tested: false }), HttpError, "on-site test must be explicit");
   assert.throws(() => parseCommand({ type: "progress", jobId: "job-1", note: "wait", blocker: "weather" }), HttpError);
   assert.deepEqual(parseCommand({ type: "reset", extra: true }), { type: "reset" });
+});
+
+test("parseCommand reads the route check, closing, adding and removing of water points strictly", () => {
+  const verify = { type: "verify_access", pointId: "c", walkingMinutes: 5, landmark: "Follow the path.", allDay: false, opensAt: "06:00", closesAt: "18:00", checked: true };
+  assert.deepEqual(parseCommand({ ...verify, actorId: "x" }), verify);
+  assert.deepEqual(parseCommand({ ...verify, allDay: true, opensAt: "", closesAt: "" }), { ...verify, allDay: true, opensAt: "", closesAt: "" });
+  for (const bad of [{ checked: false }, { checked: "yes" }, { walkingMinutes: "5" }, { walkingMinutes: 5.5 }, { landmark: "" }, { allDay: "no" }, { opensAt: "" }, { pointId: 3 }]) {
+    assert.throws(() => parseCommand({ ...verify, ...bad }), HttpError, JSON.stringify(bad));
+  }
+  assert.deepEqual(parseCommand({ type: "close_access", pointId: "c", note: "Gate locked." }), { type: "close_access", pointId: "c", note: "Gate locked." });
+  assert.throws(() => parseCommand({ type: "close_access", pointId: "c" }), HttpError);
+  const add = { type: "add_point", name: "School well", location: "Near the school", source: "Borehole", walkingMinutes: 7 };
+  assert.deepEqual(parseCommand({ ...add, tracked: false, custom: false }), add);
+  assert.throws(() => parseCommand({ ...add, walkingMinutes: null }), HttpError);
+  assert.throws(() => parseCommand({ ...add, name: "x".repeat(61) }), HttpError);
+  assert.deepEqual(parseCommand({ type: "remove_point", pointId: "d" }), { type: "remove_point", pointId: "d" });
+});
+
+test("the route check and adding a point go through the shared state like every other action", async () => {
+  const db = d1();
+  await getState(db, T0);
+  const add = await mutateState(db, { command: { type: "add_point", name: "School well", location: "Near the school", source: "Borehole", walkingMinutes: 4 }, expectedRevision: 0, requestId: "request-0101" }, coordinator, "session-3", T0);
+  assert.equal(add.points.find((p) => p.name === "School well")?.custom, true);
+  const refusedByRules = (promise: Promise<unknown>, status: number) => assert.rejects(promise, (e) => e instanceof DomainError && e.status === status);
+  await refusedByRules(mutateState(db, { command: { type: "remove_point", pointId: "d" }, expectedRevision: 1, requestId: "request-0102" }, operator, "session-1", T0), 403);
+  await refusedByRules(mutateState(db, { command: { type: "remove_point", pointId: "a" }, expectedRevision: 1, requestId: "request-0103" }, coordinator, "session-3", T0), 409);
+  assert.equal((await getState(db, T0)).revision, 1, "refused actions change nothing");
 });
 
 test("the first read seeds the demo and later reads do not change it", async () => {

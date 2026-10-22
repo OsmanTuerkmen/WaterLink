@@ -64,6 +64,10 @@ export interface WaterPoint {
   lat?: number | null;
   lon?: number | null;
   survey?: Survey | null;
+  /** Who last checked route and access on site; null or missing for the simulated checks of the seed data. */
+  accessCheckedBy?: string | null;
+  /** Added through the app (not part of the seed data), so it may be removed again. */
+  custom?: boolean;
 }
 export interface Job {
   id: string;
@@ -97,7 +101,16 @@ export type Command =
   | { type: "progress"; jobId: string; note: string; blocker: Blocker }
   | { type: "repair"; jobId: string; note: string }
   | { type: "confirm"; pointId: string; status: "working" | "limited" | "down"; note: string; tested: true }
-  | { type: "scenario"; scenario: "stale" | "conflict" | "no-alternative" | "sensor" };
+  | { type: "scenario"; scenario: "stale" | "conflict" | "no-alternative" | "sensor" }
+  /** Someone walked the route from the meeting point and checked that the public can use the water point. */
+  | { type: "verify_access"; pointId: string; walkingMinutes: number; landmark: string; allDay: boolean; opensAt: string; closesAt: string; checked: true }
+  | { type: "close_access"; pointId: string; note: string }
+  | { type: "add_point"; name: string; location: string; source: string; walkingMinutes: number }
+  | { type: "remove_point"; pointId: string };
+
+/** The demo looks after at most this many water points: one letter each (SMS) and a board that still fits a screen. */
+export const MAX_TRACKED = 8;
+export const NEW_POINT_SOURCES = ["Borehole", "Protected well", "Protected spring", "Tap stand", "Water kiosk", "Rainwater tank", "Other"] as const;
 
 export class DomainError extends Error {
   status: number;
@@ -219,6 +232,23 @@ export function getNearby(points: WaterPoint[], sourceId: string, limit = 2): { 
     const km = distanceKm(source, point);
     return km === null ? [] : [{ point, km }];
   }).sort((a, b) => a.km - b.km).slice(0, limit);
+}
+
+/**
+ * A survey record of another dataset within `withinMeters`: often the same physical water point surveyed in another year,
+ * not a second one. Only a hint for people; nothing is merged or hidden.
+ */
+export function getPossibleDuplicate(points: WaterPoint[], point: WaterPoint, withinMeters = 50): { point: WaterPoint; meters: number } | null {
+  if (!point.survey) return null;
+  let best: { point: WaterPoint; meters: number } | null = null;
+  for (const other of points) {
+    if (other.id === point.id || !other.survey || other.survey.dataset === point.survey.dataset) continue;
+    const km = distanceKm(point, other);
+    if (km === null) continue;
+    const meters = Math.round(km * 1000);
+    if (meters <= withinMeters && (!best || meters < best.meters)) best = { point: other, meters };
+  }
+  return best;
 }
 
 /** Rough walking estimate: straight line × 1.3 detour at 4.5 km/h. Labelled as an estimate in the UI. */
@@ -373,6 +403,19 @@ function requireRole(actor: Actor, role: Role): void {
   if (!actor || actor.role !== role || !actor.id || !actor.name) {
     throw new DomainError("Your role cannot do this.", 403);
   }
+}
+
+function cleanText(value: unknown, min: number, max: number, message: string): string {
+  const text = typeof value === "string" ? value.trim() : "";
+  if (text.length < min || text.length > max) throw new DomainError(message);
+  return text;
+}
+
+function cleanMinutes(value: unknown): number {
+  if (typeof value !== "number" || !Number.isInteger(value) || value < 1 || value > 180) {
+    throw new DomainError("The walking time must be a whole number of minutes between 1 and 180.");
+  }
+  return value;
 }
 
 function cleanNote(note: string): string {
@@ -540,6 +583,74 @@ export function applyCommand(state: State, command: Command, actor: Actor, now: 
         point.sensorAlert = "The sensor has shown almost no pumping for 2 weeks. Please check on site.";
         event("scenario", "Demo scenario: sensor hint for water point A (pattern from real Kwale data, 2014). The status stays unconfirmed until someone checks on site.", point.id, null);
       } else throw new DomainError("Unknown demo scenario.");
+      break;
+    }
+    case "verify_access": {
+      requireRole(actor, "coordinator");
+      if (command.checked !== true) throw new DomainError("Please confirm that you walked the route and checked the access on site.");
+      const point = pointById(command.pointId);
+      const minutes = cleanMinutes(command.walkingMinutes);
+      const landmark = cleanText(command.landmark, 3, 200, "Please describe the way in 3 to 200 characters.");
+      if (typeof command.allDay !== "boolean") throw new DomainError("Please say whether the water point is open all day.");
+      if (!command.allDay && (clockMinutes(command.opensAt) === null || clockMinutes(command.closesAt) === null || command.opensAt === command.closesAt)) {
+        throw new DomainError("Please give different opening and closing times as HH:MM, or choose open all day.");
+      }
+      point.walkingMinutes = minutes;
+      point.landmark = landmark;
+      point.allDay = command.allDay;
+      point.opensAt = command.allDay ? "" : command.opensAt;
+      point.closesAt = command.allDay ? "" : command.closesAt;
+      point.accessVerified = true;
+      point.routeVerified = true;
+      point.accessConfirmedAt = at;
+      point.accessCheckedBy = actor.name;
+      point.tracked = true;
+      const hours = command.allDay ? "open all day" : `open ${command.opensAt}–${command.closesAt}`;
+      event("verify", `${point.name}: route and access checked on site (about ${minutes} min, ${hours}). ${landmark}`, point.id, null);
+      break;
+    }
+    case "close_access": {
+      requireRole(actor, "coordinator");
+      const point = pointById(command.pointId);
+      const note = cleanNote(command.note);
+      // A closed gate or a blocked path must never leave a point looking like a safe alternative.
+      point.accessVerified = false;
+      point.routeVerified = false;
+      point.accessCheckedBy = actor.name;
+      event("access", `${point.name}: access closed or route blocked, so no alternative will point here. ${note}`, point.id, null);
+      break;
+    }
+    case "add_point": {
+      requireRole(actor, "coordinator");
+      const name = cleanText(command.name, 3, 60, "Please name the water point in 3 to 60 characters.");
+      const location = cleanText(command.location, 2, 80, "Please say where it is in 2 to 80 characters.");
+      if (!(NEW_POINT_SOURCES as readonly string[]).includes(command.source)) throw new DomainError("Please choose the type of water point.");
+      const minutes = cleanMinutes(command.walkingMinutes);
+      const inProgramme = (p: WaterPoint) => p.tracked ?? true;
+      if (next.points.filter(inProgramme).length >= MAX_TRACKED) {
+        throw new DomainError(`The demo looks after at most ${MAX_TRACKED} water points. Remove one first.`, 409);
+      }
+      const id = [..."abcdefghijklmnopqrstuvwxyz"].find((letter) => !next.points.some((p) => p.id === letter));
+      if (!id) throw new DomainError("No letter is free for another water point.", 409);
+      const added: WaterPoint = {
+        id, name, status: "unknown", confirmedAt: null, confirmedBy: null, conflict: false,
+        note: "Added by coordination in this demo. No confirmation yet.",
+        location, landmark: "No checked directions yet.", walkingMinutes: minutes,
+        accessVerified: false, routeVerified: false, accessConfirmedAt: null,
+        opensAt: "", closesAt: "", allDay: false, tracked: true, custom: true, lat: null, lon: null, survey: null,
+      };
+      const lastInProgramme = next.points.map(inProgramme).lastIndexOf(true);
+      next.points.splice(lastInProgramme + 1, 0, added);
+      event("add", `Water point ${id.toUpperCase()} · ${name} (${command.source}, ${location}) added to the programme, about ${minutes} min from the meeting point. Not confirmed yet; route and access are not checked yet.`, id, null);
+      break;
+    }
+    case "remove_point": {
+      requireRole(actor, "coordinator");
+      const point = pointById(command.pointId);
+      if (!point.custom) throw new DomainError("Only water points added in this demo can be removed.", 409);
+      if (next.jobs.some((job) => job.pointId === point.id && job.status !== "closed")) throw new DomainError("Close the repair job of this water point first.", 409);
+      next.points = next.points.filter((p) => p.id !== point.id);
+      event("remove", `Water point ${point.id.toUpperCase()} · ${point.name} removed from the programme.`, point.id, null);
       break;
     }
     default: throw new DomainError("Unknown action.");

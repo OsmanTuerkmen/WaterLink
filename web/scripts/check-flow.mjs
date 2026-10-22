@@ -83,6 +83,23 @@ try {
   assert.equal(confirmed.state.jobs.find(j => j.id === job.id).status, 'closed');
   assert.ok(confirmed.state.events.length >= 8);
 
+  // Water points: only coordination may add, check routes and remove; a new point is never green by itself.
+  const addCommand = { type: 'add_point', name: 'School well', location: 'Near the school', source: 'Borehole', walkingMinutes: 4 };
+  await send(operator.token, addCommand, 403);
+  await send(coordinator.token, { ...addCommand, source: 'Magic spring' }, 400);
+  const added = await send(coordinator.token, addCommand);
+  const school = added.state.points.find(p => p.name === 'School well');
+  assert.ok(school && school.custom && school.status === 'unknown' && !school.accessVerified);
+  const routeCheck = { type: 'verify_access', pointId: school.id, walkingMinutes: 4, landmark: 'Follow the main path to the school.', allDay: true, opensAt: '', closesAt: '', checked: true };
+  await send(operator.token, routeCheck, 403);
+  await send(coordinator.token, { ...routeCheck, checked: false }, 400);
+  const verified = await send(coordinator.token, routeCheck);
+  assert.equal(verified.state.points.find(p => p.id === school.id).accessVerified, true);
+  await send(operator.token, { type: 'remove_point', pointId: school.id }, 403);
+  await send(coordinator.token, { type: 'remove_point', pointId: 'a' }, 409);
+  const removed = await send(coordinator.token, { type: 'remove_point', pointId: school.id });
+  assert.ok(!removed.state.points.some(p => p.id === school.id));
+
   // Simultaneous independent changes: exactly one may commit this revision.
   const raceRevision = revision;
   const races = await Promise.all(['funding', 'staff'].map(async value => {

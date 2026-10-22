@@ -2,8 +2,9 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   ACCESS_TTL_MS, STATUS_TTL_MS, DomainError, applyCommand, createSeedState,
-  MAX_EVENTS, findAlternative, getAlternatives, getPointDisplay, isPointOpen,
+  MAX_EVENTS, MAX_TRACKED, findAlternative, getAlternatives, getPointDisplay, getPossibleDuplicate, isPointOpen,
 } from "../lib/domain.ts";
+import { REGION } from "../lib/region.ts";
 import type { Actor, Command, State, WaterPoint } from "../lib/domain.ts";
 
 const NOW = Date.parse("2026-10-10T09:00:00Z"); // Noon in the example region.
@@ -236,4 +237,84 @@ test("the history keeps only the latest events", () => {
   assert.equal(state.events.length, MAX_EVENTS);
   assert.match(state.events.at(-1)!.message, new RegExp(`Report number ${MAX_EVENTS + 14}`), "the newest event is kept");
   assert.equal(new Set(state.events.map((event) => event.id)).size, MAX_EVENTS, "ids stay unique");
+});
+
+const verify = { type: "verify_access", pointId: "c", walkingMinutes: 5, landmark: "Follow the path past the big acacia tree.", allDay: true, opensAt: "", closesAt: "", checked: true } as const;
+const alternativesOfA = (state: State) => getAlternatives(state.points, "a", NOW).map((p) => p.id);
+
+test("a water point only becomes an alternative once someone checked route and access on site", () => {
+  let state = createSeedState(NOW);
+  state = transition(state, { type: "confirm", pointId: "c", status: "working", note: "Pumped 20 litres, steady flow.", tested: true });
+  state = transition(state, report);
+  assert.deepEqual(alternativesOfA(state), ["b"], "C works, but nobody has checked the way there");
+
+  state = transition(state, verify, coordinator);
+  assert.deepEqual(alternativesOfA(state), ["c", "b"], "now C is the nearest alternative");
+  const c = state.points.find((p) => p.id === "c")!;
+  assert.equal(c.walkingMinutes, 5);
+  assert.equal(c.accessCheckedBy, coordinator.name);
+  assert.match(state.events.at(-1)!.message, /route and access checked on site/);
+});
+
+test("a closed gate withdraws the alternative at once, and the checks are the coordinator's and explicit", () => {
+  let state = createSeedState(NOW);
+  state = transition(state, { type: "confirm", pointId: "c", status: "working", note: "Pumped 20 litres, steady flow.", tested: true });
+  state = transition(state, report);
+  state = transition(state, verify, coordinator);
+  state = transition(state, { type: "close_access", pointId: "c", note: "The landowner locked the gate." }, coordinator);
+  assert.deepEqual(alternativesOfA(state), ["b"]);
+
+  rejects(() => transition(state, verify, operator), 403);
+  rejects(() => transition(state, { type: "close_access", pointId: "c", note: "Not allowed." }, technician), 403);
+  rejects(() => transition(state, { ...verify, checked: false as unknown as true }, coordinator), 400);
+  rejects(() => transition(state, { ...verify, walkingMinutes: 0 }, coordinator), 400);
+  rejects(() => transition(state, { ...verify, walkingMinutes: 2.5 }, coordinator), 400);
+  rejects(() => transition(state, { ...verify, landmark: "ok" }, coordinator), 400);
+  rejects(() => transition(state, { ...verify, allDay: false, opensAt: "25:00", closesAt: "18:00" }, coordinator), 400);
+  rejects(() => transition(state, { ...verify, allDay: false, opensAt: "08:00", closesAt: "08:00" }, coordinator), 400);
+  rejects(() => transition(state, { ...verify, pointId: "zz" }, coordinator), 404);
+  const hours = transition(state, { ...verify, allDay: false, opensAt: "06:30", closesAt: "18:00" }, coordinator).points.find((p) => p.id === "c")!;
+  assert.deepEqual([hours.allDay, hours.opensAt, hours.closesAt], [false, "06:30", "18:00"]);
+});
+
+test("the coordinator can add a water point, it takes the next free letter and starts unconfirmed", () => {
+  const add = { type: "add_point", name: "School well", location: "Near the school", source: "Borehole", walkingMinutes: 7 } as const;
+  const state = transition(createSeedState(NOW), add, coordinator);
+  const added = state.points.find((p) => p.id === "d")!;
+  assert.deepEqual(state.points.map((p) => p.id), ["a", "b", "c", "d"]);
+  assert.deepEqual([added.status, added.tracked, added.custom, added.accessVerified, added.walkingMinutes], ["unknown", true, true, false, 7]);
+  assert.equal(getPointDisplay(added, NOW).status, "unknown", "never green before an on-site confirmation");
+  assert.equal(transition(state, { ...add, name: "Church tap" }, coordinator).points.at(-1)!.id, "e");
+
+  rejects(() => transition(createSeedState(NOW), add, operator), 403);
+  rejects(() => transition(createSeedState(NOW), { ...add, name: "x" }, coordinator), 400);
+  rejects(() => transition(createSeedState(NOW), { ...add, source: "Magic spring" }, coordinator), 400);
+  rejects(() => transition(createSeedState(NOW), { ...add, walkingMinutes: 500 }, coordinator), 400);
+});
+
+test("the demo looks after a limited number of water points, and only added ones can be removed", () => {
+  let state = createSeedState(NOW);
+  for (let i = state.points.length; i < MAX_TRACKED; i++) {
+    state = transition(state, { type: "add_point", name: `Extra point ${i}`, location: "Somewhere in the village", source: "Other", walkingMinutes: 10 }, coordinator);
+  }
+  assert.equal(state.points.length, MAX_TRACKED);
+  rejects(() => transition(state, { type: "add_point", name: "One too many", location: "Somewhere in the village", source: "Other", walkingMinutes: 10 }, coordinator), 409);
+
+  rejects(() => transition(state, { type: "remove_point", pointId: "a" }, coordinator), 409);
+  rejects(() => transition(state, { type: "remove_point", pointId: "d" }, operator), 403);
+  const withJob = transition(state, { type: "report", pointId: "d", status: "down", note: "No water at the spout." });
+  rejects(() => transition(withJob, { type: "remove_point", pointId: "d" }, coordinator), 409);
+  const removed = transition(state, { type: "remove_point", pointId: "d" }, coordinator);
+  assert.equal(removed.points.length, MAX_TRACKED - 1);
+  assert.ok(!removed.points.some((p) => p.id === "d"));
+});
+
+test("two survey records of different years at the same place are pointed out as a possible duplicate", () => {
+  const points = createSeedState(NOW, REGION).points;
+  const c = points.find((p) => p.id === "c")!, b = points.find((p) => p.id === "b")!;
+  const hint = getPossibleDuplicate(points, c);
+  assert.ok(hint && hint.meters > 0 && hint.meters <= 50, "C (2012 survey) has a 2023 record right next to it");
+  assert.notEqual(hint.point.survey?.dataset, c.survey?.dataset);
+  assert.equal(getPossibleDuplicate(points, b), null, "records of the same survey are not flagged");
+  assert.equal(getPossibleDuplicate(createSeedState(NOW).points, createSeedState(NOW).points[0]), null, "no survey, no hint");
 });

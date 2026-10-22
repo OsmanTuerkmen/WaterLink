@@ -58,6 +58,21 @@ export function parseCommand(value: unknown): MutationCommand {
       }
       return { type: "scenario", scenario: value.scenario };
     }
+    case "verify_access": {
+      const pointId = text("pointId", 80);
+      const landmark = text("landmark", 200);
+      if (!Number.isSafeInteger(value.walkingMinutes)) throw new HttpError(400, "The walking time must be a whole number of minutes.", "invalid_command");
+      if (typeof value.allDay !== "boolean") throw new HttpError(400, "Please say whether the water point is open all day.", "invalid_command");
+      const opensAt = value.allDay ? "" : text("opensAt", 5), closesAt = value.allDay ? "" : text("closesAt", 5);
+      if (value.checked !== true) throw new HttpError(400, "Please confirm that you walked the route and checked the access on site.", "invalid_command");
+      return { type: "verify_access", pointId, walkingMinutes: value.walkingMinutes as number, landmark, allDay: value.allDay, opensAt, closesAt, checked: true };
+    }
+    case "close_access": return { type: "close_access", pointId: text("pointId", 80), note: text("note", 1000) };
+    case "add_point": {
+      if (!Number.isSafeInteger(value.walkingMinutes)) throw new HttpError(400, "The walking time must be a whole number of minutes.", "invalid_command");
+      return { type: "add_point", name: text("name", 60), location: text("location", 80), source: text("source", 40), walkingMinutes: value.walkingMinutes as number };
+    }
+    case "remove_point": return { type: "remove_point", pointId: text("pointId", 80) };
     case "reset": return { type: "reset" };
     default: throw new HttpError(400, "Unknown action.", "invalid_command");
   }
