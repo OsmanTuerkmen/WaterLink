@@ -69,7 +69,7 @@ Wenn etwas nicht klappt:
 | Adresse | Ansicht |
 |---|---|
 | `/#status` | Status für Haushalte mit Karte |
-| `/?view=display` | Öffentliche Tafel, aus einigen Metern lesbar (Vollbild-Knopf unten rechts) |
+| `/?view=display` | Öffentliche Tafel, aus einigen Metern lesbar (Vollbild-Knopf unten rechts), mit Sprachumschalter und QR-Code zur SMS-Ansicht. Auf Kiswahili: `/?view=display&lang=sw` |
 | `/#field/operator`, `/#field/technician` | Handy-App für Betreiberin und Techniker, ein Schritt pro Bildschirm |
 | `/#sms` | Simulierte SMS für Tastenhandys (`STATUS`, `A`, `DOWN A …`, `OK A …`) |
 | `/#coordination/overview` | Koordination: Karte, offene Aufträge, Verlauf, Demo-Werkzeuge |
@@ -92,16 +92,17 @@ Alle im Ordner `web/`:
 | `npm run dev` | Entwicklungsserver mit Neuladen (Port 5173) |
 | `npm run build` | Produktions-Build |
 | `npm start` | Gebauten Stand lokal über Wrangler starten (ohne simulierte Anmeldung) |
-| `npm test` | 62 Unit-Tests (Fachregeln, Speicher, Sitzungen, Zugang, SMS, Sensor, Region) |
+| `npm test` | 67 Unit-Tests (Fachregeln, Speicher, Sitzungen, Zugang, SMS, Sensor, Region, Sprachtexte, QR-Code) |
 | `npm run typecheck` | TypeScript-Prüfung |
 | `npm run lint` | Code-Stil und Fehlerprüfung |
+| `npm run test:e2e` | 25 Browser-Tests mit dem installierten Chrome (startet selbst einen lokalen Server auf Port 5199): der ganze Ablauf Meldung → Reparatur → Test auf zwei Fenstern, Offline-Verhalten, Seite ohne JavaScript, Sprachumschalter, Barrierefreiheit (axe) auf allen Ansichten, Handybreite und Druckblatt |
 | `npm run test:integration` | API-Ablauf gegen einen **lokalen** `npm run dev`-Server (`WATERLINK_BASE_URL=http://127.0.0.1:5173`); setzt nur die Demo-Daten zurück |
 | `npm run test:access` | Zugangscode-Modus gegen einen lokalen Server, siehe Kopf von `scripts/check-access.mjs`. Nie gegen die Live-Seite. |
 | `npm run data:wpdx -- --list` | Counties aus der Water Point Data Exchange auflisten; `-- --county Busia` lädt eine Nachbarschaft nach `data/region.json` |
 | `npm run data:osm` | Straßen und Orte für die Karte aus OpenStreetMap laden (`data/osm-area.json`) |
 | `npm run deploy:cloudflare` | Kostenlos auf Cloudflare bereitstellen, siehe [Bereitstellung](docs/BEREITSTELLUNG.md) |
 
-Die Prüfungen laufen auch automatisch auf GitHub (`.github/workflows/ci.yml`).
+Die Prüfungen (einschließlich der Browser-Tests) laufen auch automatisch auf GitHub (`.github/workflows/ci.yml`). Für `npm run test:e2e` muss einmal die lokale Datenbank angelegt sein (siehe oben) und Chrome installiert sein.
 
 ## Aufbau des Repositorys
 
@@ -121,7 +122,8 @@ WaterLink/
     ├── data/                           region.json (60 Wasserstellen), kwale-sensors.json, osm-area.json
     ├── db/, drizzle/                   Datenbankschema und SQL
     ├── scripts/                        Datenimport, Integrations- und Zugangstests, Bereitstellung
-    ├── tests/                          Unit-Tests
+    ├── tests/                          Unit-Tests (Node)
+    ├── e2e/                            Browser-Tests (Playwright)
     └── build/                          Bausteine der Hosting-Plattform; normalerweise nicht anfassen
 ```
 

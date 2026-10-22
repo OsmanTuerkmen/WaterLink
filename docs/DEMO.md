@@ -27,6 +27,8 @@ Das Band oben auf der Bühne zeigt die vier Schritte und hebt automatisch den n�
 
 **Optionaler Zusatz (ca. 30 s), echte Sensordaten:** Unter **Coordination → Demo tools** die Wiedergabe „Tiwi – Mshikeni, Kwale“ abspielen. Ab Woche 13/2014 fällt die Fördermenge auf null, ab der zweiten Woche erscheint der Sensorhinweis. Aussage: „Das sind echte Daten einer Pumpe in Kenia. Ein Sensor kann einen Ausfall vermuten, aber nicht bestätigen. WaterLink macht daraus ‚Prüfung nötig‘.“ Optional **Send this hint to water point A** und die Tafel zeigen.
 
+**Optionaler Zusatz (ca. 15 s), Kiswahili und QR-Code:** Auf der Tafel unten **Kiswahili** wählen: Titel, Status und Hinweise wechseln die Sprache (`/?view=display&lang=sw` ist als Lesezeichen möglich). Daneben der **QR-Code**: Wer ihn mit dem Handy scannt, landet in der SMS-Ansicht. Aussage: „Für Menschen, die die Tafel verstehen wollen und ein Telefon haben.“ Die Übersetzung ist ein Entwurf; nicht als geprüft darstellen.
+
 Die Verbindungssimulation ist ein ausdrücklich markierter UI-Test in einem Fenster. Für eine echte Unterbrechung kann im Browser die Verbindung offline geschaltet werden.
 
 ## Grenzen offen benennen

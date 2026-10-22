@@ -8,13 +8,14 @@ Das ist der Ordner mit dem ganzen Code. Worum es bei WaterLink geht und wie man 
 
 | Ordner | Inhalt |
 |---|---|
-| `app/` | Startseite (`page.tsx`, alle Ansichten hängen an einem Hash oder `?view=`), Stile (`globals.css`), API-Routen `api/waterlink` (Zustand lesen und ändern), `api/session` (Demo-Rolle), `api/access` (Zugangscode) |
+| `app/` | Startseite (`page.tsx` liest auf dem Server den Zustand, `home.tsx` ist der Teil im Browser; alle Ansichten hängen an einem Hash oder `?view=`), Stile (`globals.css`), API-Routen `api/waterlink` (Zustand lesen und ändern), `api/session` (Demo-Rolle), `api/access` (Zugangscode) |
 | `components/waterlink/` | Die Ansichten: `status-view`, `board` (Tafel), `field` (Feld-App), `coordination`, `sms`, `stage` (Bühne), `map`; dazu `store.tsx` (gemeinsamer Datenstand im Browser) und kleine Bausteine (`marks`, `format`, `signin`) |
-| `lib/` | `domain.ts` (alle Fachregeln, ohne Framework), `store.ts` (Speichern mit Revisionsprüfung, frische Demo nach 4 Stunden), `session.ts`, `access.ts`, `access-token.ts`, `access-limit.ts` (Zugang), `http.ts` (Anfragen prüfen, Fehlerantworten), `sms.ts`, `sensor.ts`, `region.ts` |
+| `lib/` | `domain.ts` (alle Fachregeln, ohne Framework), `store.ts` (Speichern mit Revisionsprüfung, frische Demo nach 4 Stunden), `session.ts`, `access.ts`, `access-token.ts`, `access-limit.ts` (Zugang), `http.ts` (Anfragen prüfen, Fehlerantworten), `sms.ts`, `sensor.ts`, `region.ts`, `i18n.ts` (Tafeltexte Englisch/Kiswahili), `qr.ts` |
 | `data/` | `region.json` (60 Wasserstellen aus Busia), `kwale-sensors.json`, `osm-area.json` |
 | `db/`, `drizzle/` | Datenbankschema und die SQL-Datei, die die Tabellen anlegt |
 | `scripts/` | Datenimport (`import-wpdx`, `import-osm`, `import-kwale`), Tests gegen einen laufenden Server (`check-flow`, `check-access`), Bereitstellung (`deploy-cloudflare`), Starthelfer der Plattform |
 | `tests/` | Unit-Tests (`node --test`, ohne weitere Bibliothek, mit echtem SQLite für Speicher und Zugang) |
+| `e2e/`, `playwright.config.ts` | Browser-Tests mit Playwright und dem installierten Chrome (`npm run test:e2e`) |
 | `build/`, `lib/connector-*`, `scripts/connector-preview/` | Bausteine der Hosting-Plattform (Vite-Plugin, Worker-Einstieg, Vorschau). Normalerweise nicht anfassen. |
 | `.openai/hosting.json` | Kennung des Sites-Projekts. **Nicht ändern und nicht neu registrieren.** |
 

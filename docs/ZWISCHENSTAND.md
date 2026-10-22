@@ -1,6 +1,6 @@
 # Arbeitsstand WaterLink
 
-**Zuletzt aktualisiert: 22. Oktober 2026, mittags · Branch `main`.**
+**Zuletzt aktualisiert: 22. Oktober 2026, nachmittags · Branch `main`.**
 
 Offene Aufgaben und Ideen stehen in der [Roadmap](ROADMAP.md). Hier steht nur, wie der Stand ist und was zuletzt geprüft wurde. Ältere Berichte und das vollständige Protokoll bis 21.10.2026: [Archiv](archiv/).
 
@@ -14,6 +14,10 @@ Zuerst eine verlässlich funktionierende App: Haushalte sehen den letzten bestä
 - **App:** Haushaltsstatus mit Karte, öffentliche Tafel, Feld-App für Betreiberin und Techniker, Koordination, simulierte SMS und Pitch-Bühne sind implementiert. Orte stammen aus echten WPdx-Erhebungen (Busia), historische Sensordaten aus Kwale 2014; Bestätigungen, Personen und Wege sind simuliert und gekennzeichnet.
 - **Zugang:** Signiertes Cookie mit serverseitig geprüftem Ablauf, Anmeldeversuche pro Client und global begrenzt; ein gesperrter Client sperrt nicht mehr alle anderen.
 - **Demo-Daten:** Nach vier Stunden ohne Aktivität setzt sich die Demo mit frischen simulierten Bestätigungen selbst neu an.
+- **Erste Ansicht vom Server:** Das HTML enthält schon den aktuellen Stand (auch ohne JavaScript und bei langsamer Verbindung). Eine Seite, deren Skripte nach 30 s nicht starten, lädt sich neu; ohne JavaScript fordert ein Meta-Refresh alle 60 s neues HTML an (Sicherheitsnetz gegen ein „eingefrorenes Grün“).
+- **Tafel auf Kiswahili und QR-Code:** Umschalter unten auf der Tafel (`?lang=sw`), QR-Code zur SMS-Ansicht. **Die Kiswahili-Texte sind ein Entwurf ohne Prüfung durch Muttersprachler.**
+- **Sicherheitsmeldungen der Abhängigkeiten:** `npm audit --omit=dev` meldet nichts mehr (Next 16.4.2, React 19.3.1); 20 Meldungen in Entwicklungswerkzeugen bleiben (Roadmap, P3). Ereignisprotokoll auf 200 Einträge begrenzt.
+- **Browser-Tests:** 25 Tests mit Playwright und Chrome (`npm run test:e2e`), auch als CI-Auftrag.
 - **Oberfläche:** Alle Bedienelemente bei 375 px mindestens 44 px, eine h1 pro Ansicht, Schrift in rem (Textgröße des Browsers gilt, bis 200 % ohne Überbreite), alle Farben aus Tokens, Kontrast mindestens 4,5:1, Bewegungsreduktion mit ruhigem Ersatzsignal. Regeln in [`DESIGN.md`](../DESIGN.md).
 - **Live-Seite:** https://waterlink-demo.waterlink.workers.dev wurde am 22.10. mit dem Stand von `main` neu bereitgestellt (Konto von Reczec, Zugangscode unverändert), siehe [Bereitstellung](BEREITSTELLUNG.md).
 - **Aufräumen am 22.10.:** Dokumentation neu geordnet (Wegweiser [`docs/README.md`](README.md), Roadmap, Archiv), README für Neueinsteiger neu geschrieben. Ungenutzter Code aus einer UI-Vorlage (`web/components/ui/` und Verwandtes, 61 Dateien) und 19 Abhängigkeiten sind entfernt (Abhängigkeiten 27 → 8). MIT-Lizenz ergänzt. Das Bereitstellungsskript ändert einen vorhandenen Zugangscode nicht mehr, wenn die lokale Datei fehlt.
@@ -31,11 +35,26 @@ Zuerst eine verlässlich funktionierende App: Haushalte sehen den letzten bestä
 | `npm run test:access` gegen `npm run dev` im Code-Modus (lokal, Test-Code) | 21.10.2026 | 11/11 bestanden |
 | 375 px (Emulation), 7 Ansichten: Tippflächen, Überschriften, Überbreite bei 100/150/200 % Text | 21.10.2026 | keine Bedienelemente unter 44 px, eine h1, keine Überbreite |
 | Kontrast aller Text-/Hintergrundpaare der Farb-Tokens | 21.10.2026 | alle ≥ 4,5:1 |
+| `npm test` | 22.10.2026 nachmittags | 67/67 bestanden (neu: Ereignisgrenze, Sprachtexte, QR-Code liest sich zurück) |
+| `npm run typecheck`, `npm run lint`, `npm run build` | 22.10.2026 nachmittags | alle drei Exit-Code 0 |
+| `npm run test:e2e` (neu) | 22.10.2026 nachmittags, lokal | 25/25 bestanden: ganzer Ablauf auf zwei Fenstern (Meldung → Übernahme → Reparatur → Tafel bleibt „Not working“ → Test → „Working“), Offline mit Wiedererholung, Seite ohne JavaScript, Sicherheitsnetz, Sprachumschalter und QR-Code, axe (WCAG A/AA) auf 10 Ansichten ohne Fund, Handybreite ohne Überbreite und ohne Tippfläche unter 44 px auf 9 Ansichten, Druckblatt eine A4-Seite. Frühere Läufe fanden echte Fehler: Karte mit fokussierbaren Markern in einer Bild-Rolle, zu blasser „Full screen“-Knopf, zu kleiner Knopf bei Handybreite |
+| `npm run test:integration` (`npm run dev`), `npm run test:access` (Code-Modus, lokal) | 22.10.2026 nachmittags | bestanden, 11/11 |
+| `npm audit --omit=dev` | 22.10.2026 nachmittags | 0 Meldungen (vorher 4, darunter eine kritische zu Next) |
+| Produktions-Build lokal gestartet, HTML abgefragt | 22.10.2026 nachmittags | Antwort enthält Wasserstellen, Kiswahili-Tafel, Meldungs-Refresh und Neulade-Skript; `Cache-Control: no-store` |
 | Live-Seite nach dem Bereitstellen (nur lesende Anfragen und eine Anfrage mit gefälschten Headern) | 22.10.2026 | Seite 200; `/api/access` meldet Modus „code“; die Demo hat sich beim ersten Lesen selbst neu angesetzt (Revision 1, A und B frisch bestätigt, Hinweis im Verlauf); `?since=1` liefert „unchanged“; gefälschte Header 401. Kein `test:access` gegen die Live-Seite |
 | GitHub Actions (CI) auf `main` | 22.10.2026, laut Ansicht auf GitHub | Läufe #1 bis #3 grün (Node 22 und 24: Tests, Typprüfung, Lint, Build); der Lauf nach dem Umschreiben der Historie wurde hier nicht angesehen |
-| **Nicht geprüft** | | Physische Geräte, Screenreader, Bewegungsreduktion im echten Browser, Papierausdruck |
+| **Nicht geprüft** | | Physische Geräte, echter Screenreader, Bewegungsreduktion im echten Browser, Papierausdruck, Kiswahili durch Muttersprachler, der CI-Auftrag für die Browser-Tests auf GitHub (auf Ubuntu noch nicht gelaufen), die neue Version live (siehe Protokoll) |
 
 ## Protokoll
+
+### 22.10.2026, nachmittags – Weiterentwicklung: Server-Ansicht, Browser-Tests, Kiswahili, QR-Code
+
+- **Auftrag:** „Technisch noch Besseres“ und die zwei Zusatzfunktionen, weil das Produkt eingereicht und von anderen benutzt wird, nicht live vorgeführt.
+- **Erste Ansicht vom Server** (`app/page.tsx` + `app/home.tsx`). Dabei aufgefallen: Ein vom Server gerenderter Stand altert ohne Skript nicht. Daraus das Sicherheitsnetz (Neuladen nach 30 s ohne Start, Meta-Refresh ohne JavaScript). Der Browser-Zwischenspeicher für den Stand (`localStorage`) entfiel, weil das HTML den Stand jetzt selbst mitbringt.
+- **Browser-Tests** (`e2e/`, Playwright mit installiertem Chrome, auch in der CI). Sie fanden drei echte Fehler, die behoben sind (siehe Prüfungen). Dabei zeigte sich auch, dass ein Test vor dem Start der Skripte die Verbindung kappte; er wartet jetzt auf `data-hydrated`.
+- **Kiswahili und QR-Code** auf der Tafel (`lib/i18n.ts`, `lib/qr.ts`). Übersetzung nach bestem Wissen, **nicht von Muttersprachlern geprüft**; steht in der Roadmap als P1 und im Code-Kommentar.
+- **Sicherheitsmeldungen:** `npm audit fix`, Next 16.3.4 → 16.4.2, React 19.2.6 → 19.3.1. Der Versuch, vinext, vite und das Cloudflare-Plugin zu heben, scheiterte zunächst an Abhängigkeiten, räumte danach die Liste nicht auf und wurde zurückgenommen.
+- **Nicht umgesetzt:** normalisierte Datenbanktabellen (Begründung in der Roadmap); Ereignisprotokoll stattdessen begrenzt.
 
 ### 22.10.2026, mittags (später) – neuer Zugangscode
 

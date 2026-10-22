@@ -305,6 +305,9 @@ A small jerrycan whose blue water level drains in exact proportion to the 12-hou
 ### Board Row
 The same anatomy on whole grid cells, sized in em, with a 4.2em status circle and the status word in its colour at 2.5em. **Pour motion:** when a row's status changes, a layer of the status colour at 20% rises from the bottom over 2.4s and fades, the board's single authored moment.
 
+### Board Tools
+Under the board's notes: the QR code to the SMS view (a black-on-white SVG on a hairline ring, 6.2em, with a one-line bold caption) and a two-button language switch in a pill (min height 44px; the pressed button is ink with can-yellow text). Only on the full board, never on the stage's small copy. The board element carries the chosen `lang`.
+
 ### Repair Coupon (signature)
 Paper with an inset hairline, 16px corners. Head in Can Wash with a 2px dashed ochre tear line. Below, a stamped sequence: 26px dots joined by 2px connectors; done stamps fill Working Green with a white check and keep their time; the next stamp has a 3px Cap Blue ring and blue label. Steps never disappear. Closed coupons drop to 72% opacity with a green closed note.
 

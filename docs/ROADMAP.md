@@ -8,13 +8,14 @@ Kennzeichnung wie im Konzept: **belegt** (Quelle oder Messung), **Annahme** (ung
 
 | Prio | Aufgabe | Fertig, wenn … |
 |---|---|---|
+| P1 | **Kiswahili von einer Muttersprachlerin oder einem Muttersprachler prüfen lassen.** Die Texte der Tafel (`web/lib/i18n.ts`) sind ein sorgfältiger Entwurf, nicht geprüft. Besonders der Satz „Inafanya kazi inamaanisha maji yanaweza kuchotwa. Haisemi chochote kuhusu usafi wa maji ya kunywa.“ muss stimmen. | Prüfung durch jemanden, der Kiswahili spricht; danach den Hinweis in `i18n.ts` und hier entfernen. |
 | P2 | **Gegenprobe auf echten Geräten und auf Papier.** Bisher nur Browser-Emulation (375 px mit Touch) und ein PDF des Druckblatts. | Ein echtes Handy, ein zweiter Rechner und ein Papierausdruck zeigen dasselbe wie die Emulation. |
-| P2 | **Screenreader und reduzierte Bewegung im echten Browser prüfen.** Das CSS ist gelesen und gemessen, aber nicht mit einem Screenreader oder der Systemeinstellung „Bewegung reduzieren“ ausprobiert. | Ablauf Meldung → Bestätigung ist mit Screenreader bedienbar; die Tafel zeigt „Zeile geändert“ ohne Bewegung. |
+| P2 | **Mit echter Hilfstechnik prüfen.** Die automatische Prüfung (axe, WCAG A/AA) findet auf allen zehn Ansichten nichts mehr, aber ein Screenreader (NVDA, VoiceOver, TalkBack) und die Systemeinstellung „Bewegung reduzieren“ sind nur im CSS gelesen, nie live ausprobiert worden. | Ablauf Meldung → Bestätigung ist mit Screenreader bedienbar; die Tafel zeigt „Zeile geändert“ ohne Bewegung. |
 | P2 | **WPdx-Daten prüfen.** 60 Datensätze sind nicht automatisch 60 verschiedene, erreichbare Wasserstellen. Mehrfacherfassungen und widersprüchliche Quellenangaben sind nicht untersucht. | Datensätze und eindeutige Standorte sind dokumentiert getrennt; weiterhin keine Aussage über den aktuellen Zustand. |
 | P2 | **SMS-Simulation fachlich schärfen.** Die Segmentzählung rechnet nur mit 160 Zeichen; Sonderzeichen erzwingen eine andere Kodierung (UCS-2, 70 Zeichen), und Kosten sind nicht modelliert. | Zählung nach Kodierung oder klar als Schätzung beschriftet; Pflicht zur Vor-Ort-Prüfung bleibt. |
-| P2 | **Zugangscode stärker machen.** Der erzeugte Code (`wort-wort-1234`) hat rund 1,3 Mio. Möglichkeiten und dient zugleich als Schlüssel für das Cookie. Mit der Begrenzung reicht das für die Demo. | Längerer Code oder ein eigenes Cookie-Geheimnis; ein Codewechsel meldet alle ab. |
-| P3 | **Zustand begrenzen.** Das Ereignisprotokoll wächst unbegrenzt in einer Datenbankzeile und wird bei jeder Abfrage mitgeschickt. | Nur die letzten rund 200 Ereignisse im Zustand; Verlauf bleibt bedienbar. |
+| P3 | **Zugangscode als Cookie-Schlüssel.** Neue Codes bestehen aus drei Wörtern und vier Ziffern (rund 15 Mio. Möglichkeiten, der Code vom 22.10. ebenso), mit der Anmeldebegrenzung ist das für die Demo ausreichend. Er dient aber zugleich als Schlüssel für das Cookie; ein eigenes, langes Cookie-Geheimnis wäre sauberer. | Eigenes Geheimnis für das Cookie; ein Codewechsel meldet weiter alle ab. |
 | P3 | **Browser-Kopie mit höherer Revision.** Hat ein Browser einen Stand mit höherer Revision gespeichert als der Server (zum Beispiel nach einer neu angelegten Datenbank), ignoriert er den Serverstand. | Der Client erkennt eine zurückgesetzte Datenbank und übernimmt den Serverstand. |
+| P3 | **Entwicklungswerkzeuge mit bekannten Sicherheitsmeldungen.** `npm audit` meldet für die Laufzeit (`--omit=dev`) nichts mehr. Es bleiben 20 Meldungen in Werkzeugen, die nur beim Entwickeln und Bauen laufen (vite-Entwicklungsserver, Miniflare/Wrangler lokal, esbuild über drizzle-kit, Lint-Pakete) und in `vinext` (u. a. ein Bild-Parser, den die App nicht benutzt). Ein Versuch, vinext, vite und das Cloudflare-Plugin auf die gepatchten Versionen zu heben, räumte die Liste nicht auf und wurde zurückgenommen. | Die Plattform (Sites/vinext) zieht die Versionen nach, dann `npm audit fix` und die Tests wiederholen. |
 | P3 | **Integrationstest unabhängig vom Dev-Server machen.** `npm run test:integration` braucht die Mock-Anmeldung von `npm run dev`. Gegen `npm start` schlägt er fehl, weil dort die Mock-Anmeldung fehlt und die lokale Laufzeit zusätzlich zeitweise 503 liefert. | Läuft in CI gegen einen Worker, der ohne Handarbeit startet. |
 
 ## 2. Mögliche Erweiterungen (nicht begonnen)
@@ -23,9 +24,8 @@ Sortiert nach Thema, nicht nach Reihenfolge. Was davon sinnvoll ist, hängt von 
 
 ### Erreichbarkeit für Haushalte
 - **Echte SMS oder USSD** über einen Anbieter in Kenia: Abfrage `STATUS`, Bestätigungen durch Betreiber, Absender den Betreibern zuordnen. Die Logik dafür steht in `web/lib/sms.ts`, es fehlt nur der Anschluss.
-- **Swahili** (und je nach Region eine lokale Sprache) in Oberfläche, SMS und Tafel; mit Menschen vor Ort auf Verständlichkeit prüfen. Einige Stichwörter (`HALI`, `MSAADA`) gibt es schon.
+- **Swahili weiter ausbauen** (und je nach Region eine lokale Sprache): Die öffentliche Tafel gibt es schon auf Kiswahili (Umschalter, `?lang=sw`), Oberfläche, Feld-App und SMS noch nicht. Mit Menschen vor Ort auf Verständlichkeit prüfen. Einige SMS-Stichwörter (`HALI`, `MSAADA`) gibt es schon.
 - **Sprachausgabe oder Piktogramme** auf der Tafel für Menschen, die schlecht lesen.
-- **QR-Code oder SMS-Nummer direkt auf der Tafel**, damit man mit dem eigenen Telefon weiterfragen kann.
 - **Hochkontrast-Ansicht** für grelles Sonnenlicht. Einen Dunkelmodus gibt es bewusst nicht, weil die Tafel draußen und tagsüber gelesen wird.
 
 ### Verlässlichkeit im Feld
@@ -35,7 +35,7 @@ Sortiert nach Thema, nicht nach Reihenfolge. Was davon sinnvoll ist, hängt von 
 - **Plausibilitätsprüfung** bei widersprüchlichen Meldungen (zwei Betreiber, ein Sensor).
 
 ### Daten und Technik
-- **Normalisierte Tabellen statt eines Datensatzes:** getrennte Tabellen für Wasserstellen, Aufträge, Ereignisse und Sitzungen, Archivierung, Seitenweise Abfrage. Der jetzige Aufbau ist für wenige Dutzend Stellen gedacht.
+- **Normalisierte Tabellen statt eines Datensatzes:** getrennte Tabellen für Wasserstellen, Aufträge, Ereignisse und Sitzungen, Archivierung, Seitenweise Abfrage. Der jetzige Aufbau ist für wenige Dutzend Stellen gedacht. Bewusst nicht umgebaut: Eine Umstellung brächte für die Vorführung nichts, verlangt eine Umstellung der Live-Daten und der Revisionsprüfung, und ohne Pilot weiß man nicht, welche Abfragen wirklich gebraucht werden. Bis dahin ist der Zustand auf die letzten 200 Ereignisse begrenzt und die Abfrage schlank (siehe Architektur).
 - **Mehr Regionen:** Import weiterer Counties aus WPdx (`npm run data:wpdx -- --list`), mit der Prüfung auf Mehrfacherfassungen aus Abschnitt 1.
 - **Echte Gehwege** aus einem Routing-Dienst statt Luftlinie mal 1,3.
 - **Sensoranbindung über Partner** (zum Beispiel das Smart-Handpump-Team): Hinweise zur Prüfung, nie ein Status. Die Regel dafür (`web/lib/sensor.ts`) steht schon.
@@ -47,7 +47,6 @@ Sortiert nach Thema, nicht nach Reihenfolge. Was davon sinnvoll ist, hängt von 
 - **Ersatzteile und Finanzierung** als eigener Ablauf, wenn ein Hindernis „Teile“ oder „Geld“ lautet. Heute macht WaterLink Engpässe nur sichtbar.
 
 ### Betrieb und Qualität
-- **Automatische Browser-Tests** für den ganzen Ablauf auf zwei Fenstern (heute: manuell geprüft und `npm run test:integration` für die API).
 - **Vorschau-Bereitstellung pro Branch**, Fehlerüberwachung, Datensicherung.
 - **Datenschutz** nach dem kenianischen Data Protection Act 2019, bevor echte Personen in der Anwendung stehen.
 - **Mehrere Organisationen** (Mandantenfähigkeit), falls mehrere Counties oder NGOs dieselbe Installation nutzen.
@@ -75,3 +74,4 @@ Das ist kein Fehler, sondern Absicht, und darf nicht als „funktioniert schon�
 | Soll zusätzlich eine private Sites-Bereitstellung laufen? Der Code ist dafür vorbereitet. | Osman |
 | Swahili und weitere Sprachen: ja, nein, wann? | Team, mit Partner vor Ort |
 | Wer ist der erste Partner (County, NGO, Wartungsdienst)? | Team |
+

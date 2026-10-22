@@ -39,7 +39,7 @@ Die Oberfläche ist auf Englisch und in fünf Ansichten getrennt, alle in `web/c
 | Coordination | `/#coordination/overview`, `/history`, `/demo` | Karte aller Stellen, offene Aufträge mit Hindernissen, Verlauf, Demo-Werkzeuge |
 | Pitch-Bühne | `/?view=stage` | Beide Handys und die Tafel auf einem Bildschirm |
 
-`store.tsx` hält den gemeinsamen Datenstand (Abfrage alle drei Sekunden, solange der Tab sichtbar ist; Lesekopie im Browser) und für jede Demo-Rolle eine eigene Sitzung. Eine Rolle bekommt ihre Sitzung beim ersten Handeln; so kann die Bühne Betreiberin, Techniker und Koordination gleichzeitig zeigen. Schreibvorgänge laufen nacheinander und tragen weiter die erwartete Revision und eine Anfragekennung.
+`store.tsx` hält den gemeinsamen Datenstand (Abfrage alle drei Sekunden, solange der Tab sichtbar ist; der Stand im Speicher des Tabs altert weiter, wenn die Verbindung abreißt) und für jede Demo-Rolle eine eigene Sitzung. Eine Rolle bekommt ihre Sitzung beim ersten Handeln; so kann die Bühne Betreiberin, Techniker und Koordination gleichzeitig zeigen. Schreibvorgänge laufen nacheinander und tragen weiter die erwartete Revision und eine Anfragekennung.
 
 Abfrage und Startdaten: `GET /api/waterlink?since=<Revision>` antwortet mit `{ unchanged: true, … }` (rund 400 Byte), wenn der Bildschirm die aktuelle Revision schon hat; sonst kommt der ganze Zustand (rund 47 KB). Wurde der Demo-Zustand vier Stunden lang nicht angefasst (kein Ereignis), setzt `lib/store.ts` ihn beim nächsten Lesen mit frischen simulierten Bestätigungen neu an (Revision + 1, ein Hinweis im Verlauf). Ohne das stünde die Live-Seite nach 12 Stunden Stillstand auf „Confirmation expired“. Der Zustand liegt weiter als eine Zeile in D1; Schreibzugriffe prüfen die erwartete Revision (siehe `tests/store.test.ts`).
 
@@ -50,6 +50,32 @@ Die SMS-Simulation steckt in `web/lib/sms.ts` (reine Funktionen, getestet in `te
 Die öffentliche Tafel hält den Bildschirm wach (Screen Wake Lock, wo der Browser es kann) und hat einen Vollbild-Knopf. Ohne Verbindung zeigt sie alle Stellen als „Unclear“ mit einem roten Hinweis und lässt die einzelnen Alternativen weg. Die Pitch-Bühne zeigt ab 1700 px Breite Tafel und SMS-Handy nebeneinander, darunter per Umschalter.
 
 Die Karte (`map.tsx`) wird als SVG aus den WPdx-Koordinaten und Straßen aus OpenStreetMap gezeichnet, ohne Kartenkacheln und ohne Netzzugriff. `web/scripts/import-osm.mjs` lädt Straßen, Bäche und benannte Orte im Umkreis der Region über die Overpass-API und schreibt `web/data/osm-area.json` (ODbL, Namensnennung „© OpenStreetMap contributors“). Liegen zwei Stellen am selben Punkt (A und C in Busia), werden die Marker mit einer Hinweislinie auseinandergezogen. Gerade Linien sind keine Wege.
+
+## Erste Ansicht vom Server
+
+`app/page.tsx` ist eine Serverkomponente: Sie liest den Zustand (`getState`) und rendert die erste Ansicht damit, sodass das HTML schon Wasserstellen, Status und Zeiten enthält, bevor ein Skript geladen ist (wichtig bei langsamen Verbindungen). `app/home.tsx` ist der Teil im Browser. Der Browser startet mit demselben Zustand und derselben Serverzeit wie der Server (sonst gäbe es Hydration-Fehler) und fragt danach per `?since=` nach Änderungen. Die Ansicht (`?view=display`, `?view=stage`) und die Sprache (`?lang=sw`) stehen in der Adresse und werden auf dem Server mitgelesen; welcher Bereich der App (`#status`, `#field` …) offen ist, steht im Hash und wird erst im Browser gelesen. Kann der Server den Zustand nicht lesen, öffnet die Seite trotzdem und lädt ihn im Browser nach.
+
+**Sicherheitsnetz gegen ein „eingefrorenes Grün“:** Ein Server-Schnappschuss altert nicht von selbst. Deshalb lädt sich die Seite neu, wenn ihre Skripte nach 30 Sekunden nicht gestartet sind (Skript in `app/layout.tsx`, die Seite setzt `data-hydrated` auf `<html>`, sobald sie läuft), und ohne JavaScript fordert ein `<noscript>`-Meta-Refresh alle 60 Sekunden neues HTML an. Getestet in `e2e/board.spec.ts`.
+
+## Tafel in zwei Sprachen und QR-Code
+
+`web/lib/i18n.ts` enthält alle Texte der öffentlichen Tafel auf Englisch und Kiswahili (ohne Framework, getestet in `tests/i18n.test.ts`: gleiche Schlüssel, nichts unübersetzt). Die Statuslogik bleibt in `domain.ts` unverändert; `format.ts` bekommt nur einen Sprachparameter. Der Umschalter unten auf der Tafel schreibt die Sprache in die Adresse (`?lang=sw`), damit sich eine Tafel in einer Sprache als Lesezeichen speichern lässt, und setzt `lang` am Tafel-Element für Screenreader. **Die Kiswahili-Texte sind ein Entwurf ohne Prüfung durch Muttersprachler** (siehe Roadmap).
+
+Der QR-Code (`lib/qr.ts`, `components/waterlink/qr.tsx`, Bibliothek `qrcode-generator`) führt zur SMS-Ansicht dieser Seite (`<Adresse>/#sms`) und wird als ein SVG-Pfad gezeichnet, ohne Bild und ohne Netzzugriff. Ein Test zeichnet ihn in ein Bitmap und liest ihn mit einem QR-Leser (`jsqr`) zurück. Auf dem Server fehlt er, weil dort die Adresse des Besuchers nicht bekannt ist; er erscheint, sobald die Seite läuft.
+
+## Zustand und Abfrage
+
+Das Ereignisprotokoll im Zustand ist auf die letzten 200 Einträge begrenzt (`MAX_EVENTS` in `domain.ts`), weil jede Abfrage den ganzen Zustand lädt. Normalisierte Tabellen statt eines Datensatzes sind bewusst nicht umgesetzt, Begründung in der [Roadmap](ROADMAP.md).
+
+## Tests
+
+- `npm test` (67): Fachregeln, Speicher mit echtem SQLite (Revisionsprüfung, Wiederholung, Neuansatz), Sitzungen, Zugang, SMS, Sensor, Region, Sprachtexte, QR-Code.
+- `npm run test:integration` und `npm run test:access`: API und Zugangscode gegen einen laufenden lokalen Server.
+- `npm run test:e2e` (25, Playwright mit dem installierten Chrome): ganzer Ablauf auf zwei Fenstern, Offline, Seite ohne JavaScript, Sicherheitsnetz, Sprachumschalter und QR-Code, axe-Prüfung (WCAG A/AA) auf allen zehn Ansichten, Handybreite (keine Überbreite, keine Tippfläche unter 44 px), Druckblatt (eine A4-Seite). Läuft in der CI als eigener Auftrag.
+
+## Abhängigkeiten und Sicherheitsmeldungen
+
+`npm audit --omit=dev` meldet für die Laufzeit nichts (nach Next 16.4.2 und React 19.3.1; vorher eine kritische Meldung zu Next und eine zu `react-server-dom-webpack`). Es bleiben 20 Meldungen in Entwicklungswerkzeugen; Einzelheiten und Grund, warum sie nicht angehoben wurden, in der [Roadmap](ROADMAP.md).
 
 ## Aktualität und Alternativen
 
