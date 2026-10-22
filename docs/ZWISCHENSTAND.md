@@ -39,16 +39,19 @@ Zuerst eine verlässlich funktionierende App: Haushalte sehen den letzten bestä
 | `npm run typecheck`, `npm run lint`, `npm run build` | 22.10.2026 nachmittags | alle drei Exit-Code 0 |
 | `npm run test:e2e` (neu) | 22.10.2026 nachmittags, lokal | 25/25 bestanden: ganzer Ablauf auf zwei Fenstern (Meldung → Übernahme → Reparatur → Tafel bleibt „Not working“ → Test → „Working“), Offline mit Wiedererholung, Seite ohne JavaScript, Sicherheitsnetz, Sprachumschalter und QR-Code, axe (WCAG A/AA) auf 10 Ansichten ohne Fund, Handybreite ohne Überbreite und ohne Tippfläche unter 44 px auf 9 Ansichten, Druckblatt eine A4-Seite. Frühere Läufe fanden echte Fehler: Karte mit fokussierbaren Markern in einer Bild-Rolle, zu blasser „Full screen“-Knopf, zu kleiner Knopf bei Handybreite |
 | `npm run test:integration` (`npm run dev`), `npm run test:access` (Code-Modus, lokal) | 22.10.2026 nachmittags | bestanden, 11/11 |
+| `npm run test:e2e` gegen den **Produktions-Build** (`npm start`), nur die Tests ohne Anmeldung (Tafel, Sprache, Ohne-JavaScript, Sicherheitsnetz, axe, Handybreite, Druck) | 22.10.2026 nachmittags | 23/23 bestanden |
+| Live-Seite nach der Bereitstellung am Nachmittag (nur lesend, plus Ansicht im Browser) | 22.10.2026 nachmittags | HTML enthält Wasserstellen, Kiswahili-Tafel, Meldungs-Refresh und Neulade-Skript (alle vier Ansichten); `Cache-Control: no-store`; `?since=` liefert „unchanged“; im Browser `data-hydrated=true`, Tafel auf Kiswahili mit QR-Code, keine Konsolenfehler |
 | `npm audit --omit=dev` | 22.10.2026 nachmittags | 0 Meldungen (vorher 4, darunter eine kritische zu Next) |
 | Produktions-Build lokal gestartet, HTML abgefragt | 22.10.2026 nachmittags | Antwort enthält Wasserstellen, Kiswahili-Tafel, Meldungs-Refresh und Neulade-Skript; `Cache-Control: no-store` |
 | Live-Seite nach dem Bereitstellen (nur lesende Anfragen und eine Anfrage mit gefälschten Headern) | 22.10.2026 | Seite 200; `/api/access` meldet Modus „code“; die Demo hat sich beim ersten Lesen selbst neu angesetzt (Revision 1, A und B frisch bestätigt, Hinweis im Verlauf); `?since=1` liefert „unchanged“; gefälschte Header 401. Kein `test:access` gegen die Live-Seite |
 | GitHub Actions (CI) auf `main` | 22.10.2026, laut Ansicht auf GitHub | Läufe #1 bis #3 grün (Node 22 und 24: Tests, Typprüfung, Lint, Build); der Lauf nach dem Umschreiben der Historie wurde hier nicht angesehen |
-| **Nicht geprüft** | | Physische Geräte, echter Screenreader, Bewegungsreduktion im echten Browser, Papierausdruck, Kiswahili durch Muttersprachler, der CI-Auftrag für die Browser-Tests auf GitHub (auf Ubuntu noch nicht gelaufen), die neue Version live (siehe Protokoll) |
+| **Nicht geprüft** | | Physische Geräte, echter Screenreader, Bewegungsreduktion im echten Browser, Papierausdruck, Kiswahili durch Muttersprachler, der CI-Auftrag für die Browser-Tests auf GitHub (auf Ubuntu noch nicht gelaufen; in der Ansicht auf GitHub nachsehen), der Ablauf Melden → Reparieren → Bestätigen auf der Live-Seite mit dem Zugangscode |
 
 ## Protokoll
 
 ### 22.10.2026, nachmittags – Weiterentwicklung: Server-Ansicht, Browser-Tests, Kiswahili, QR-Code
 
+- Sechs Commits auf `main` gepusht (`b45bd28` bis `bd71a85`) und mit `npm run deploy:cloudflare` bereitgestellt (Zugangscode unverändert).
 - **Auftrag:** „Technisch noch Besseres“ und die zwei Zusatzfunktionen, weil das Produkt eingereicht und von anderen benutzt wird, nicht live vorgeführt.
 - **Erste Ansicht vom Server** (`app/page.tsx` + `app/home.tsx`). Dabei aufgefallen: Ein vom Server gerenderter Stand altert ohne Skript nicht. Daraus das Sicherheitsnetz (Neuladen nach 30 s ohne Start, Meta-Refresh ohne JavaScript). Der Browser-Zwischenspeicher für den Stand (`localStorage`) entfiel, weil das HTML den Stand jetzt selbst mitbringt.
 - **Browser-Tests** (`e2e/`, Playwright mit installiertem Chrome, auch in der CI). Sie fanden drei echte Fehler, die behoben sind (siehe Prüfungen). Dabei zeigte sich auch, dass ein Test vor dem Start der Skripte die Verbindung kappte; er wartet jetzt auf `data-hydrated`.
