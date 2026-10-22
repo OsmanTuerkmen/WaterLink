@@ -54,6 +54,7 @@ Bisher wurde nur emuliert (Chrome mit 375 px und Touch, ein PDF des Druckblatts,
 |---|---|---|---|
 | Android-Handy, Chrome | Ausprobier-Link öffnen, ganze Geschichte spielen | alles bedienbar, nichts schneidet ab, Tasten gut zu treffen | |
 | iPhone, Safari | dasselbe; zusätzlich Tafel `/?view=display` | wie oben; Schrift und Layout stimmen | |
+| Handy, Koordination | Ausprobier-Link, Koordination: **Add a water point** → **Pick on the map** → auf die Karte tippen | die Seite springt zur Karte und zurück zum Formular, die Position steht im Feld, das Fadenkreuz liegt dort, wo getippt wurde | |
 | Schwaches Handy oder Netz (Chrome: Entwicklertools → Network „Slow 4G“, CPU „4× slowdown“) | Statusseite laden | Wasserstellen erscheinen schon, bevor alle Skripte da sind | |
 | Flugmodus | Tafel offen lassen, Flugmodus an, später aus | „No connection …“ mit Uhrzeit; nach der Rückkehr aktualisiert sich die Tafel | |
 | Draußen im Sonnenlicht | Tafel am Handy oder Laptop ansehen | Status und Überschrift gut lesbar; sonst Roadmap „Hochkontrast“ vorziehen | |

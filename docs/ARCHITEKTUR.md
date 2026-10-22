@@ -67,7 +67,7 @@ Eine Alternative nennt WaterLink nur, wenn die Wasserstelle frisch als funktioni
 |---|---|
 | `verify_access` | Gehzeit (1 bis 180 Minuten), Wegbeschreibung (3 bis 200 Zeichen), Öffnungszeiten (ganztägig oder `HH:MM`–`HH:MM`) und die ausdrückliche Bestätigung „ich bin den Weg gegangen“; setzt Weg und Zugang auf geprüft, speichert Zeit und Person (`accessCheckedBy`) |
 | `close_access` | Zugang gesperrt oder Weg blockiert: nimmt die Stelle sofort aus den Alternativen |
-| `add_point` | neue Wasserstelle (Name, Ort, Art, geschätzte Gehzeit, optional Position als Breite und Länge, höchstens `MAX_POINT_RADIUS_KM` (15) vom Treffpunkt; mit Position erscheint sie auf der Karte); nimmt den nächsten freien Buchstaben, beginnt **unbestätigt und ungeprüft**, höchstens `MAX_TRACKED` (8) in der Betreuung |
+| `add_point` | neue Wasserstelle (Name, Ort, Art, geschätzte Gehzeit, optional Position als Breite und Länge, höchstens `MAX_POINT_RADIUS_KM` (15) vom Treffpunkt; mit Position erscheint sie auf der Karte; die Position wird eingetippt oder auf der Karte angetippt, `findNearbyPoint` weist auf eine erfasste Stelle im Umkreis von 50 m hin); nimmt den nächsten freien Buchstaben, beginnt **unbestätigt und ungeprüft**, höchstens `MAX_TRACKED` (8) in der Betreuung |
 | `remove_point` | nur für angelegte Stellen (`custom`) und nur ohne offenen Auftrag |
 
 Die Prüfung gilt wie eine Betriebsbestätigung zwölf Stunden (`ACCESS_TTL_MS`, ein Demo-Wert); danach nennt keine Alternative die Stelle mehr, bis neu geprüft wurde. Gehzeiten von Erhebungsorten gelten als geschätzt, bis eine Person den Weg geprüft hat (Statusansicht, „Details and directions“). Die Oberfläche steht in `components/waterlink/points-admin.tsx` (Koordination → Overview); Server (`parseCommand`) und Ausprobier-Modus nutzen dieselben Regeln.
@@ -90,7 +90,7 @@ Das Ereignisprotokoll im Zustand ist auf die letzten 200 Einträge begrenzt (`MA
 
 ## Tests
 
-- `npm test` (81): Fachregeln, Speicher mit echtem SQLite (Revisionsprüfung, Wiederholung, Neuansatz), Sitzungen, Zugang, SMS, Sensor, Region, Sprachtexte, QR-Code, Ausprobier-Modus, Weg-/Zugangsprüfung und Anlegen von Wasserstellen, SMS-Teile nach Kodierung, Position angelegter Stellen, Übereinstimmung des Kiswahili-Prüfbogens mit den Texten.
+- `npm test` (82): Fachregeln, Speicher mit echtem SQLite (Revisionsprüfung, Wiederholung, Neuansatz), Sitzungen, Zugang, SMS, Sensor, Region, Sprachtexte, QR-Code, Ausprobier-Modus, Weg-/Zugangsprüfung und Anlegen von Wasserstellen, SMS-Teile nach Kodierung, Position angelegter Stellen, Übereinstimmung des Kiswahili-Prüfbogens mit den Texten.
 - `npm run test:integration` und `npm run test:access`: API und Zugangscode gegen einen laufenden lokalen Server.
 - `npm run test:e2e` (32, Playwright mit dem installierten Chrome): ganzer Ablauf auf zwei Fenstern, Offline, Seite ohne JavaScript, Sicherheitsnetz, Sprachumschalter und QR-Code, Ausprobier-Modus (ganze Geschichte ohne Code, Server unverändert, auch mit einer Geräteuhr, die falsch geht), axe-Prüfung (WCAG A/AA) auf allen elf Ansichten, Handybreite (keine Überbreite, keine Tippfläche unter 44 px), Druckblatt (eine A4-Seite). Läuft in der CI als eigener Auftrag.
 
