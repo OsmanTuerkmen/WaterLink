@@ -10,6 +10,7 @@ import { Coordination, type CoordTab } from "@/components/waterlink/coordination
 import { Stage } from "@/components/waterlink/stage";
 import { SmsPage } from "@/components/waterlink/sms";
 import { clock } from "@/components/waterlink/format";
+import { SandboxBar, TryItButton } from "@/components/waterlink/sandbox";
 import type { State } from "@/lib/domain";
 import type { Lang } from "@/lib/i18n";
 
@@ -19,6 +20,8 @@ export interface HomeProps {
   initial: { state: State; serverNow: string } | null;
   view: View;
   lang: Lang;
+  /** Practice mode named in the address (?sandbox=1). */
+  sandbox: boolean;
 }
 const readView = (search: string): View => {
   const value = new URLSearchParams(search).get("view");
@@ -43,8 +46,8 @@ function parseHash(hash: string): Route {
 }
 const hashOf = (r: Route) => r.view === "status" ? "#status" : r.view === "sms" ? "#sms" : r.view === "field" ? (r.point ? `#field/report/${encodeURIComponent(r.point)}` : `#field/${r.role}`) : `#coordination/${r.tab}`;
 
-export function Home({ initial, view, lang }: HomeProps) {
-  return <WaterLinkProvider initial={initial}><App view={view} lang={lang} /></WaterLinkProvider>;
+export function Home({ initial, view, lang, sandbox }: HomeProps) {
+  return <WaterLinkProvider initial={initial} initialSandbox={sandbox}><App view={view} lang={lang} /></WaterLinkProvider>;
 }
 
 function App({ view: serverView, lang }: { view: View; lang: Lang }) {
@@ -72,6 +75,7 @@ function App({ view: serverView, lang }: { view: View; lang: Lang }) {
     <div className="app">
       <a className="skip" href="#main">Skip to content</a>
       <TopBar route={route} navigate={navigate} />
+      <SandboxBar />
       <DemoStrip />
       <main id="main" className={`main main-${route.view}`}>
         <Content route={route} navigate={navigate} />
@@ -115,6 +119,7 @@ function DemoStrip() {
   return (
     <div className="demo-strip">
       <p><b>Demo.</b> <span className="demo-long">{state?.region ? "Places come from real WPdx surveys (CC BY 4.0). Confirmations, people and routes are simulated." : "All places, people and reports are fictional example data."}</span><span className="demo-short">{state?.region ? "Real places, simulated confirmations." : "Fictional example data."}</span></p>
+      <TryItButton />
       <div>
         <a href="/?view=display" target="_blank" rel="noopener noreferrer">Public board <ArrowUpRight size={14} aria-hidden="true" /></a>
         <a href="/?view=stage" target="_blank" rel="noopener noreferrer">Pitch stage <ArrowUpRight size={14} aria-hidden="true" /></a>

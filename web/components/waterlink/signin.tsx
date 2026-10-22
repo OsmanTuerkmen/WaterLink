@@ -5,12 +5,17 @@ import { useWaterLink } from "./store";
 
 /** Shown when an action needs sign-in: the platform link on Sites, a demo access code when self-hosted. */
 export function SignInPrompt() {
-  const { authMode, unlock } = useWaterLink();
+  const { authMode, unlock, enterSandbox } = useWaterLink();
   const codeId = useId();
   const [code, setCode] = useState(""), [busy, setBusy] = useState(false), [message, setMessage] = useState("");
   if (authMode !== "code") {
     const back = typeof location === "undefined" ? "/" : location.pathname + location.search + location.hash;
-    return <a className="link" href={`/signin-with-chatgpt?return_to=${encodeURIComponent(back)}`} target="_top">Sign in for the demo <ArrowUpRight size={15} aria-hidden="true" /></a>;
+    return (
+      <span className="signin-options">
+        <a className="link" href={`/signin-with-chatgpt?return_to=${encodeURIComponent(back)}`} target="_top">Sign in for the demo <ArrowUpRight size={15} aria-hidden="true" /></a>
+        <button type="button" className="link" onClick={enterSandbox}>Or try it in the sandbox</button>
+      </span>
+    );
   }
   async function submit(e: FormEvent) {
     e.preventDefault();
@@ -28,6 +33,7 @@ export function SignInPrompt() {
         <button className="btn btn-primary btn-sm" disabled={busy || code.trim().length < 4}>Unlock</button>
       </div>
       {message && <small role="alert">{message}</small>}
+      <button type="button" className="link" onClick={enterSandbox}>No code? Try it in the sandbox (this device only)</button>
     </form>
   );
 }

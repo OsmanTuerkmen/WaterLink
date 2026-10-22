@@ -8,6 +8,7 @@ import { FieldApp } from "./field";
 import { DisplayBoard } from "./board";
 import { CanMark } from "./marks";
 import { SmsPhone } from "./sms";
+import { SandboxBar, TryItButton } from "./sandbox";
 
 const SCRIPT = [
   { who: "Amina", text: "reports that A has no water" },
@@ -34,6 +35,7 @@ export function Stage() {
   return (
     <div className="stage">
       <h1 className="sr-only">WaterLink pitch stage: both phones and the public board on one screen</h1>
+      <SandboxBar />
       <header className="stage-head">
         <div className="stage-brand"><CanMark size={30} /><span>WaterLink</span><small>Live demo · Marachi East, Busia</small></div>
         <ol className="stage-script" aria-label="Demo steps">
@@ -45,6 +47,7 @@ export function Stage() {
           ))}
         </ol>
         <div className="stage-reset">
+          <TryItButton />
           {confirmReset ? (
             <>
               <button className="btn btn-danger btn-sm" disabled={coord.busy || offline} onClick={async () => { if (await act("coordinator", { type: "reset" })) setConfirmReset(false); }}>Reset now</button>

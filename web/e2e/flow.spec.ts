@@ -5,7 +5,7 @@ test("report, repair and on-site test: a second window follows live and only the
   const phone = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
   const screen = await browser.newContext({ viewport: { width: 1280, height: 720 } });
   try {
-    await signIn(phone);
+    await signIn(phone, baseURL);
     await resetDemo(phone, baseURL!);
 
     // Window 1: the public board.
@@ -64,7 +64,7 @@ test("report, repair and on-site test: a second window follows live and only the
 
 test("the board never shows an old green when the connection is gone, and recovers by itself", async ({ browser, baseURL }) => {
   const setup = await browser.newContext();
-  await signIn(setup);
+  await signIn(setup, baseURL);
   await resetDemo(setup, baseURL!);
   await setup.close();
 

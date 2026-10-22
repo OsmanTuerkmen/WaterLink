@@ -1,8 +1,11 @@
 "use client";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import type { Actor, Command, Role, State } from "@/lib/domain";
+import { createSeedState, type Actor, type Role, type State } from "@/lib/domain";
+import { DEMO_ACTORS } from "@/lib/actors";
+import { REGION } from "@/lib/region";
+import { applyLocal, type Mutation } from "@/lib/sandbox";
 
-export type Mutation = Command | { type: "reset" };
+export type { Mutation };
 type Session = { token: string; actor: Actor; expiresAt: string };
 type Snapshot = { state: State; serverNow: string };
 type Unchanged = { unchanged: true; revision: number; serverNow: string };
@@ -28,6 +31,21 @@ interface Store {
   authMode: "sites" | "code";
   /** Redeems the demo access code; resolves to an error message, or "" on success. */
   unlock(code: string): Promise<string>;
+  /** Practice mode: every action runs on this device with practice data; nothing reaches the server. */
+  sandbox: boolean;
+  enterSandbox(): void;
+  leaveSandbox(): void;
+  resetSandbox(): void;
+}
+
+const SANDBOX_STATE = "waterlink-sandbox-v1";
+/** The sandbox is named in the address (?sandbox=1); only its state is kept, per tab, so a reload does not lose it. */
+function setSandboxParam(on: boolean) {
+  try {
+    const url = new URL(location.href);
+    if (on) url.searchParams.set("sandbox", "1"); else url.searchParams.delete("sandbox");
+    history.replaceState(null, "", url);
+  } catch { /* the address is only a convenience */ }
 }
 
 const SESSION = (role: Role) => `waterlink-session-v2-${role}`;
@@ -59,7 +77,9 @@ function readSavedSessions(): Partial<Record<Role, Session>> {
  * `initial` is the state the server read for the first HTML. Starting from it (clock included) makes the browser's first
  * render identical to the server's; the first request then checks whether anything changed in the meantime.
  */
-export function WaterLinkProvider({ children, initial = null }: { children: ReactNode; initial?: { state: State; serverNow: string } | null }) {
+export function WaterLinkProvider({ children, initial = null, initialSandbox = false }: { children: ReactNode; initial?: { state: State; serverNow: string } | null; initialSandbox?: boolean }) {
+  const [sandbox, setSandbox] = useState(initialSandbox);
+  const sandboxRef = useRef(initialSandbox);
   const [state, setState] = useState<State | null>(initial?.state ?? null);
   const current = useRef<State | null>(initial?.state ?? null);
   const [connection, setConnection] = useState<Connection>(initial ? "online" : "loading");
@@ -108,8 +128,15 @@ export function WaterLinkProvider({ children, initial = null }: { children: Reac
     }
   }, []);
 
+  const keepSandbox = useCallback((next: State) => {
+    current.current = next;
+    setState(next);
+    setNow(Date.now() + offset.current);
+    try { sessionStorage.setItem(SANDBOX_STATE, JSON.stringify(next)); } catch { /* it then lasts until the tab is reloaded */ }
+  }, []);
+
   const refresh = useCallback(async () => {
-    if (simulated.current || fetching.current) return;
+    if (simulated.current || fetching.current || sandboxRef.current) return;
     fetching.current = true;
     const controller = new AbortController();
     active.current = controller;
@@ -134,12 +161,20 @@ export function WaterLinkProvider({ children, initial = null }: { children: Reac
   useEffect(() => {
     fetch("/api/access", { cache: "no-store" }).then((r) => r.json() as Promise<{ mode?: string }>).then((d) => { if (d?.mode === "code") setAuthMode("code"); }).catch(() => {});
     // Right after the page has loaded the clock jumps from the server's render time to the real one.
-    const first = setTimeout(() => { setNow(Date.now()); void refresh(); }, 0);
+    const first = setTimeout(() => {
+      setNow(Date.now());
+      if (!sandboxRef.current) { void refresh(); return; }
+      // Reloaded inside the sandbox: pick up where the practice left off.
+      try {
+        const saved = JSON.parse(sessionStorage.getItem(SANDBOX_STATE) || "null");
+        if (validState(saved)) { current.current = saved; setState(saved); }
+      } catch { /* the practice data start again */ }
+    }, 0);
     // A hidden tab stops asking; it catches up as soon as it is shown again (see `visible`).
     const poll = setInterval(() => { if (!document.hidden) void refresh(); }, 3000);
     const tick = setInterval(() => setNow(Date.now() + offset.current), 15_000);
     const online = () => void refresh();
-    const offline = () => { active.current?.abort(); setConnection("offline"); };
+    const offline = () => { if (sandboxRef.current) return; active.current?.abort(); setConnection("offline"); };
     const visible = () => { setNow(Date.now() + offset.current); if (!document.hidden) void refresh(); };
     window.addEventListener("online", online);
     window.addEventListener("offline", offline);
@@ -156,8 +191,36 @@ export function WaterLinkProvider({ children, initial = null }: { children: Reac
     simulated.current = !simulated.current;
     setSimulatedOffline(simulated.current);
     if (simulated.current) { active.current?.abort(); setConnection("offline"); }
-    else { setConnection("loading"); void refresh(); }
+    else { setConnection(sandboxRef.current ? "online" : "loading"); void refresh(); }
   }, [refresh]);
+
+  const enterSandbox = useCallback(() => {
+    sandboxRef.current = true;
+    setSandbox(true);
+    setConnection("online");
+    keepSandbox(createSeedState(Date.now() + offset.current, REGION));
+    for (const role of ROLES) patch(role, { error: "", notice: "", signInNeeded: false });
+    setSandboxParam(true);
+  }, [keepSandbox, patch]);
+
+  const leaveSandbox = useCallback(() => {
+    sandboxRef.current = false;
+    setSandbox(false);
+    try { sessionStorage.removeItem(SANDBOX_STATE); } catch { /* ignore */ }
+    setSandboxParam(false);
+    // The server's state may have a lower revision than the practice state, so forget the practice state first.
+    current.current = null;
+    setState(null);
+    setConnection("loading");
+    for (const role of ROLES) patch(role, { error: "", notice: "", signInNeeded: false });
+    void refresh();
+  }, [patch, refresh]);
+
+  const resetSandbox = useCallback(() => {
+    if (!current.current) return;
+    keepSandbox(applyLocal(current.current, "coordinator", { type: "reset" }, new Date(Date.now() + offset.current), REGION));
+    for (const role of ROLES) patch(role, { error: "", notice: "" });
+  }, [keepSandbox, patch]);
 
   const forget = useCallback((role: Role) => {
     const next = { ...sessionRef.current };
@@ -185,6 +248,20 @@ export function WaterLinkProvider({ children, initial = null }: { children: Reac
   }, [patch]);
 
   const act = useCallback(async (role: Role, command: Mutation): Promise<boolean> => {
+    if (sandboxRef.current) {
+      if (!current.current || simulated.current) return false;
+      patch(role, { busy: true, error: "", notice: "" });
+      try {
+        keepSandbox(applyLocal(current.current, role, command, new Date(Date.now() + offset.current), REGION));
+        patch(role, { notice: "Saved on this device only (practice mode).", signInNeeded: false });
+        return true;
+      } catch (error) {
+        patch(role, { error: error instanceof Error ? error.message : "Not saved. Please try again." });
+        return false;
+      } finally {
+        patch(role, { busy: false });
+      }
+    }
     if (!current.current || simulated.current || writing.current) return false;
     writing.current = true;
     patch(role, { busy: true, error: "", notice: "" });
@@ -226,7 +303,7 @@ export function WaterLinkProvider({ children, initial = null }: { children: Reac
       writing.current = false;
       patch(role, { busy: false });
     }
-  }, [accept, ensureSession, forget, patch, refresh]);
+  }, [accept, ensureSession, forget, keepSandbox, patch, refresh]);
 
   const unlock = useCallback(async (code: string): Promise<string> => {
     try {
@@ -242,11 +319,12 @@ export function WaterLinkProvider({ children, initial = null }: { children: Reac
 
   const value = useMemo<Store>(() => ({
     state, connection, lastSync, now, simulatedOffline, toggleOffline, refresh, act, authMode, unlock,
-    actor: (role) => sessions[role]?.actor ?? null,
+    sandbox, enterSandbox, leaveSandbox, resetSandbox,
+    actor: (role) => (sandbox ? DEMO_ACTORS[role] : sessions[role]?.actor ?? null),
     lastError: (role) => lastErrors.current[role] ?? "",
     feedback: (role) => feedback[role],
     clear: (role) => patch(role, { error: "", notice: "" }),
-  }), [state, connection, lastSync, now, simulatedOffline, toggleOffline, refresh, act, authMode, unlock, sessions, feedback, patch]);
+  }), [state, connection, lastSync, now, simulatedOffline, toggleOffline, refresh, act, authMode, unlock, sandbox, enterSandbox, leaveSandbox, resetSandbox, sessions, feedback, patch]);
 
   return <Context.Provider value={value}>{children}</Context.Provider>;
 }
