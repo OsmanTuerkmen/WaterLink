@@ -55,7 +55,7 @@ Aus dem Arbeitsstand ausgelagert (Regel im [CLAUDE.md](../../CLAUDE.md): Ältere
 ### 22.10.2026 – Claude: alles auf `main`, Branches gelöscht, Doku geordnet
 
 - Letzter Stand (`claude/waterlink-p1-ui-review`, 6 Commits auf dem früheren Arbeitsbranch) nach `main` vorgespult; die Branches `codex/waterlink-mvp`, `claude/waterlink-mvp`, `claude/waterlink-redesign`, `codex/waterlink-review` und `claude/waterlink-p1-ui-review` gelöscht, nachdem geprüft war, dass jeder Branch-Kopf in `main` enthalten ist.
-- Dokumentation: [`docs/README.md`](README.md) als Wegweiser, [Roadmap](ROADMAP.md) mit offenen Aufgaben, Erweiterungsideen, Grenzen und Entscheidungen, Archiv-Ordner mit den früheren Berichten und der Branch-Geschichte, README neu (Kurzfassung auf Englisch, Schnellstart, Ansichten, Befehle, Aufbau, Quellen), `web/README.md` statt der Vorlage, `CLAUDE.md` und Übergabeprompt auf den neuen Stand.
+- Dokumentation: [`docs/README.md`](../README.md) als Wegweiser, [Roadmap](../ROADMAP.md) mit offenen Aufgaben, Erweiterungsideen, Grenzen und Entscheidungen, Archiv-Ordner mit den früheren Berichten und der Branch-Geschichte, README neu (Kurzfassung auf Englisch, Schnellstart, Ansichten, Befehle, Aufbau, Quellen), `web/README.md` statt der Vorlage, `CLAUDE.md` und Übergabeprompt auf den neuen Stand.
 - Gefunden: Die Datenbank-Anleitung scheitert unter Windows in zu langen Pfaden (siehe Prüfungen); im README ergänzt.
 - Danach (mit ausdrücklicher Freigabe): ungenutzten Vorlagen-Code und 19 Abhängigkeiten entfernt, MIT-Lizenz ergänzt, Bereitstellungsskript so geändert, dass ein vorhandener Zugangscode erhalten bleibt, Autorenangaben in der Historie vereinheitlicht (siehe oben; lokale Sicherung des früheren Stands: Branch `backup/vor-umschreiben-22-10`, nur auf diesem Rechner).
 - Bereitstellung siehe Eintrag darüber.
@@ -63,4 +63,4 @@ Aus dem Arbeitsstand ausgelagert (Regel im [CLAUDE.md](../../CLAUDE.md): Ältere
 ### 21.10.2026 – Claude: Tiefenprüfung, P1-Punkte und Oberfläche
 
 - Prüfung mit Impeccable, Security-Review und Ponytail-Audit: kein schwerwiegender Sicherheitsbefund; gefunden wurden die globale Anmeldesperre, die abgelaufenen Live-Bestätigungen, fehlende CI, nicht getestete Kernlogik und mehrere Oberflächenpunkte.
-- Behoben: Sperre, frische Demo, Lint (7 → 0), CI-Datei, schlanke Abfrage (`?since=`), Tests für Speicher und Sitzungen (53 → 62), Tippflächen, Textgröße, Farb-Tokens, Kontrast, Bewegungsreduktion. Einzelheiten im [Protokoll bis 21.10.](archiv/PROTOKOLL-bis-21-10-2026.md).
+- Behoben: Sperre, frische Demo, Lint (7 → 0), CI-Datei, schlanke Abfrage (`?since=`), Tests für Speicher und Sitzungen (53 → 62), Tippflächen, Textgröße, Farb-Tokens, Kontrast, Bewegungsreduktion. Einzelheiten im [Protokoll bis 21.10.](PROTOKOLL-bis-21-10-2026.md).
