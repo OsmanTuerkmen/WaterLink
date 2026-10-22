@@ -101,7 +101,7 @@ Alle im Ordner `web/`:
 | `npm test` | 70 Unit-Tests (Fachregeln, Speicher, Sitzungen, Zugang, SMS, Sensor, Region, Sprachtexte, QR-Code, Ausprobier-Modus) |
 | `npm run typecheck` | TypeScript-Prüfung |
 | `npm run lint` | Code-Stil und Fehlerprüfung |
-| `npm run test:e2e` | 29 Browser-Tests mit dem installierten Chrome (startet selbst einen lokalen Server auf Port 5199): der ganze Ablauf Meldung → Reparatur → Test auf zwei Fenstern, Offline-Verhalten, Seite ohne JavaScript, Sprachumschalter, Ausprobier-Modus, Barrierefreiheit (axe) auf allen Ansichten, Handybreite und Druckblatt |
+| `npm run test:e2e` | 30 Browser-Tests mit dem installierten Chrome (startet selbst einen lokalen Server auf Port 5199): der ganze Ablauf Meldung → Reparatur → Test auf zwei Fenstern, Offline-Verhalten, Seite ohne JavaScript, Sprachumschalter, Ausprobier-Modus, Barrierefreiheit (axe) auf allen Ansichten, Handybreite und Druckblatt |
 | `npm run test:integration` | API-Ablauf gegen einen **lokalen** `npm run dev`-Server (`WATERLINK_BASE_URL=http://127.0.0.1:5173`); setzt nur die Demo-Daten zurück |
 | `npm run test:access` | Zugangscode-Modus gegen einen lokalen Server, siehe Kopf von `scripts/check-access.mjs`. Nie gegen die Live-Seite. |
 | `npm run data:wpdx -- --list` | Counties aus der Water Point Data Exchange auflisten; `-- --county Busia` lädt eine Nachbarschaft nach `data/region.json` |
