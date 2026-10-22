@@ -116,3 +116,60 @@ test("when an action needs a code, the sandbox is offered and the draft can be s
   await page.getByRole("button", { name: "Send report" }).click();
   await expect(page.getByRole("heading", { name: "Report sent" })).toBeVisible();
 });
+
+test("coordination adds a water point and checks its route; only then is it named as the alternative", async ({ page }) => {
+  await page.goto("/?sandbox=1#coordination/overview");
+  await alive(page);
+
+  // 1. Add a water point: it starts unconfirmed and unchecked.
+  await page.getByRole("button", { name: "Add a water point" }).click();
+  await page.getByLabel("Name").fill("School well");
+  await page.getByLabel("Where is it?").fill("Near the school");
+  await page.getByLabel("Type of water point").selectOption("Borehole");
+  await page.getByLabel(/Walking time from the meeting point, estimated/).fill("2");
+  await page.getByRole("button", { name: "Add to the programme" }).click();
+  const row = page.locator(".coord-points li").filter({ hasText: "School well" });
+  await expect(row).toContainText("Route and access not checked");
+
+  // 2. The operator tests it on site: now it works, but nobody has checked the way there.
+  await page.getByRole("link", { name: "Field app" }).click();
+  await page.getByRole("listitem").filter({ hasText: "School well" }).getByRole("button", { name: "Test and confirm" }).click();
+  await page.getByRole("button", { name: /Works/ }).first().click();
+  await page.getByRole("button", { name: "Next" }).click();
+  await page.getByLabel("Your check").fill("Pumped 20 litres, steady flow.");
+  await page.getByLabel(/I tested it on site/).check();
+  await page.getByRole("button", { name: "Confirm result" }).click();
+  await expect(page.getByRole("heading", { name: "Confirmed working" })).toBeVisible();
+  await page.getByRole("button", { name: "Back to my water points" }).click();
+
+  // 3. A has no water: the alternative is still B, because the new well's route is not checked.
+  await reportAWithoutWater(page);
+  await page.getByRole("button", { name: "Send report" }).click();
+  await expect(page.getByRole("heading", { name: "Report sent" })).toBeVisible();
+  await page.getByRole("link", { name: "Status" }).click();
+  const alternative = page.locator(".point-row").filter({ hasText: "Borehole A" }).locator(".point-alt");
+  await expect(alternative).toContainText("B · Borehole B");
+  await expect(alternative).not.toContainText("School well");
+
+  // 4. Coordination walks the route and checks the access: now the nearer new well is named.
+  await page.getByRole("link", { name: "Coordination" }).click();
+  await row.getByRole("button", { name: "Check route and access" }).click();
+  await row.getByLabel(/Directions/).fill("Follow the main path to the school gate.");
+  await row.getByLabel(/I walked the route/).check();
+  await row.getByRole("button", { name: "Save route check" }).click();
+  await expect(row).toContainText("Route and access checked");
+  await page.getByRole("link", { name: "Status" }).click();
+  await expect(alternative).toContainText("D · School well");
+  await expect(alternative).toContainText("About 2 min");
+
+  // 5. A locked gate withdraws it at once; a point that was added can be removed again.
+  await page.getByRole("link", { name: "Coordination" }).click();
+  await row.getByRole("button", { name: "Check route and access" }).click();
+  await row.getByRole("button", { name: "Access is closed or blocked" }).click();
+  await expect(row).toContainText("Route and access not checked");
+  await page.getByRole("link", { name: "Status" }).click();
+  await expect(alternative).toContainText("B · Borehole B");
+  await page.getByRole("link", { name: "Coordination" }).click();
+  await row.getByRole("button", { name: "Remove" }).click();
+  await expect(row).toHaveCount(0);
+});

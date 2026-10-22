@@ -26,7 +26,7 @@ function progress(state: State | null): number {
 
 /** Pitch view: both phones and the public board on one screen, all live on the same server state. */
 export function Stage() {
-  const { state, now, connection, lastSync, act, feedback } = useWaterLink();
+  const { state, now, connection, lastSync, act, feedback, sandbox } = useWaterLink();
   const [confirmReset, setConfirmReset] = useState(false);
   const [third, setThird] = useState<"board" | "sms">("board");
   const step = progress(state);
@@ -37,7 +37,7 @@ export function Stage() {
       <h1 className="sr-only">WaterLink pitch stage: both phones and the public board on one screen</h1>
       <SandboxBar />
       <header className="stage-head">
-        <div className="stage-brand"><CanMark size={30} /><span>WaterLink</span><small>Live demo · Marachi East, Busia</small></div>
+        <div className="stage-brand"><CanMark size={30} /><span>WaterLink</span><small>{sandbox ? "Practice mode" : "Live demo"} · Marachi East, Busia</small></div>
         <ol className="stage-script" aria-label="Demo steps">
           {SCRIPT.map((s, i) => (
             <li key={s.text} className={i < step ? "is-done" : i === step ? "is-next" : ""} aria-current={i === step ? "step" : undefined}>
@@ -53,7 +53,7 @@ export function Stage() {
               <button className="btn btn-danger btn-sm" disabled={coord.busy || offline} onClick={async () => { if (await act("coordinator", { type: "reset" })) setConfirmReset(false); }}>Reset now</button>
               <button className="btn btn-quiet btn-sm" onClick={() => setConfirmReset(false)}>Cancel</button>
             </>
-          ) : <button className="btn btn-quiet btn-sm" onClick={() => setConfirmReset(true)}><RefreshCw size={15} />Reset demo</button>}
+          ) : <button className="btn btn-quiet btn-sm" onClick={() => setConfirmReset(true)}><RefreshCw size={15} />{sandbox ? "Reset practice data" : "Reset demo"}</button>}
         </div>
       </header>
       {coord.error && (

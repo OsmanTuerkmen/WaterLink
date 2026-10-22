@@ -9,6 +9,7 @@ import { SignInPrompt } from "./signin";
 import { NeighbourhoodMap } from "./map";
 import { PointTile, StatusChip } from "./marks";
 import { BLOCKER, JOB_STEP, ago, isTracked, stamp } from "./format";
+import { AddPoint, PointAdmin } from "./points-admin";
 
 export type CoordTab = "overview" | "history" | "demo";
 
@@ -26,6 +27,7 @@ export function Coordination({ tab, onTab }: { tab: CoordTab; onTab: (t: CoordTa
           ))}
         </nav>
       </header>
+      <CoordBanner />
       {tab === "overview" && <Overview state={state} now={now} offline={offline} />}
       {tab === "history" && <History state={state} />}
       {tab === "demo" && <DemoTools />}
@@ -33,7 +35,22 @@ export function Coordination({ tab, onTab }: { tab: CoordTab; onTab: (t: CoordTa
   );
 }
 
+/** The answer to the last coordination action, on every tab. */
+function CoordBanner() {
+  const { feedback, clear } = useWaterLink();
+  const fb = feedback("coordinator");
+  if (!fb.error && !fb.notice) return null;
+  return (
+    <p className={`banner ${fb.error ? "error" : "ok"}`} role="status">{fb.error || fb.notice}
+      {fb.signInNeeded && <SignInPrompt />}
+      <button className="icon-btn" onClick={() => clear("coordinator")} aria-label="Dismiss"><X size={16} /></button>
+    </p>
+  );
+}
+
 function Overview({ state, now, offline }: { state: State; now: number; offline: boolean }) {
+  const { feedback, connection } = useWaterLink();
+  const disabled = feedback("coordinator").busy || connection !== "online";
   const [selected, setSelected] = useState<string | null>(null);
   const open = state.jobs.filter((j) => j.status !== "closed");
   const closed = state.jobs.filter((j) => j.status === "closed");
@@ -63,9 +80,11 @@ function Overview({ state, now, offline }: { state: State; now: number; offline:
               <PointTile point={p} small />
               <span className="coord-points-name">{p.name}</span>
               <StatusChip display={getPointDisplay(p, now, offline)} size="sm" />
+              <PointAdmin point={p} state={state} now={now} disabled={disabled} />
             </li>
           ))}
         </ul>
+        <AddPoint state={state} disabled={disabled} />
         <h2>Open repairs</h2>
         {!open.length ? <p className="muted">No open repairs. New reports from operators appear here.</p> : (
           <table className="table">
@@ -108,7 +127,7 @@ function History({ state }: { state: State }) {
 }
 
 function DemoTools() {
-  const { act, feedback, clear, simulatedOffline, toggleOffline, connection } = useWaterLink();
+  const { act, feedback, simulatedOffline, toggleOffline, connection } = useWaterLink();
   const [confirmReset, setConfirmReset] = useState(false);
   const fb = feedback("coordinator");
   const disabled = fb.busy || connection !== "online";
@@ -119,12 +138,6 @@ function DemoTools() {
   ] as const;
   return (
     <div className="demo">
-      {(fb.error || fb.notice) && (
-        <p className={`banner ${fb.error ? "error" : "ok"}`} role="status">{fb.error || fb.notice}
-          {fb.signInNeeded && <SignInPrompt />}
-          <button className="icon-btn" onClick={() => clear("coordinator")} aria-label="Dismiss"><X size={16} /></button>
-        </p>
-      )}
       <section className="demo-block">
         <h2>Three-minute demo</h2>
         <ol className="demo-script">

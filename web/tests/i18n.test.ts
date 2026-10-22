@@ -20,6 +20,8 @@ test("both languages fill every text, and Swahili really differs from English", 
   const [en, sw] = LANGS.map((lang) => flat(TEXT[lang]));
   assert.deepEqual(en.map(([path]) => path), sw.map(([path]) => path), "same keys in both languages");
   for (const [path, text] of [...en, ...sw]) assert.ok(text.trim().length > 0, `${path} is empty`);
+  assert.equal(TEXT.en.draft, null);
+  assert.match(TEXT.sw.draft ?? "", /draft translation/, "the Swahili board says it is a draft until a native speaker has checked it");
   const same = en.filter(([path, text], i) => text === sw[i][1] && !/\.(never|sensor)$/.test(path));
   assert.deepEqual(same.map(([path]) => path), [], "texts that were never translated");
 });

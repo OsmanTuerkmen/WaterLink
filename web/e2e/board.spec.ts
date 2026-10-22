@@ -30,6 +30,7 @@ test("the board switches to Kiswahili, keeps it in the address, and offers a QR 
   await expect(page.locator(".board")).toHaveAttribute("lang", "sw");
   await expect(page.getByRole("button", { name: "Kiswahili" })).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByRole("img", { name: "Changanua ili ujaribu ukaguzi wa SMS" })).toBeVisible();
+  await expect(page.getByText(/draft translation/)).toBeVisible();
 
   await page.reload();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Je, kituo chetu cha maji kinafanya kazi leo?");

@@ -84,7 +84,20 @@ export function smsReply(state: State, intent: SmsIntent, now: number, offline =
   return `${head} ${since}. ${alt ? `Go to ${alt.id.toUpperCase()} ${alt.name}, about ${alt.walkingMinutes} min.` : "No confirmed alternative, ask on site."}${repair}`;
 }
 
-/** Number of SMS a text needs: 160 characters, or 153 per part when split. */
+// The GSM 7-bit alphabet. Characters of the extension table (^ { } \\ [ ~ ] | €) cost two septets.
+const GSM7 = new Set("@£$¥èéùìòÇ\nØø\rÅåΔ_ΦΓΛΩΠΨΣΘΞÆæßÉ !\"#¤%&'()*+,-./0123456789:;<=>?¡ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÑÜ§¿abcdefghijklmnopqrstuvwxyzäöñüà");
+const GSM7_EXTENSION = new Set("^{}\\[~]|€");
+
+/**
+ * Number of SMS a text needs. Plain GSM text: 160 septets, 153 per part when split. One character outside that
+ * alphabet (an emoji, a curly quote, "×") switches the whole message to UCS-2: 70 characters, 67 per part.
+ */
 export function smsParts(text: string): number {
-  return text.length <= 160 ? 1 : Math.ceil(text.length / 153);
+  let septets = 0;
+  for (const char of text) {
+    if (GSM7.has(char)) septets += 1;
+    else if (GSM7_EXTENSION.has(char)) septets += 2;
+    else { const units = text.length; return units <= 70 ? 1 : Math.ceil(units / 67); }
+  }
+  return septets <= 160 ? 1 : Math.ceil(septets / 153);
 }

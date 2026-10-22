@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { ArrowRight, ArrowUpRight, ChevronDown, Footprints, MapPin, Monitor, Printer, Search, Wrench } from "lucide-react";
-import { STATUS_TTL_MS, distanceKm, findAlternative, getNearby, getPointDisplay, isPointOpen, type RegionMeta, type State, type WaterPoint } from "@/lib/domain";
+import { ACCESS_TTL_MS, STATUS_TTL_MS, distanceKm, findAlternative, getNearby, getPointDisplay, getPossibleDuplicate, isPointOpen, type RegionMeta, type State, type WaterPoint } from "@/lib/domain";
 import { CanMeter, PointTile, StatusChip } from "./marks";
 import { NeighbourhoodMap } from "./map";
 import { JOB_STEP, SURVEY_TEXT, advice, clock, isTracked, km, letter, month, osmLink, stamp, toneOf, validityLeft, validityText } from "./format";
@@ -66,7 +66,9 @@ function PointRow({ point: p, state, now, offline, highlighted, onReport, onFocu
   const nearby = d.status !== "working" && !alternative && p.survey && !offline ? getNearby(state.points, p.id, 2) : [];
   const job = state.jobs.find((j) => j.pointId === p.id && j.status !== "closed");
   const level = validityLeft(p, d, now);
-  const estimated = Boolean(p.survey);
+  // Walking times of recorded points are estimates until a person has checked the route.
+  const estimated = Boolean(p.survey) && !p.accessCheckedBy;
+  const duplicate = getPossibleDuplicate(state.points, p);
   const confirmed = Boolean(p.confirmedAt && Number.isFinite(Date.parse(p.confirmedAt)));
   const hours = p.allDay ? `Open all day${estimated ? " (simulated)" : ""}` : !p.opensAt ? "Opening hours not recorded"
     : `${p.opensAt}–${p.closesAt} EAT · ${isPointOpen(p, now) ? "open now" : "closed now"}`;
@@ -118,9 +120,14 @@ function PointRow({ point: p, state, now, offline, highlighted, onReport, onFocu
         <div className="point-details">
           <dl>
             <div><dt>Where</dt><dd>{p.landmark}</dd></div>
-            <div><dt>Access</dt><dd>{p.routeVerified && p.accessVerified ? (estimated ? "Route and public access are simulated as checked for the demo." : "Route and public access are confirmed in the example data.") : "Route or access not reliably confirmed."}</dd></div>
+            <div><dt>Access</dt><dd>{p.routeVerified && p.accessVerified
+              ? (p.accessCheckedBy && p.accessConfirmedAt
+                ? `Route and public access checked by ${p.accessCheckedBy.split(" ·")[0]}, ${stamp(p.accessConfirmedAt)} EAT; valid until ${stamp(new Date(Date.parse(p.accessConfirmedAt) + ACCESS_TTL_MS).toISOString())} EAT.`
+                : estimated ? "Route and public access are simulated as checked for the demo." : "Route and public access are confirmed in the example data.")
+              : "Route or access not reliably confirmed."}</dd></div>
             <div><dt>Hours</dt><dd>{hours}</dd></div>
             {confirmed && <div><dt>Last check</dt><dd>{p.confirmedBy ? `${p.confirmedBy}, ` : ""}{stamp(p.confirmedAt)} EAT · {Date.parse(p.confirmedAt!) + STATUS_TTL_MS > now ? "valid until" : "expired at"} {stamp(new Date(Date.parse(p.confirmedAt!) + STATUS_TTL_MS).toISOString())}</dd></div>}
+            {duplicate && <div><dt>Other record</dt><dd>{duplicate.point.name} ({duplicate.point.survey ? month(duplicate.point.survey.reportDate) : "survey"}, {duplicate.point.survey?.dataset || "WPdx"}) lies {duplicate.meters} m away. It may be the same water point surveyed in another year.</dd></div>}
             {p.survey && <div><dt>Survey</dt><dd>{month(p.survey.reportDate)}: {SURVEY_TEXT[p.survey.status]} ({p.survey.statusText}) · {p.survey.dataset || "WPdx"}</dd></div>}
           </dl>
           <div className="point-details-actions">

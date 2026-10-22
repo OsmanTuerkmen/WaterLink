@@ -71,3 +71,18 @@ test("SMS cannot invent an observation or an on-site test", () => {
     assert.equal(command.type, "confirm");
   }
 });
+
+test("SMS parts are counted by encoding: GSM 7-bit, its extension table, and UCS-2", () => {
+  assert.equal(smsParts(""), 1);
+  assert.equal(smsParts("a".repeat(160)), 1);
+  assert.equal(smsParts("a".repeat(161)), 2);
+  assert.equal(smsParts("a".repeat(306)), 2);
+  assert.equal(smsParts("a".repeat(307)), 3);
+  assert.equal(smsParts("[".repeat(80)), 1, "extension characters cost two septets: 160 in total");
+  assert.equal(smsParts("[".repeat(81)), 2);
+  assert.equal(smsParts("a".repeat(70) + "×"), 2, "one character outside GSM turns the whole text into UCS-2: 71 units");
+  assert.equal(smsParts("×" + "a".repeat(69)), 1, "70 units fit one UCS-2 message");
+  assert.equal(smsParts("Water ✓ ok"), 1);
+  assert.equal(smsParts("é".repeat(160)), 1, "é is in the GSM alphabet");
+  assert.equal(smsParts("’".repeat(134)), 2, "a curly apostrophe is not: 134 units need two UCS-2 parts");
+});

@@ -279,6 +279,7 @@ h1, h2, .display { overflow-wrap: anywhere; font-family: var(--display); font-st
 .board-foot { display: grid; grid-template-columns: 1fr 1fr; gap: .6em 2em; padding: 1.2em 2em 1.6em; font-size: 1em; color: var(--ink-2); border-top: 1px solid var(--stone-3); }
 .board-foot b { color: var(--ink); }
 .board-source { grid-column: 1 / -1; font-size: .8em; color: var(--ink-3); }
+.board-draft { grid-column: 1 / -1; font-size: .85em; font-weight: 700; color: var(--limit-ink); }
 /* Language switch and the QR code to the SMS view; only on the full board, not in the stage's small copy. */
 .board-tools { grid-column: 1 / -1; display: flex; align-items: center; flex-wrap: wrap; gap: .8em 2.4em; margin-top: .4em; }
 .board-qr { display: flex; align-items: center; gap: .9em; max-width: 26em; }
@@ -411,6 +412,24 @@ select, textarea, input[type="search"] { border-radius: 12px; background: var(--
 .coord-summary b { font: 800 1.5rem/1 var(--display); color: var(--ink); }
 .coord-points li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--stone-2); }
 .coord-points-name { font-weight: 700; }
+.coord-points li > .coord-point-extra { grid-column: 1 / -1; display: grid; gap: 8px; padding-bottom: 6px; }
+.route-state { display: flex; align-items: flex-start; gap: 8px; font-size: 0.9375rem; color: var(--ink-2); }
+.route-state svg { margin-top: 3px; }
+.route-state.is-ok { color: var(--ok-ink); }
+.route-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.add-point { margin-top: 12px; display: grid; gap: 8px; }
+.route-check { display: grid; gap: 12px; padding: 14px; border-radius: 12px; background: var(--stone); }
+.route-check label { display: grid; gap: 4px; font-weight: 700; font-size: 0.9375rem; }
+.route-check label small { font-weight: 400; color: var(--ink-2); }
+.route-check input:not([type="checkbox"]), .route-check select { min-height: 44px; padding: 0 12px; border: 0; border-radius: 10px; background: var(--paper); box-shadow: inset 0 0 0 1.5px var(--line); font: inherit; font-weight: 400; color: var(--ink); }
+.route-check input:focus, .route-check select:focus { outline: none; box-shadow: inset 0 0 0 2px var(--cap); }
+.route-check fieldset { display: grid; gap: 8px; margin: 0; padding: 0; border: 0; }
+.route-check legend { padding: 0; margin-bottom: 4px; font-weight: 700; font-size: 0.9375rem; }
+.route-check .check { display: flex; }
+.check-inline { display: flex !important; grid-template-columns: none; align-items: center; gap: 10px; min-height: 44px; }
+.check-inline input { width: 22px; height: 22px; margin: 0; accent-color: var(--cap); }
+.hours-row { display: flex; flex-wrap: wrap; gap: 12px; }
+.hours-row label { flex: 1 1 8rem; }
 .table { width: 100%; border-collapse: collapse; font-size: 0.9375rem; }
 .table th { text-align: left; padding: 6px 8px 8px 0; font-size: 0.8125rem; color: var(--ink-3); border-bottom: 2px solid var(--ink); }
 .table td { padding: 10px 8px 10px 0; border-bottom: 1px solid var(--stone-2); vertical-align: top; }
@@ -621,7 +640,7 @@ select, textarea, input[type="search"] { border-radius: 12px; background: var(--
 }
 @media (max-width: 720px) {
   .coord-points li { grid-template-columns: auto minmax(0, 1fr); }
-  .coord-points li > :last-child { grid-column: 2; justify-self: start; }
+  .coord-points li > .status-chip { grid-column: 2; justify-self: start; }
   .sensor-pumps li { grid-template-columns: minmax(0, 1fr) auto; }
   .sensor-pumps li > :last-child { grid-column: 1 / -1; justify-self: start; }
 }

@@ -44,6 +44,8 @@ export interface Words {
   fictional: string;
   qrCaption: string;
   language: string;
+  /** Shown under the board when this language is a draft that has not been checked by a native speaker; null otherwise. */
+  draft: string | null;
 }
 
 const en: Words = {
@@ -83,6 +85,7 @@ const en: Words = {
   fictional: "Demo with fictional example data.",
   qrCaption: "Scan to try the SMS check",
   language: "Language",
+  draft: null,
 };
 
 const sw: Words = {
@@ -122,6 +125,7 @@ const sw: Words = {
   fictional: "Onyesho lenye data ya mfano ya kubuni.",
   qrCaption: "Changanua ili ujaribu ukaguzi wa SMS",
   language: "Lugha",
+  draft: "Tafsiri ya awali (draft translation): bado haijakaguliwa na mzungumzaji wa Kiswahili.",
 };
 
 export const TEXT: Record<Lang, Words> = { en, sw };

@@ -118,6 +118,7 @@ export function DisplayBoard({ state, now, offline, lastSync, compact = false, o
           </div>
         )}
         {onFullscreen && <button className="board-fs" onClick={onFullscreen}><Maximize size={16} aria-hidden="true" />{t.fullscreen}</button>}
+        {t.draft && <p className="board-draft">{t.draft}</p>}
         <p className="board-source">{region ? t.places(region.attribution.replace(/\.$/, "")) : t.fictional}</p>
       </footer>
     </div>
