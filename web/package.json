@@ -19,7 +19,8 @@
     "data:osm": "node scripts/import-osm.mjs",
     "deploy:cloudflare": "node scripts/deploy-cloudflare.mjs",
     "test:access": "node scripts/check-access.mjs",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "export:sw": "node --experimental-strip-types scripts/kiswahili-sheet.ts"
   },
   "dependencies": {
     "@fontsource-variable/archivo": "5.3.0",

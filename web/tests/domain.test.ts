@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   ACCESS_TTL_MS, STATUS_TTL_MS, DomainError, applyCommand, createSeedState,
-  MAX_EVENTS, MAX_TRACKED, findAlternative, getAlternatives, getPointDisplay, getPossibleDuplicate, isPointOpen,
+  MAX_EVENTS, MAX_TRACKED, findAlternative, getAlternatives, getPointDisplay, getPossibleDuplicate, isPointOpen, parseCoordinates,
 } from "../lib/domain.ts";
 import { REGION } from "../lib/region.ts";
 import type { Actor, Command, State, WaterPoint } from "../lib/domain.ts";
@@ -290,6 +290,29 @@ test("the coordinator can add a water point, it takes the next free letter and s
   rejects(() => transition(createSeedState(NOW), { ...add, name: "x" }, coordinator), 400);
   rejects(() => transition(createSeedState(NOW), { ...add, source: "Magic spring" }, coordinator), 400);
   rejects(() => transition(createSeedState(NOW), { ...add, walkingMinutes: 500 }, coordinator), 400);
+});
+
+test("an added water point can be placed on the map, but only near the meeting point", () => {
+  assert.ok(REGION, "the Busia data is part of the repository");
+  const region = createSeedState(NOW, REGION);
+  const meeting = region.region!.meetingPoint;
+  const add = { type: "add_point", name: "School well", location: "Near the school", source: "Borehole", walkingMinutes: 7 } as const;
+  const placed = transition(region, { ...add, lat: meeting.lat + 0.01, lon: meeting.lon + 0.01 }, coordinator);
+  const point = placed.points.find((p) => p.custom)!;
+  assert.deepEqual([point.lat, point.lon], [Math.round((meeting.lat + 0.01) * 1e5) / 1e5, Math.round((meeting.lon + 0.01) * 1e5) / 1e5]);
+  assert.match(placed.events.at(-1)!.message, /marked on the map/);
+  assert.equal(transition(region, add, coordinator).points.find((p) => p.custom)!.lat, null, "without a position it has none");
+  rejects(() => transition(region, { ...add, lat: meeting.lat + 1, lon: meeting.lon }, coordinator), 400);
+  rejects(() => transition(region, { ...add, lat: meeting.lat }, coordinator), 400);
+  rejects(() => transition(region, { ...add, lat: 95, lon: 0 }, coordinator), 400);
+  rejects(() => transition(region, { ...add, lat: NaN, lon: 1 }, coordinator), 400);
+});
+
+test("coordinates are read as Google Maps copies them", () => {
+  assert.deepEqual(parseCoordinates("0.4601, 34.1115"), { lat: 0.4601, lon: 34.1115 });
+  assert.deepEqual(parseCoordinates(" 0.4601 34.1115 "), { lat: 0.4601, lon: 34.1115 });
+  assert.deepEqual(parseCoordinates("-1.5;36"), { lat: -1.5, lon: 36 });
+  for (const bad of ["", "0.46", "north, east", "91, 20", "20, 181", "0.4601, 34.1115, 5", "0,4601, 34,1115"]) assert.equal(parseCoordinates(bad), null, bad);
 });
 
 test("the demo looks after a limited number of water points, and only added ones can be removed", () => {

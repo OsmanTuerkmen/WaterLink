@@ -70,7 +70,9 @@ export function parseCommand(value: unknown): MutationCommand {
     case "close_access": return { type: "close_access", pointId: text("pointId", 80), note: text("note", 1000) };
     case "add_point": {
       if (!Number.isSafeInteger(value.walkingMinutes)) throw new HttpError(400, "The walking time must be a whole number of minutes.", "invalid_command");
-      return { type: "add_point", name: text("name", 60), location: text("location", 80), source: text("source", 40), walkingMinutes: value.walkingMinutes as number };
+      const position = value.lat === undefined && value.lon === undefined ? {} : { lat: value.lat ?? null, lon: value.lon ?? null };
+      for (const part of Object.values(position)) if (part !== null && typeof part !== "number") throw new HttpError(400, "The position must be a latitude and a longitude.", "invalid_command");
+      return { type: "add_point", name: text("name", 60), location: text("location", 80), source: text("source", 40), walkingMinutes: value.walkingMinutes as number, ...(position as { lat?: number | null; lon?: number | null }) };
     }
     case "remove_point": return { type: "remove_point", pointId: text("pointId", 80) };
     case "reset": return { type: "reset" };

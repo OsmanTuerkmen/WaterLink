@@ -1,8 +1,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import jsQR from "jsqr";
 import { LANGS, TEXT, parseLang } from "../lib/i18n.ts";
 import { qrPath } from "../lib/qr.ts";
+import { SHEET_PATH, sheet } from "../scripts/kiswahili-sheet.ts";
 
 test("only Kiswahili is picked for \"sw\"; everything else is English", () => {
   assert.equal(parseLang("sw"), "sw");
@@ -56,4 +58,9 @@ test("the QR code reads back as the address it was made from", () => {
     const { data, width } = bitmap(path, size);
     assert.equal(jsQR(data, width, width)?.data, url);
   }
+});
+
+test("the Kiswahili check sheet in docs matches the texts in the app (run npm run export:sw after a change)", () => {
+  const file = readFileSync(SHEET_PATH, "utf8").replace(/\r\n/g, "\n");
+  assert.equal(file, sheet());
 });

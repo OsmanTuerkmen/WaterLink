@@ -64,6 +64,9 @@ test("parseCommand reads the route check, closing, adding and removing of water 
   const add = { type: "add_point", name: "School well", location: "Near the school", source: "Borehole", walkingMinutes: 7 };
   assert.deepEqual(parseCommand({ ...add, tracked: false, custom: false }), add);
   assert.throws(() => parseCommand({ ...add, walkingMinutes: null }), HttpError);
+  assert.deepEqual(parseCommand({ ...add, lat: 0.46, lon: 34.11 }), { ...add, lat: 0.46, lon: 34.11 });
+  assert.deepEqual(parseCommand({ ...add, lat: 0.46 }), { ...add, lat: 0.46, lon: null }, "one half is passed on; the rules refuse it");
+  assert.throws(() => parseCommand({ ...add, lat: "0.46", lon: 34.11 }), HttpError);
   assert.throws(() => parseCommand({ ...add, name: "x".repeat(61) }), HttpError);
   assert.deepEqual(parseCommand({ type: "remove_point", pointId: "d" }), { type: "remove_point", pointId: "d" });
 });

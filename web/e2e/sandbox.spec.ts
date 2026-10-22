@@ -173,3 +173,26 @@ test("coordination adds a water point and checks its route; only then is it name
   await row.getByRole("button", { name: "Remove" }).click();
   await expect(row).toHaveCount(0);
 });
+
+test("an added water point with a position shows up on the map, and a position far away is refused", async ({ page }) => {
+  await page.goto("/?sandbox=1#coordination/overview");
+  await alive(page);
+  const tiles = page.locator(".nmap-marker");
+  const before = await tiles.count();
+  await page.getByRole("button", { name: "Add a water point" }).click();
+  await page.getByLabel("Name").fill("School well");
+  await page.getByLabel("Where is it?").fill("Near the school");
+  await page.getByLabel(/Walking time from the meeting point, estimated/).fill("8");
+
+  await page.getByLabel(/Position on the map/).fill("north of the river");
+  await expect(page.getByRole("button", { name: "Add to the programme" })).toBeDisabled();
+
+  await page.getByLabel(/Position on the map/).fill("1.5, 35");
+  await page.getByRole("button", { name: "Add to the programme" }).click();
+  await expect(page.getByText(/km from the meeting point/)).toBeVisible();
+  await expect(tiles).toHaveCount(before);
+
+  await page.getByLabel(/Position on the map/).fill("0.3640, 34.3330");
+  await page.getByRole("button", { name: "Add to the programme" }).click();
+  await expect(tiles).toHaveCount(before + 1);
+});

@@ -105,11 +105,13 @@ export type Command =
   /** Someone walked the route from the meeting point and checked that the public can use the water point. */
   | { type: "verify_access"; pointId: string; walkingMinutes: number; landmark: string; allDay: boolean; opensAt: string; closesAt: string; checked: true }
   | { type: "close_access"; pointId: string; note: string }
-  | { type: "add_point"; name: string; location: string; source: string; walkingMinutes: number }
+  | { type: "add_point"; name: string; location: string; source: string; walkingMinutes: number; lat?: number | null; lon?: number | null }
   | { type: "remove_point"; pointId: string };
 
 /** The demo looks after at most this many water points: one letter each (SMS) and a board that still fits a screen. */
 export const MAX_TRACKED = 8;
+/** An added water point must lie this close to the meeting point: the demo covers one area, and the map frames it. */
+export const MAX_POINT_RADIUS_KM = 15;
 export const NEW_POINT_SOURCES = ["Borehole", "Protected well", "Protected spring", "Tap stand", "Water kiosk", "Rainwater tank", "Other"] as const;
 
 export class DomainError extends Error {
@@ -249,6 +251,14 @@ export function getPossibleDuplicate(points: WaterPoint[], point: WaterPoint, wi
     if (meters <= withinMeters && (!best || meters < best.meters)) best = { point: other, meters };
   }
   return best;
+}
+
+/** Reads "0.4601, 34.1115" (what Google Maps copies) or "0.4601 34.1115"; null when it is not a latitude and longitude. */
+export function parseCoordinates(input: string): { lat: number; lon: number } | null {
+  const match = input.trim().match(/^(-?\d{1,2}(?:\.\d+)?)\s*[,;\s]\s*(-?\d{1,3}(?:\.\d+)?)$/);
+  if (!match) return null;
+  const lat = Number(match[1]), lon = Number(match[2]);
+  return Math.abs(lat) <= 90 && Math.abs(lon) <= 180 ? { lat, lon } : null;
 }
 
 /** Rough walking estimate: straight line × 1.3 detour at 4.5 km/h. Labelled as an estimate in the UI. */
@@ -626,6 +636,18 @@ export function applyCommand(state: State, command: Command, actor: Actor, now: 
       const location = cleanText(command.location, 2, 80, "Please say where it is in 2 to 80 characters.");
       if (!(NEW_POINT_SOURCES as readonly string[]).includes(command.source)) throw new DomainError("Please choose the type of water point.");
       const minutes = cleanMinutes(command.walkingMinutes);
+      let lat: number | null = null, lon: number | null = null;
+      if (command.lat != null || command.lon != null) {
+        if (!finite(command.lat) || !finite(command.lon) || Math.abs(command.lat) > 90 || Math.abs(command.lon) > 180) {
+          throw new DomainError("Please give the position as latitude and longitude, for example 0.4601, 34.1115.");
+        }
+        const meeting = next.region?.meetingPoint;
+        const km = meeting ? distanceKm(command, meeting) : null;
+        if (km !== null && km > MAX_POINT_RADIUS_KM) {
+          throw new DomainError(`That position is ${Math.round(km)} km from the meeting point. The demo covers ${MAX_POINT_RADIUS_KM} km around it.`);
+        }
+        lat = Math.round(command.lat * 1e5) / 1e5; lon = Math.round(command.lon * 1e5) / 1e5;
+      }
       const inProgramme = (p: WaterPoint) => p.tracked ?? true;
       if (next.points.filter(inProgramme).length >= MAX_TRACKED) {
         throw new DomainError(`The demo looks after at most ${MAX_TRACKED} water points. Remove one first.`, 409);
@@ -637,11 +659,11 @@ export function applyCommand(state: State, command: Command, actor: Actor, now: 
         note: "Added by coordination in this demo. No confirmation yet.",
         location, landmark: "No checked directions yet.", walkingMinutes: minutes,
         accessVerified: false, routeVerified: false, accessConfirmedAt: null,
-        opensAt: "", closesAt: "", allDay: false, tracked: true, custom: true, lat: null, lon: null, survey: null,
+        opensAt: "", closesAt: "", allDay: false, tracked: true, custom: true, lat, lon, survey: null,
       };
       const lastInProgramme = next.points.map(inProgramme).lastIndexOf(true);
       next.points.splice(lastInProgramme + 1, 0, added);
-      event("add", `Water point ${id.toUpperCase()} · ${name} (${command.source}, ${location}) added to the programme, about ${minutes} min from the meeting point. Not confirmed yet; route and access are not checked yet.`, id, null);
+      event("add", `Water point ${id.toUpperCase()} · ${name} (${command.source}, ${location}) added to the programme, about ${minutes} min from the meeting point${lat === null ? "" : ", marked on the map"}. Not confirmed yet; route and access are not checked yet.`, id, null);
       break;
     }
     case "remove_point": {

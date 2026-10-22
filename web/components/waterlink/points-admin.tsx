@@ -1,7 +1,7 @@
 "use client";
 import { useState, type FormEvent } from "react";
 import { Footprints, Plus, Trash2 } from "lucide-react";
-import { ACCESS_TTL_MS, MAX_TRACKED, NEW_POINT_SOURCES, type State, type WaterPoint } from "@/lib/domain";
+import { ACCESS_TTL_MS, MAX_POINT_RADIUS_KM, MAX_TRACKED, NEW_POINT_SOURCES, parseCoordinates, type State, type WaterPoint } from "@/lib/domain";
 import { useWaterLink } from "./store";
 import { isTracked, stamp } from "./format";
 
@@ -88,13 +88,14 @@ function RouteForm({ point, disabled, onDone }: { point: WaterPoint; disabled: b
 export function AddPoint({ state, disabled }: { state: State; disabled: boolean }) {
   const { act } = useWaterLink();
   const [open, setOpen] = useState(false);
-  const [name, setName] = useState(""), [location, setLocation] = useState(""), [source, setSource] = useState<string>(NEW_POINT_SOURCES[0]), [minutes, setMinutes] = useState("10");
+  const [name, setName] = useState(""), [location, setLocation] = useState(""), [source, setSource] = useState<string>(NEW_POINT_SOURCES[0]), [minutes, setMinutes] = useState("10"), [position, setPosition] = useState("");
+  const coords = parseCoordinates(position);
   const full = state.points.filter(isTracked).length >= MAX_TRACKED;
-  const valid = name.trim().length >= 3 && location.trim().length >= 2 && inRange(minutes, 1, 180);
+  const valid = name.trim().length >= 3 && location.trim().length >= 2 && inRange(minutes, 1, 180) && (!position.trim() || coords !== null);
   async function add(e: FormEvent) {
     e.preventDefault();
-    if (await act("coordinator", { type: "add_point", name: name.trim(), location: location.trim(), source, walkingMinutes: Number(minutes) })) {
-      setName(""); setLocation(""); setOpen(false);
+    if (await act("coordinator", { type: "add_point", name: name.trim(), location: location.trim(), source, walkingMinutes: Number(minutes), ...(coords ?? {}) })) {
+      setName(""); setLocation(""); setPosition(""); setOpen(false);
     }
   }
   return (
@@ -110,6 +111,11 @@ export function AddPoint({ state, disabled }: { state: State; disabled: boolean 
           </label>
           <label>Walking time from the meeting point, estimated (minutes)
             <input type="number" inputMode="numeric" min={1} max={180} value={minutes} onChange={(e) => setMinutes(e.target.value)} required />
+          </label>
+          <label>Position on the map (optional)
+            <input type="text" inputMode="decimal" placeholder="0.4601, 34.1115" value={position} onChange={(e) => setPosition(e.target.value)}
+              aria-invalid={Boolean(position.trim()) && coords === null} aria-describedby="position-help" />
+            <small id="position-help">{position.trim() && coords === null ? "Latitude, then longitude, for example 0.4601, 34.1115." : `In Google Maps press and hold on the spot, then tap the numbers to copy them. Within ${MAX_POINT_RADIUS_KM} km of the meeting point.`}</small>
           </label>
           <p className="muted">A new water point starts as not confirmed. An operator confirms it with an on-site test, and coordination checks route and access before it can be named as an alternative.</p>
           <div className="route-actions">

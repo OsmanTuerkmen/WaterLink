@@ -90,6 +90,14 @@ try {
   const added = await send(coordinator.token, addCommand);
   const school = added.state.points.find(p => p.name === 'School well');
   assert.ok(school && school.custom && school.status === 'unknown' && !school.accessVerified);
+  const meeting = added.state.region?.meetingPoint;
+  if (meeting) {
+    await send(coordinator.token, { ...addCommand, name: 'Far well', lat: meeting.lat + 1, lon: meeting.lon }, 400);
+    const placed = await send(coordinator.token, { ...addCommand, name: 'Mapped well', lat: meeting.lat + 0.004, lon: meeting.lon + 0.004 });
+    const mapped = placed.state.points.find(p => p.name === 'Mapped well');
+    assert.ok(typeof mapped.lat === 'number' && typeof mapped.lon === 'number', 'a point with a position is placed on the map');
+    await send(coordinator.token, { type: 'remove_point', pointId: mapped.id });
+  }
   const routeCheck = { type: 'verify_access', pointId: school.id, walkingMinutes: 4, landmark: 'Follow the main path to the school.', allDay: true, opensAt: '', closesAt: '', checked: true };
   await send(operator.token, routeCheck, 403);
   await send(coordinator.token, { ...routeCheck, checked: false }, 400);
