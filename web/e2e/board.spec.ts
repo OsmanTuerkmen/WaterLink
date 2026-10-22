@@ -60,3 +60,29 @@ test("a page whose scripts never start reloads itself instead of keeping an agin
     await context.close();
   }
 });
+
+test("a shared link has a preview: title, description and an image", async ({ request }) => {
+  const html = await (await request.get("/")).text();
+  expect(html).toMatch(/<meta property="og:image" content="https:\/\/[^"]+\/og\.png"/);
+  expect(html).toContain('name="twitter:card" content="summary_large_image"');
+  const image = await request.get("/og.png");
+  expect(image.headers()["content-type"]).toContain("image/png");
+});
+
+test("a tab that holds a newer revision than the server takes the server's state again", async ({ page }) => {
+  // After the database was recreated, the server counts from the start again while an open tab remembers a higher number.
+  let polls = 0;
+  await page.route("**/api/waterlink?since=*", async (route) => {
+    polls++;
+    if (polls > 1) return route.continue();
+    const real = await route.fetch({ url: `${new URL(route.request().url()).origin}/api/waterlink` });
+    const body = await real.json();
+    body.state.revision += 50;
+    body.state.points[0].name = "Ahead of the server";
+    await route.fulfill({ response: real, json: body });
+  });
+  await page.goto("/?view=display");
+  await expect(page.getByText("Ahead of the server")).toBeVisible();
+  await expect(page.getByText("Ahead of the server")).toHaveCount(0);
+  await expect(page.getByText("Borehole A").first()).toBeVisible();
+});

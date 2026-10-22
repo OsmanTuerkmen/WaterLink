@@ -101,9 +101,17 @@ export function WaterLinkProvider({ children, initial = null, initialSandbox = f
     setFeedback((all) => ({ ...all, [role]: { ...all[role], ...value } }));
   }, []);
 
-  const accept = useCallback((data: Snapshot) => {
+  /** How many server states were taken in: a poll that finds none arrived in between is the server's current word. */
+  const accepted = useRef(0);
+
+  /**
+   * An older revision is a late answer that overtook a newer one and is dropped, unless `authoritative`: nothing
+   * else was accepted while the poll was on its way, so the server really is behind (its database was recreated).
+   */
+  const accept = useCallback((data: Snapshot, authoritative = false) => {
     if (!validState(data.state) || !Number.isFinite(Date.parse(data.serverNow))) throw new Error("Invalid server answer.");
-    if (current.current && data.state.revision < current.current.revision) return;
+    if (!authoritative && current.current && data.state.revision < current.current.revision) return;
+    accepted.current++;
     const syncedAt = new Date().toISOString();
     offset.current = Date.parse(data.serverNow) - Date.now();
     current.current = data.state;
@@ -142,12 +150,13 @@ export function WaterLinkProvider({ children, initial = null, initialSandbox = f
     active.current = controller;
     const timeout = setTimeout(() => controller.abort(), 7000);
     try {
+      const before = accepted.current;
       const since = current.current ? `?since=${current.current.revision}` : "";
       const response = await fetch(`/api/waterlink${since}`, { cache: "no-store", signal: controller.signal });
       if (!response.ok) throw new Error("Unreachable");
       const data = (await response.json()) as Snapshot | Unchanged;
       if (!simulated.current) {
-        if ("unchanged" in data) confirmUnchanged(data); else accept(data);
+        if ("unchanged" in data) confirmUnchanged(data); else accept(data, accepted.current === before);
       }
     } catch {
       setConnection("offline");
