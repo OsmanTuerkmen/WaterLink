@@ -1,15 +1,9 @@
 import type { Actor, Role } from "./domain.ts";
+import { DEMO_ACTORS } from "./actors.ts";
 import { HttpError } from "./http.ts";
 
 const SESSION_TTL_MS = 8 * 60 * 60 * 1000;
 
-// These are invented people, shared by the private demo. This is role
-// simulation behind platform authentication, not production staff management.
-const DEMO_ACTORS: Record<Role, Actor> = {
-  operator: { id: "demo-operator", name: "Amina · operator (demo)", role: "operator" },
-  technician: { id: "demo-technician", name: "Daniel · technician (demo)", role: "technician" },
-  coordinator: { id: "demo-coordinator", name: "WaterLink coordination (demo)", role: "coordinator" },
-};
 
 interface SessionRow {
   token_hash: string;

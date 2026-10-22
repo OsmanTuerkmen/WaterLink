@@ -1,4 +1,4 @@
-import { applyCommand, createSeedState, type Actor, type Command, type State } from "./domain.ts";
+import { applyCommand, createSeedState, resetState, type Actor, type Command, type State } from "./domain.ts";
 import { HttpError, isRecord } from "./http.ts";
 import { REGION } from "./region.ts";
 import { sha256 } from "./session.ts";
@@ -144,13 +144,7 @@ export async function mutateState(
   let next: State;
   if (command.type === "reset") {
     if (actor.role !== "coordinator") throw new HttpError(403, "Only demo coordination can reset the demo.", "forbidden");
-    next = createSeedState(now, REGION);
-    next.revision = envelope.state.revision + 1;
-    next.events = [{
-      id: `event-reset-${next.revision}`, pointId: null, jobId: null, type: "reset",
-      message: "Demo reset. Confirmations, routes, people and reports are simulated.",
-      actorId: actor.id, actorName: actor.name, at: now.toISOString(),
-    }];
+    next = resetState(envelope.state, actor, now, REGION);
   } else {
     next = applyCommand(envelope.state, command, actor, now);
   }

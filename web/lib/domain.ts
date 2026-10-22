@@ -324,6 +324,18 @@ function createRegionSeed(region: RegionData, time: number): State {
   };
 }
 
+/** The start state again, one revision further, with a single history entry that says who reset it. */
+export function resetState(previous: State, actor: Actor, now: Time, region: RegionData | null): State {
+  const next = createSeedState(now, region);
+  next.revision = previous.revision + 1;
+  next.events = [{
+    id: `event-reset-${next.revision}`, pointId: null, jobId: null, type: "reset",
+    message: "Demo reset. Confirmations, routes, people and reports are simulated.",
+    actorId: actor.id, actorName: actor.name, at: new Date(toMs(now)).toISOString(),
+  }];
+  return next;
+}
+
 export function createSeedState(now: Time = Date.now(), region: RegionData | null = null): State {
   if (region) return createRegionSeed(region, toMs(now));
   return createFictionalSeed(now);
