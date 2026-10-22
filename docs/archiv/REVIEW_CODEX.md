@@ -1,6 +1,6 @@
 # WaterLink – Review und Weiterarbeit durch Codex
 
-Stand: **11. Oktober 2026**. Eigener Branch: `codex/waterlink-review`, Ausgangspunkt: `claude/waterlink-redesign` bei `2207f2c`.
+Stand: **11. Oktober 2026**. Eigener Branch: `codex/waterlink-review`, Ausgangspunkt: `claude/waterlink-redesign` bei `e95d100`.
 
 ## Urteil
 

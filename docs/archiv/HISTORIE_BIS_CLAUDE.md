@@ -132,7 +132,7 @@ Reczec gefällt das Redesign. Es wird separat auf `claude/waterlink-redesign` we
 
 Auf Wunsch des Nutzers wird dieses Dokument nach jedem Schritt aktualisiert: Ziel, Stand, offene Aufgaben, Protokoll. Produktionsbuild nach den Oberflächenänderungen geprüft: bestanden.
 
-### 10.10.2026, ca. 23:30 – Echte Sensordaten als Wiedergabe (`a3443ce`)
+### 10.10.2026, ca. 23:30 – Echte Sensordaten als Wiedergabe (`bb8a80d`)
 
 - Recherche: Es gibt keine öffentliche Live-Quelle für den Betriebszustand von Wasserstellen in Kenia. Die nächstbeste echte Quelle sind historische Smart-Handpump-Daten aus Kwale (openwashdata/waterpumpkwale, CC BY 4.0).
 - `web/scripts/import-kwale.mjs` lädt die Daten (festgelegt auf einen Commit) nach `web/data/kwale-sensors.json`. Standard: Tiwi – Mshikeni mit drei Nachbarn, Jahr 2014. Grund: Für diese Pumpe gibt es 2015 praktisch keine Daten.
@@ -140,30 +140,30 @@ Auf Wunsch des Nutzers wird dieses Dokument nach jedem Schritt aktualisiert: Zie
 - Demo-Szenario „sensor“: Wasserstelle A zeigt „Unklar · Sensorhinweis“, es entsteht kein Auftrag. Eine Meldung oder Prüfung vor Ort löst den Hinweis auf.
 - Neu: [Weg zum Produkt](../WEG-ZUM-PRODUKT.md). Demo-Skript, Architektur und README ergänzt. 5 neue Tests (39).
 
-### 10.10.2026, ca. 23:15 – Einfachere Oberfläche (`64d9df2`)
+### 10.10.2026, ca. 23:15 – Einfachere Oberfläche (`8d7d07f`)
 
 - Öffentliche Anzeige neu als Statustafel. Vorher war sie eine Kopie der Arbeitsansicht mit 9–11 px Schrift.
 - Arbeitsansicht: Werbe-Kopfbereich, Filter und doppelte Infokästen entfernt. Karten zeigen Status, Hinweis, Bestätigungszeit, Gehzeit und Alternative. Größere Schrift überall.
 - Diktat für die Störungsbeschreibung. Kein Warnbanner-Blitzen mehr beim Laden. Demo-Abzeichen „Bestätigungen simuliert“ bei echten Orten.
 - Kompletter Ablauf im Browser mit Busia-Daten geprüft.
 
-### 10.10.2026, ca. 22:15 – Busia statt Kitui, Statuskorrektur (`c080c67`)
+### 10.10.2026, ca. 22:15 – Busia statt Kitui, Statuskorrektur (`98a1383`)
 
 - Befund: Bei Evidence Action Kenya 2023–2024 (18.783 Einträge) steht `status_clean` immer auf „Non-Functional“, `status_id` („Wasser am Erhebungstag?“) aber meist auf „Yes“. Dadurch galt jede Erhebung seit 2022 als defekt.
 - Korrektur: Bei einem konstanten `status_clean` und wechselndem `status_id` gilt `status_id`, angezeigt als „Wasser am Erhebungstag: ja/nein“. A und B werden bevorzugt aus Erhebungen der letzten 3 Jahre gewählt (`--recent`).
 - Import Busia: A und B sind zwei Bohrlöcher von 12/2023, 200 m voneinander entfernt.
 
-### 10.10.2026, abends – Echte Wasserstellen aus WPdx (`ccdc416`, `6fa3564`)
+### 10.10.2026, abends – Echte Wasserstellen aus WPdx (`0982aaa`, `99cc2c7`)
 
 - `web/scripts/import-wpdx.mjs` lädt ein County aus der Water Point Data Exchange und wählt eine begehbare Nachbarschaft. Ergebnis: `web/data/region.json` mit Quellenangabe.
 - A, B und C sind echte erfasste Stellen mit simulierten Bestätigungen. Weitere Stellen stehen in einer durchsuchbaren Liste, heute unbestätigt.
 - Erster Versuch mit Kitui ergab eine 64 km entfernte „Alternative“. Seitdem gelten Radius (5 km) und Gehdistanz (3 km).
 
-### 10.10.2026, abends – Prüfung und Korrekturen nach Zwei-Fenster-Test (`89d2eb7`)
+### 10.10.2026, abends – Prüfung und Korrekturen nach Zwei-Fenster-Test (`b651f7d`)
 
 - Geprüft: Fachregeltests, Integrationstest, kompletter Ablauf in zwei Browserfenstern, Breiten von 390 bis 1440 px, Druckansicht.
 - Behoben: Direktlinks und Zurück-Taste, unlesbare Auftragszahl, Rollentext mit falschem Artikel, vorausgewähltes „Funktioniert“, Gültigkeitsangabe auf Karten, Statusblatt auf eine Seite A4, Alter offener Aufträge, Symbole im Verlauf.
-- Lokale, nicht committete Änderungen von Codex zusammengeführt (`76f452c`).
+- Lokale, nicht committete Änderungen von Codex zusammengeführt (`b51d3b7`).
 
 ### 10.10.2026 – Erster Zwischenstand (`ae2e42c`, Codex)
 

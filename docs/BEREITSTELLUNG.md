@@ -11,7 +11,7 @@
 | `/#sms` | Simulierte SMS für Tastenhandys |
 | `/#coordination/demo` | Demo-Werkzeuge, Zurücksetzen, Sensor-Wiedergabe |
 
-**Stand der Live-Seite:** bereitgestellt am 11. Oktober 2026 aus dem Redesign-Stand (Commit `2207f2c`). Alles, was danach in `main` hinzukam (signierter Zugang mit Ablauf, frische Demo nach 4 Stunden, Oberflächen-Korrekturen), ist dort noch **nicht** enthalten. Aktualisieren: [Roadmap](ROADMAP.md), erste Zeile.
+**Stand der Live-Seite:** bereitgestellt am 11. Oktober 2026 aus dem Redesign-Stand (Commit `e95d100`). Alles, was danach in `main` hinzukam (signierter Zugang mit Ablauf, frische Demo nach 4 Stunden, Oberflächen-Korrekturen), ist dort noch **nicht** enthalten. Aktualisieren: [Roadmap](ROADMAP.md), erste Zeile.
 
 ## Wer darf was
 
@@ -38,7 +38,7 @@ npx wrangler login              # einmalig, im Browser bestätigen
 npm run deploy:cloudflare
 ```
 
-Das Skript (`web/scripts/deploy-cloudflare.mjs`) baut die App, sucht oder erstellt die D1-Datenbank, legt fehlende Tabellen an (bestehende Daten bleiben), lädt den Worker hoch und setzt den Zugangscode. Beim ersten Mal erzeugt es den Code und schreibt ihn nach `web/.env.demo-access`.
+Das Skript (`web/scripts/deploy-cloudflare.mjs`) baut die App, sucht oder erstellt die D1-Datenbank, legt fehlende Tabellen an (bestehende Daten bleiben), lädt den Worker hoch und setzt den Zugangscode. Beim ersten Mal erzeugt es den Code und schreibt ihn nach `web/.env.demo-access`. Fehlt diese Datei auf dem Rechner, aber der Worker hat schon einen Code, bleibt er **unverändert**; das Skript würfelt keinen neuen aus, damit niemand ausgesperrt wird. Wer den Code im Worker ändern will, legt `web/.env.demo-access` mit der Zeile `DEMO_ACCESS_CODE=<neuer Code>` an (mindestens 8 Zeichen) und stellt neu bereit.
 
 Wer von einem **anderen Konto** aus bereitstellen will (z. B. Osman): `npx wrangler login` mit dem eigenen Konto, beim ersten Mal unter https://dash.cloudflare.com → Workers & Pages eine workers.dev-Subdomain anlegen, dann `npm run deploy:cloudflare`. Das ergibt eine eigene Adresse und einen eigenen Code.
 

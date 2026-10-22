@@ -1,6 +1,6 @@
 # Arbeitsstand WaterLink
 
-**Zuletzt aktualisiert: 21. Oktober 2026, nachts · Claude · Arbeitsbranch `codex/waterlink-review` unverändert bei `12ba4a6`; die neuen Änderungen liegen zur Entscheidung auf dem getrennten Branch `claude/waterlink-p1-ui-review` (siehe Protokoll).**
+**Zuletzt aktualisiert: 21. Oktober 2026, nachts · Claude · Arbeitsbranch `codex/waterlink-review` unverändert bei `ce088ce`; die neuen Änderungen liegen zur Entscheidung auf dem getrennten Branch `claude/waterlink-p1-ui-review` (siehe Protokoll).**
 
 ## Ziel
 
@@ -8,8 +8,8 @@ Zuerst eine verlässlich funktionierende App: Haushalte sehen den letzten bestä
 
 ## Aktueller Stand
 
-- Lokaler Arbeitsordner dieses Chats: `C:\Users\basre\Desktop\WaterLink`, bereits vollständig geklont und mit `https://github.com/OsmanTuerkmen/WaterLink` verbunden. Am 21.10.2026 erneut erfolgreich alle Remote-Branches und Tags abgerufen; Arbeitsbranch und Remote stehen bei `12ba4a6`. Bestehende lokale Dokumentationsänderungen sind erhalten.
-- Basis: Claudes englisches Redesign bei Commit `2207f2c`. Codex arbeitet auf einem eigenen Branch und empfiehlt, die neue Oberfläche als Grundlage zu behalten.
+- Lokaler Arbeitsordner dieses Chats: `C:\Users\basre\Desktop\WaterLink`, bereits vollständig geklont und mit `https://github.com/OsmanTuerkmen/WaterLink` verbunden. Am 21.10.2026 erneut erfolgreich alle Remote-Branches und Tags abgerufen; Arbeitsbranch und Remote stehen bei `ce088ce`. Bestehende lokale Dokumentationsänderungen sind erhalten.
+- Basis: Claudes englisches Redesign bei Commit `e95d100`. Codex arbeitet auf einem eigenen Branch und empfiehlt, die neue Oberfläche als Grundlage zu behalten.
 - Haushaltsstatus, öffentliche Tafel, Betreiber-/Technikeransicht, Koordination, simulierte SMS und Bühne sind implementiert. WPdx-Orte und historische Sensordaten sind enthalten; aktuelle Bestätigungen, Wege und Rollen bleiben simuliert.
 - Codex hat SMS-Offline-Antworten, ausdrückliche SMS-Funktionsprüfung, SMS-Anmeldung, Direktlinks zu Meldungen, Ablaufzeiten auf dem Druckblatt und mehrere irreführende Texte korrigiert.
 - **Demo-Zugang gehärtet (Claude):** Das Cookie trägt einen signierten Ablaufzeitpunkt, den der Server prüft. Anmeldeversuche sind pro Client und global begrenzt und werden vor der Codeprüfung atomar gezählt. Details in [Architektur](../ARCHITEKTUR.md). Auf der Live-Seite noch **nicht** bereitgestellt.
@@ -124,13 +124,13 @@ Lokale uncommittete Busia-Daten vom alten Branch wurden vor dem Wechsel im Git-S
 
 ## Protokoll
 
-### 21.10.2026, nachts – Claude: Branch-Vergleich und Push (Basis `4b2ee90`)
+### 21.10.2026, nachts – Claude: Branch-Vergleich und Push (Basis `397f41d`)
 
-- Neuen Branch `claude/waterlink-p1-ui-review` (5 Commits auf `12ba4a6`) nach GitHub gepusht; Autorenangabe `Recezc <basreci@gmail.com>` nur per Parameter gesetzt, keine Git-Konfiguration geändert.
+- Neuen Branch `claude/waterlink-p1-ui-review` (5 Commits auf `ce088ce`) nach GitHub gepusht; Autorenangabe `Recezc <basreci@gmail.com>` nur per Parameter gesetzt, keine Git-Konfiguration geändert.
 - Alle sechs Branches liegen in einer Kette (jeder enthält den vorigen vollständig): main → codex/waterlink-mvp → claude/waterlink-mvp → claude/waterlink-redesign → codex/waterlink-review → claude/waterlink-p1-ui-review. Keine Abweichung, jeder Merge wäre ein Vorspulen. Testanzahl je Branch (Zählung von `test(` in `web/tests`): 0 / 22 / 39 / 43 / 53 / 62. Die CI-Datei gibt es nur auf dem neuen Branch.
 - Keine Änderung am Code in diesem Schritt; Eintrag nicht gepusht.
 
-### 21.10.2026, nachts – Claude: P1 und Oberfläche umgesetzt (Basis `12ba4a6`, Branch `claude/waterlink-p1-ui-review`)
+### 21.10.2026, nachts – Claude: P1 und Oberfläche umgesetzt (Basis `ce088ce`, Branch `claude/waterlink-p1-ui-review`)
 
 - **Anmeldesperre** (`lib/access-limit.ts`): Ein Client, der sein eigenes Limit erreicht hat, erhöht den globalen Zähler nicht mehr. Vorher konnten 100 Versuche von einer Adresse die Anmeldung für alle eine Stunde sperren. Test ergänzt.
 - **Frische Demo** (`lib/store.ts`): Nach 4 Stunden ohne Ereignis wird der Zustand beim nächsten Lesen mit frischen simulierten Bestätigungen neu angesetzt (Revision + 1, Hinweis im Verlauf, wiederholbar ohne Doppelschreiben). Grund: Die Live-Seite stand auf Revision 0 mit zehn Tage alten Bestätigungen. Die Seed-Ereignisse sind 35 Minuten zurückdatiert, die Frist beginnt dort.
@@ -140,7 +140,7 @@ Lokale uncommittete Busia-Daten vom alten Branch wurden vor dem Wechsel im Git-S
 - **Oberfläche (Impeccable-Audit, vorher geschätzt 16/20):** Kartenmarker mindestens 46 px auf dem Bildschirm (Messung per ResizeObserver); Logo, Fußlinks, Demo-Links ≥ 44 px; SMS-Eintritt auf der Statusseite eigene Zeile statt Link im Satz; h1 für Feld-App und Bühne; Schrift in rem (94 px-Angaben), sodass die Browser-Textgröße gilt, mit einspaltigen Rastern `minmax(0, 1fr)` und umbrechenden Tabs/Chips, damit 150 % und 200 % ohne Überbreite laufen; alle Farben in Regeln über Tokens (Druck bleibt schwarz auf weiß); `--limit` und `--ink-3` abgedunkelt (Kontrast); `prefers-reduced-motion` entfernt Bewegung, die Tafel behält einen ruhigen Farbton für „Zeile geändert“. `DESIGN.md` und `.impeccable/design.json` (nur die beiden Farbwerte; die Farbleitern dort sind nicht neu berechnet) angepasst.
 - **Bewusst nicht gemacht:** kein Dunkelmodus (Sonnenlicht und Tafel; `color-scheme: light` war schon gesetzt); ungenutzte `components/ui/` und Abhängigkeiten nicht entfernt (P2); nichts in `codex/waterlink-review`, `main` oder die anderen Branches übernommen, nichts bereitgestellt. Die Änderungen stehen in fünf Commits auf `claude/waterlink-p1-ui-review` (Backend und Tests, Client und Lint, Oberfläche, CI, Dokumente), damit man sie einzeln ansehen und verwerfen kann. Ein Versuch, den lokalen 503 durch Verwerfen ungelesener Anfragekörper zu beheben, half nicht und wurde zurückgenommen.
 
-### 21.10.2026, ca. 22:13 Europe/Vienna – Codex: GitHub-Verbindung und Kontext für diesen Chat geprüft (Basis `12ba4a6`, ohne Commit)
+### 21.10.2026, ca. 22:13 Europe/Vienna – Codex: GitHub-Verbindung und Kontext für diesen Chat geprüft (Basis `ce088ce`, ohne Commit)
 
 - Vorhandenen Klon weiterverwendet, alle Remote-Branches und Tags erfolgreich abgerufen. Arbeitsbranch `codex/waterlink-review` ist synchron zu `origin/codex/waterlink-review`. Die vier anderen Branches sind Vorfahren (main 19, codex/waterlink-mvp 18, claude/waterlink-mvp 9, claude/waterlink-redesign 3 Commits zurück).
 - Projektanweisungen, Produkt, Gestaltung, Architektur, Review, Übergaben, Historie, Demo, Bereitstellung und offene Aufgaben gelesen; zentrale Fachtypen, Speicherung und Einstieg der Oberfläche gesichtet. GitHub liefert keine Issues oder PRs. Stash leer.
@@ -155,7 +155,7 @@ Lokale uncommittete Busia-Daten vom alten Branch wurden vor dem Wechsel im Git-S
 - `npm run test:integration` gegen lokales `npm start`: abgebrochen, weil die lokale Laufzeit bei schnellen aufeinanderfolgenden POSTs abwechselnd 503 liefert (mit Pause 4/4 mal 401, Live 8/8 mal 401). Nicht als Bestanden gewertet; vermutlich Werkzeugeffekt, nicht bestätigt.
 - Bewusst offen: nichts davon behoben; Priorisierung in „Nächste Aufgaben“ ergänzt.
 
-### 21.10.2026 – Claude: Gesamtprüfung Stand und Branches (Basis `12ba4a6`, ohne Commit)
+### 21.10.2026 – Claude: Gesamtprüfung Stand und Branches (Basis `ce088ce`, ohne Commit)
 
 - Gelesen: Arbeitsstand, Review, Übergaben, nächster Prompt. Branches: `main` (3ac8228), `claude/waterlink-mvp`, `codex/waterlink-mvp`, `claude/waterlink-redesign` sind alle reine Vorfahren von `codex/waterlink-review` (0 Commits Rückstand, 19/18/9/3 Commits Vorsprung); keine Divergenz, Merge wäre fast-forward. Lokal = Remote, Stash leer, einzige lokale Änderung ist dieses Dokument.
 - Selbst ausgeführt: `npm test` 53/53, `npm run typecheck`, `npm run build` bestanden; `npm run lint` weiter 7 Befunde (6 Fehler, 1 Warnung, u. a. `store.tsx:107`, `domain.ts:244/250`). Live-Seite antwortet mit HTTP 200. `test:integration` und `test:access` nicht ausgeführt.
@@ -164,7 +164,7 @@ Lokale uncommittete Busia-Daten vom alten Branch wurden vor dem Wechsel im Git-S
 ### 21.10.2026 – Codex: Desktop-Repository übernommen und Branches abgeglichen
 
 - Arbeitsordner dieses Chats für weitere Befehle: `C:\Users\basre\Desktop\WaterLink`. Die App-Projektzuordnung des Chats wurde dadurch nicht geändert.
-- Alle fünf Branch-Spitzen über die GitHub-Verbindung abgefragt: entsprechen den lokal gespeicherten Remote-Refs (main 3ac8228, codex/waterlink-mvp ae2e42c, claude/waterlink-mvp 3f8ac54, claude/waterlink-redesign 2207f2c, codex/waterlink-review 12ba4a6).
+- Alle fünf Branch-Spitzen über die GitHub-Verbindung abgefragt: entsprechen den lokal gespeicherten Remote-Refs (main 3ac8228, codex/waterlink-mvp ae2e42c, claude/waterlink-mvp ba79324, claude/waterlink-redesign e95d100, codex/waterlink-review ce088ce).
 - Alle 20 Commit-Einträge, Branch-Unterschiede, Arbeitsstand, Review, Übergaben, Produkt und Architektur gelesen. Vor dieser Dokumentationsänderung war der Arbeitsbaum sauber; die lokale Stash-Liste ist leer. Der früher dokumentierte Stash ist in diesem Klon nicht vorhanden.
 - `git fetch --all --prune` konnte `.git/FETCH_HEAD` wegen eines Schreibzugriffsfehlers nicht öffnen; der Remote-Abgleich erfolgte stattdessen lesend über die GitHub-Verbindung.
 - Keine App-Tests erneut ausgeführt; frühere Testergebnisse bleiben Fremdberichte. Keine Branch-Wechsel, Commits, Pushes, Merges oder Deployments. Offene Aufgaben bleiben bestehen.
@@ -178,7 +178,7 @@ Lokale uncommittete Busia-Daten vom alten Branch wurden vor dem Wechsel im Git-S
 - Zwei-Geräte-Ablauf mit echtem Verbindungsabbruch bestanden (Details oben).
 - Bewusst offen: physische Geräte und Papier, Bühne/Tafel auf dem Handy, Lint-Befunde, Live-Bereitstellung.
 
-### 11.10.2026, Nachmittag – Claude: Demo-Zugang gehärtet (`c38b60c`)
+### 11.10.2026, Nachmittag – Claude: Demo-Zugang gehärtet (`f9ee231`)
 
 - `web/lib/access-token.ts` (neu, ohne Plattformimporte): Cookie `v2.<Ablauf>.<HMAC>`. Der Ablauf wird auf dem Server geprüft; weit in der Zukunft liegende Ablaufzeiten und alte statische Cookies werden abgewiesen; ein Codewechsel macht alle Cookies ungültig. Im Code-Modus werden Plattform-Header vollständig ignoriert.
 - `web/lib/access-limit.ts` (neu): Begrenzung in D1 mit 10 Versuchen pro Client in 15 Minuten und 100 insgesamt pro Stunde, atomar vor der Codeprüfung gezählt. Die IP wird nur als gekürzter Hash gespeichert. Die Tabelle wird bei Bedarf angelegt. Die frühere Verzögerung von 800 ms entfällt.
@@ -189,4 +189,4 @@ Lokale uncommittete Busia-Daten vom alten Branch wurden vor dem Wechsel im Git-S
 
 ### 11.10.2026 – Codex übernimmt auf eigenem Branch
 
-Übergabe und Live-Oberfläche gelesen; Branch `codex/waterlink-review` von `2207f2c` angelegt. Zunächst Funktions- und Verlässlichkeitsfehler korrigiert, keine Pitch-Arbeit. Zwei SMS-Regressionstests ergänzt. Tests, Typprüfung, Build und lokaler API-Ablauf erfolgreich. UI-Prüfungen und ihre Grenzen im Review dokumentiert. GitHub-Sicherung erfolgt mit dem Commit dieses Dokuments; Remote-Hash vor Abschluss prüfen.
+Übergabe und Live-Oberfläche gelesen; Branch `codex/waterlink-review` von `e95d100` angelegt. Zunächst Funktions- und Verlässlichkeitsfehler korrigiert, keine Pitch-Arbeit. Zwei SMS-Regressionstests ergänzt. Tests, Typprüfung, Build und lokaler API-Ablauf erfolgreich. UI-Prüfungen und ihre Grenzen im Review dokumentiert. GitHub-Sicherung erfolgt mit dem Commit dieses Dokuments; Remote-Hash vor Abschluss prüfen.
