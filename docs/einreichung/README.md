@@ -1,11 +1,10 @@
 # Einreichung: Zero/One Hackathon (WU Wien, 22. Oktober 2026)
 
-Alles, was für die Abgabe beim IdeaLAB gebraucht wird. Die Kriterien der Bewertung: eine gute Problemlösung, ein Prototyp mit allen wichtigen Funktionen, Zahlen, die die Annahmen belegen, und was im Coaching gelernt wurde.
+Alles, was für die Abgabe beim IdeaLAB gebraucht wird. Die Kriterien der Bewertung: eine gute Problemlösung, ein Prototyp mit allen wichtigen Funktionen, Zahlen, die die Annahmen belegen, und was im Coaching gelernt wurde. **Team 10: Osman Türkmen, Recep Bas.** Die Folien sind bewusst kurz (fünf Seiten).
 
 | Datei | Inhalt |
 |---|---|
-| [`WaterLink_Pitch.pdf`](WaterLink_Pitch.pdf) | 16 Folien: Problem, **Bildschirmfotos der UNICEF-Seiten** (Folien 3 und 4, Anhang), Lösung, Ablauf, Prototyp, Zahlen und Quellen, offene Annahmen, Gelerntes, nächste Schritte |
-| [`WaterLink_OnePager.pdf`](WaterLink_OnePager.pdf) | Eine A4-Seite mit allem Wichtigen und den Links |
+| [`WaterLink_Pitch.pdf`](WaterLink_Pitch.pdf) | **5 Folien**: Titel mit Team 10, das aktive Problem mit **Bildschirmfotos zweier UNICEF-Seiten** (Folie 2), Lösung und Prototyp, Zahlen und Quellen, Gelerntes und nächste Schritte mit dem IdeaLAB-Satz |
 | [`EMAIL.md`](EMAIL.md) | Text der Mail an das IdeaLAB-Team, mit Anhangsliste und dem Satz zur IdeaLAB-Teilnahme |
 | [`belege/`](belege/) | Bildschirmfotos der drei UNICEF-Seiten (mit und ohne gelbe Markierung, aufgenommen am 22.10.2026) und die WPdx-Zahlen (`wpdx-kenya-zahlen.json`) |
 | `folien/` | Quellen der Folien (HTML, CSS, Bilder). Gestaltung nach [`DESIGN.md`](../../DESIGN.md) |
@@ -20,13 +19,13 @@ Alles, was für die Abgabe beim IdeaLAB gebraucht wird. Die Kriterien der Bewert
 
 ## Der Entwurf in Gmail
 
-Die Mail liegt als **Entwurf** in Gmail (An: idealab@wu.ac.at, mit den fünf Anhängen, nicht abgeschickt). Gmail hat die erste Version der Code-ZIP gesperrt; die jetzige enthält die Skripte mit zusätzlicher Endung `.txt` und ohne Shell-Skripte. Vor dem Abschicken prüfen: ob MyStartupStudio eine andere Empfängeradresse verlangt und ob der GitHub-Link dann schon öffentlich ist (sonst bleibt der Satz „tell us and we will give you access“ richtig).
+Die Mail liegt als **Entwurf** in Gmail (An: idealab@wu.ac.at, vier Anhänge: Folien, Code-ZIP, Ablauf-GIF, UNICEF-Belege; nicht abgeschickt). Gmail hat die erste Version der Code-ZIP gesperrt; die jetzige enthält die Skripte mit zusätzlicher Endung `.txt` und ohne Shell-Skripte. Vor dem Abschicken prüfen: ob MyStartupStudio eine andere Empfängeradresse verlangt und ob der GitHub-Link dann schon öffentlich ist (sonst bleibt der Satz „tell us and we will give you access“ richtig).
 
 ## Was bewusst nicht drinsteht
 
 Keine Wirkungszahlen, keine Zeugnisse, keine Aussagen eines Pilotpartners: Es gibt keine. Offene Annahmen (Betreiber bestätigen oft genug, Zahlungsbereitschaft) stehen auf Folie 10 als „Open“.
 
-**Offen für das Team:** Die Folie „What we learned“ (12) beruht auf dem, was beim Bauen, Prüfen und Testen belegt ist. Notizen aus dem Coaching selbst lagen nicht vor; wer sie hat, ergänzt sie in `folien/pitch.html` und baut neu.
+**Offen für das Team:** Die Folie „What we learned“ (5) beruht auf dem, was beim Bauen, Prüfen und Testen belegt ist. Notizen aus dem Coaching selbst lagen nicht vor; wer sie hat, ergänzt sie in `folien/pitch.html` und baut neu.
 
 ## Neu erzeugen
 
@@ -35,5 +34,5 @@ Keine Wirkungszahlen, keine Zeugnisse, keine Aussagen eines Pilotpartners: Es gi
 node docs/einreichung/werkzeug/screenshots.cjs     # App-Bildschirmfotos (Ausprobier-Modus)
 node docs/einreichung/werkzeug/belege.cjs          # UNICEF-Seiten, öffnet kurz ein Chrome-Fenster
 node --experimental-strip-types docs/einreichung/werkzeug/qr.mjs   # QR-Codes, aus web/ heraus
-node docs/einreichung/werkzeug/bauen.mjs           # beide PDFs
+node docs/einreichung/werkzeug/bauen.mjs           # das PDF
 ```

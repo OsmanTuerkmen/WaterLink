@@ -10,7 +10,7 @@ Alles in diesem Ordner ist auf Deutsch. Den Einstieg ins Projekt (was es ist, wi
 | [Konzept](KONZEPT.md) | Ursprüngliche Entscheidungsgrundlage vom 10. Oktober mit Annahmen und Regeln für verlässliche Informationen. Frühere Vorschläge darin sind teils überholt; für die umgesetzte Technik gilt die Architektur. |
 | [Vom Prototyp zum Produkt](WEG-ZUM-PRODUKT.md) | Was echt ist, was fehlt, realistischer Weg, Antworten auf Jury-Fragen |
 | [Demo in drei Minuten](DEMO.md) | Ablauf der Vorführung Schritt für Schritt |
-| [Einreichung (Zero/One Hackathon)](einreichung/README.md) | Folien als PDF (mit Bildschirmfotos der UNICEF-Seiten), One-Pager, Mailtext, Belege und die Skripte, die alles neu erzeugen |
+| [Einreichung (Zero/One Hackathon)](einreichung/README.md) | Fünf Folien als PDF (mit Bildschirmfotos der UNICEF-Seiten), Mailtext, Belege und die Skripte, die alles neu erzeugen |
 
 ## Zum Mitarbeiten
 
