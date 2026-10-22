@@ -11,7 +11,7 @@
 | `/#sms` | Simulierte SMS für Tastenhandys |
 | `/#coordination/demo` | Demo-Werkzeuge, Zurücksetzen, Sensor-Wiedergabe |
 
-Stand: Branch `claude/waterlink-redesign`, bereitgestellt am 11. Oktober 2026.
+**Stand der Live-Seite:** bereitgestellt am 11. Oktober 2026 aus dem Redesign-Stand (Commit `2207f2c`). Alles, was danach in `main` hinzukam (signierter Zugang mit Ablauf, frische Demo nach 4 Stunden, Oberflächen-Korrekturen), ist dort noch **nicht** enthalten. Aktualisieren: [Roadmap](ROADMAP.md), erste Zeile.
 
 ## Wer darf was
 

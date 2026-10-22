@@ -2,76 +2,150 @@
 
 **Funktioniert unsere Wasserstelle heute?**
 
-**Live-Demo:** https://waterlink-demo.waterlink.workers.dev · Bühne für den Pitch: `/?view=stage` · Änderungen nur mit Demo-Zugangscode ([Bereitstellung](docs/BEREITSTELLUNG.md)) · **Neu hier? → [Aktueller Stand](docs/ZWISCHENSTAND.md) · [Review](docs/REVIEW_CODEX.md) · [Nächster Prompt](docs/NAECHSTER_PROMPT.md)**
+> **In short (English):** WaterLink tells households in rural Kenya whether their water point works *today* and where to go instead, and it tracks every outage from the first report to a repair that only counts once an operator has tested it on site. Old "green" statuses expire after 12 hours and turn into "unclear", never into a false promise. It is a hackathon prototype: the places are real survey data, the people, confirmations and routes are simulated and labelled as such. "Working" means water can be drawn, never that it is safe to drink.
 
-WaterLink verbindet eine öffentliche Statusanzeige für Haushalte mit dem Ablauf von der Störungsmeldung bis zur ausdrücklich bestätigten Reparatur. Personen, Bestätigungen und Aufträge im Prototyp sind simuliert. Die Wasserstellen sind entweder fiktiv oder stammen aus echten Erhebungen der [Water Point Data Exchange](https://www.waterpointdata.org/) (CC BY 4.0); deren Erhebungsstatus ist historisch und nie ein aktueller Zustand. „Funktioniert“ beschreibt den Betrieb, keine geprüfte Trinkwasserqualität.
+**Live-Demo:** https://waterlink-demo.waterlink.workers.dev · Pitch-Bühne: [`/?view=stage`](https://waterlink-demo.waterlink.workers.dev/?view=stage) · Ansehen ist offen, Ändern nur mit Demo-Zugangscode ([Bereitstellung](docs/BEREITSTELLUNG.md)). Die Live-Seite läuft noch auf dem Stand vom 11. Oktober; der aktuelle Stand ist dieses Repository.
 
-## Zwischenstand vom 11. Oktober 2026
+## Worum geht es?
 
-Aktueller Arbeitsbranch: **`codex/waterlink-review`**, aufbauend auf Claudes Redesign (`2207f2c`). Er enthält geprüfte Korrekturen für SMS-Offline-Status, ausdrückliche Testbestätigung, Anmeldung, Direktlinks und Druck-Ablaufzeiten. Die Live-Adresse zeigt noch Claudes Stand. Kein Merge oder neues Deployment wurde vorgenommen. Priorität: funktionierende App; Pitch erst anschließend.
+In ländlichen Gegenden holen viele Familien ihr Wasser an einer Handpumpe oder einem Brunnen. Ist die Stelle kaputt, merkt man das erst nach dem langen Weg dorthin, und eine Reparaturmeldung verschwindet oft, ohne dass jemand zuständig ist.
 
-**Redesign zum Vergleich (Branch `claude/waterlink-redesign`, 11. Oktober 2026):** dieselbe Fachlogik mit neuer, englischer Oberfläche in der Bildwelt „gelber Kanister“. Getrennte Ansichten für Haushalte (`#status`), die öffentliche Tafel (`?view=display`), eine Handy-App für Betreiberin und Techniker (`#field`), simulierte SMS für Tastenhandys (`#sms`), die Koordination (`#coordination`) und eine Pitch-Bühne (`?view=stage`), die beide Handys, die Tafel und das SMS-Handy live nebeneinander zeigt. Neu ist eine Karte aus echten Koordinaten und OpenStreetMap-Straßen ohne Kartendienst. Details in [Architektur](docs/ARCHITEKTUR.md), Ablauf im [Demo-Skript](docs/DEMO.md).
+WaterLink beantwortet vor dem Aufbruch eine Frage: **„Funktioniert unsere Wasserstelle heute? Und wenn nicht, wo gehe ich stattdessen hin?“**
 
-- Responsive Weboberfläche und öffentliche Statustafel (`?view=display`): große Schrift, Status als Wort und Symbol, Bestätigungszeit und Alternative – lesbar aus einigen Metern Entfernung.
-- Gemeinsamer, serverseitig gespeicherter Datenstand mit automatischer Aktualisierung.
-- Störung melden, Auftrag übernehmen, Fortschritt und Hindernisse dokumentieren, Reparatur zur Prüfung melden und Funktion ausdrücklich bestätigen.
-- Getrennte Betriebs- und Auftragszustände; veraltete, widersprüchliche und offline verfügbare Informationen werden entsprechend gekennzeichnet.
-- Alternativen berücksichtigen Bestätigungsalter, Zugänglichkeit, geprüften Weg und Öffnungszeiten.
-- Rollenprüfung, Änderungshistorie, Schutz vor doppelten Anfragen und konkurrierenden Änderungen.
-- Demo-Werkzeuge für Sonderfälle und Zurücksetzen des Beispieldatensatzes.
-- Optional echte Wasserstellen einer Region in Kenia aus WPdx, mit Erhebungsdatum, Quelle und Suchliste.
-- Wiedergabe echter, historischer Sensordaten von Smart Handpumps in Kwale (2014): Ein Einbruch der Fördermenge wird zum Hinweis „Prüfung nötig“, nie zu einem bestätigten Status.
-- [Vom Prototyp zum echten Produkt](docs/WEG-ZUM-PRODUKT.md): was fehlt, realistischer Weg und Antworten auf typische Jury-Fragen.
+1. **Haushalte** sehen den Zustand auf einer öffentlichen Tafel (zum Beispiel in einem Laden) oder per SMS: Wort, Symbol und Farbe, dazu die Zeit der letzten Bestätigung und, wenn nötig, eine geprüfte Alternative.
+2. **Betreiber:innen** (eine feste Person pro Wasserstelle) melden Ausfälle und bestätigen vor Ort.
+3. **Techniker** übernehmen den entstandenen Auftrag, dokumentieren Fortschritt und Hindernisse (Teile, Geld, Personal) und melden die Reparatur.
+4. **Eine Reparatur zählt erst, wenn die Betreiberin sie vor Ort getestet und ausdrücklich bestätigt hat.** „Repariert“ allein macht eine Wasserstelle nie grün.
+5. **Unsicherheit bleibt sichtbar:** Eine Bestätigung gilt 12 Stunden (Demo-Wert). Danach, bei widersprüchlichen Meldungen oder ohne Verbindung steht dort „unklar“.
 
-Nach Freischaltung sind die Rollen in der Demo frei wechselbar. Eine echte lokale Berechtigungsverwaltung, SMS, Sensoren und ein KI-Dienst sind nicht angebunden. Die Störungsbeschreibung lässt sich optional über die Spracherkennung des Browsers diktieren; der Text wird vor dem Speichern geprüft, der Status nie automatisch gesetzt. Pilotregion und Wirksamkeit sind ungeprüft.
+Mehr dazu: [Produktgrundlagen](PRODUCT.md) (Englisch), [Demo in drei Minuten](docs/DEMO.md) und [Vom Prototyp zum Produkt](docs/WEG-ZUM-PRODUKT.md).
 
-## Lokal starten
+## Was ist echt, was ist simuliert?
 
-Voraussetzung: Node.js ab 22.13 und npm. Im Verzeichnis `web/`:
+| Teil | Stand |
+|---|---|
+| Ablauf Meldung → Auftrag → Reparatur → Funktionstest, Rollenprüfung, Verlauf | Umgesetzt und getestet |
+| Orte der Wasserstellen | **Echt:** 60 Einträge aus Erhebungen der Water Point Data Exchange in Busia, Kenia. Der Zustand darin ist historisch und nie ein aktueller Status. |
+| Sensordaten | **Echt, aber alt:** wöchentliche Fördermengen einer Handpumpe in Kwale aus dem Jahr 2014, als Wiedergabe. Sie liefern nur einen Hinweis zur Prüfung, nie einen Status. |
+| Personen, Bestätigungen, Wege, Öffnungszeiten | **Simuliert** und überall gekennzeichnet |
+| SMS, Live-Sensoren, KI-Dienst, Bezahlung, echte Konten | **Nicht angeschlossen** |
+
+Es gibt keinen Pilotpartner und keine Wirkungszahlen. Die ganze Liste der Grenzen steht in der [Roadmap](docs/ROADMAP.md#3-bewusste-grenzen).
+
+## Selbst ausprobieren
+
+Voraussetzung: [Node.js](https://nodejs.org) ab Version 22.13 (enthält npm). Die Schritte unten wurden am 22. Oktober 2026 in einem frischen Klon geprüft (Windows, Node 24): Installation, Build, Datenbank, Start, `npm test` (62 von 62) und der API-Test laufen durch.
 
 ```sh
+git clone https://github.com/OsmanTuerkmen/WaterLink.git
+cd WaterLink/web
 npm ci
 npm run build
+```
+
+Die lokale Datenbank einmalig anlegen (sie liegt danach in `web/.wrangler/state` und ist eine Emulation, es wird nichts ins Netz geschickt):
+
+```sh
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0000_salty_kingpin.sql
+```
+
+Starten:
+
+```sh
 npm run dev
 ```
 
-Den Datenbankbefehl einmalig bei einer neuen lokalen Datenbank ausführen. Die Vorschau läuft standardmäßig auf `http://127.0.0.1:5173/`. Über die Anmeldeschaltfläche ist lokal eine simulierte Anmeldung möglich. Auf einer späteren privaten Sites-Bereitstellung übernimmt die Plattform die Anmeldung.
+Dann im Browser **http://localhost:5173** öffnen (ist der Port belegt, steht der richtige in der Ausgabe; mit `npm run dev -- --port 5174` wählst du einen). Lesen geht sofort. Zum **Ändern** (melden, reparieren, bestätigen) musst du lokal angemeldet sein: Öffne einmal [http://localhost:5173/signin-with-chatgpt?return_to=/](http://localhost:5173/signin-with-chatgpt?return_to=/). Das ist eine simulierte Anmeldung, die nur lokal funktioniert.
 
-## Echte Wasserstellen laden
+Wenn etwas nicht klappt:
 
-Im Verzeichnis `web/` (unter Windows in PowerShell `npm.cmd` statt `npm`):
+- **Fehler `SQLITE_CANTOPEN` beim Anlegen der Datenbank (Windows):** Der Ordner liegt in einem zu langen Pfad. Das Repository in einen kurzen Pfad klonen, zum Beispiel `C:\dev\WaterLink`.
+- **Warnungen `npm warn install-scripts` bei `npm ci`:** harmlos, Build und Start laufen trotzdem.
+- **`npm` wird in PowerShell nicht gefunden oder blockiert:** `npm.cmd` verwenden.
+- **Beim ersten Aufruf einer Ansicht bleibt die Seite kurz leer:** Der Entwicklungsserver übersetzt beim ersten Mal; nach einigen Sekunden erscheint sie.
 
-```sh
-npm run data:wpdx -- --list                 # Counties mit Anzahl der Einträge
-npm run data:wpdx -- --county Kitui         # Nachbarschaft um eine zuletzt funktionierende Stelle
-npm run data:wpdx -- --county Kitui --count 40 --near -1.05,38.01
+### Die Ansichten
+
+| Adresse | Ansicht |
+|---|---|
+| `/#status` | Status für Haushalte mit Karte |
+| `/?view=display` | Öffentliche Tafel, aus einigen Metern lesbar (Vollbild-Knopf unten rechts) |
+| `/#field/operator`, `/#field/technician` | Handy-App für Betreiberin und Techniker, ein Schritt pro Bildschirm |
+| `/#sms` | Simulierte SMS für Tastenhandys (`STATUS`, `A`, `DOWN A …`, `OK A …`) |
+| `/#coordination/overview` | Koordination: Karte, offene Aufträge, Verlauf, Demo-Werkzeuge |
+| `/?view=stage` | Pitch-Bühne: beide Handys, Tafel und SMS-Handy live nebeneinander |
+
+### Der kürzeste Rundgang (zwei Minuten)
+
+1. Öffne `/?view=stage` (und melde dich wie oben beschrieben an).
+2. Folge den Schritten oben auf der Bühne: Amina meldet, dass Wasserstelle A kein Wasser hat → die Tafel zeigt den Ausfall und Alternative B → Daniel übernimmt und meldet die Reparatur → die Tafel bleibt auf „Not working“ → erst Aminas Funktionstest macht sie wieder grün.
+3. **Reset demo** setzt alles zurück. Unter `/#coordination/demo` gibt es Sonderfälle: abgelaufene Bestätigung, widersprüchliche Meldungen, keine Alternative, Sensorhinweis.
+
+Mit „Cut the connection in this window“ in den Demo-Werkzeugen siehst du, wie ein Fenster bei fehlender Verbindung alles auf „Unclear“ setzt und keine Alternative mehr nennt.
+
+## Befehle
+
+Alle im Ordner `web/`:
+
+| Befehl | Was er tut |
+|---|---|
+| `npm run dev` | Entwicklungsserver mit Neuladen (Port 5173) |
+| `npm run build` | Produktions-Build |
+| `npm start` | Gebauten Stand lokal über Wrangler starten (ohne simulierte Anmeldung) |
+| `npm test` | 62 Unit-Tests (Fachregeln, Speicher, Sitzungen, Zugang, SMS, Sensor, Region) |
+| `npm run typecheck` | TypeScript-Prüfung |
+| `npm run lint` | Code-Stil und Fehlerprüfung |
+| `npm run test:integration` | API-Ablauf gegen einen **lokalen** `npm run dev`-Server (`WATERLINK_BASE_URL=http://127.0.0.1:5173`); setzt nur die Demo-Daten zurück |
+| `npm run test:access` | Zugangscode-Modus gegen einen lokalen Server, siehe Kopf von `scripts/check-access.mjs`. Nie gegen die Live-Seite. |
+| `npm run data:wpdx -- --list` | Counties aus der Water Point Data Exchange auflisten; `-- --county Busia` lädt eine Nachbarschaft nach `data/region.json` |
+| `npm run data:osm` | Straßen und Orte für die Karte aus OpenStreetMap laden (`data/osm-area.json`) |
+| `npm run deploy:cloudflare` | Kostenlos auf Cloudflare bereitstellen, siehe [Bereitstellung](docs/BEREITSTELLUNG.md) |
+
+Die Prüfungen laufen auch automatisch auf GitHub (`.github/workflows/ci.yml`).
+
+## Aufbau des Repositorys
+
+```
+WaterLink/
+├── README.md, PRODUCT.md, DESIGN.md    Einstieg, Produktgrundlagen, Gestaltungsregeln
+├── CLAUDE.md                           Arbeitsregeln für KI-Assistenz in diesem Repo
+├── docs/                               Dokumentation, Einstieg: docs/README.md
+│   ├── ROADMAP.md                      Offene Aufgaben und mögliche Erweiterungen
+│   └── archiv/                         Berichte früherer Arbeitsschritte
+├── .github/workflows/ci.yml            Tests, Typprüfung, Lint, Build bei jedem Push
+└── web/                                Die Anwendung
+    ├── app/                            Seite und API (api/waterlink, api/session, api/access)
+    ├── components/waterlink/           Ansichten: Status, Tafel, Feld-App, Koordination, SMS, Bühne, Karte
+    ├── lib/                            Fachregeln (domain.ts), Speicher (store.ts), Zugang (access*.ts),
+    │                                   Sitzungen (session.ts), SMS (sms.ts), Sensorhinweise (sensor.ts)
+    ├── data/                           region.json (60 Wasserstellen), kwale-sensors.json, osm-area.json
+    ├── db/, drizzle/                   Datenbankschema und SQL
+    ├── scripts/                        Datenimport, Integrations- und Zugangstests, Bereitstellung
+    ├── tests/                          Unit-Tests
+    └── build/                          Bausteine der Hosting-Plattform; normalerweise nicht anfassen
 ```
 
-Das Skript wählt nur Nachbarschaften, in denen zwei gefasste, als „Functional“ erhobene Wasserstellen höchstens 3 km auseinanderliegen (`--walk`), und übernimmt Stellen im Umkreis von 5 km (`--radius`). Dabei bevorzugt es Erhebungen aus den letzten 3 Jahren vor der neuesten Erhebung im County (`--recent`). Gute Ausgangswahl ist z. B. `--county Busia`. Bei Datensätzen, deren bereinigter Status für alle Einträge gleich ist, obwohl die Rohangabe „Wasser vorhanden ja/nein“ wechselt (Evidence Action Kenya 2023–2024: immer „Non-Functional“), gilt die Rohangabe. Gibt ein County das nicht her (z. B. Kitui: 48 weit verstreute, meist als defekt erhobene Einträge), bricht es mit einer Meldung ab.
+Die Fachregeln in `web/lib/domain.ts` hängen nicht vom Webframework ab und sind einzeln testbar. Wie alles zusammenspielt, steht in der [Architektur](docs/ARCHITEKTUR.md).
 
-Das Skript schreibt `data/region.json`. Für die Karte lädt `node scripts/import-osm.mjs` anschließend Straßen und Orte der Region aus OpenStreetMap nach `data/osm-area.json`. Danach den Entwicklungsserver neu starten (bzw. neu bauen) und unter **Demo-Werkzeuge** die Demo zurücksetzen. Mit `null` in `data/region.json` gelten wieder die fiktiven Beispieldaten.
+## Daten und Quellen
 
-## Prüfungen
+| Quelle | Verwendung | Lizenz |
+|---|---|---|
+| [Water Point Data Exchange](https://www.waterpointdata.org/) (WPdx) | Orte der Wasserstellen in `web/data/region.json` | CC BY 4.0 |
+| [openwashdata/waterpumpkwale](https://github.com/openwashdata/waterpumpkwale) | Wiedergabe der Pumpendaten in `web/data/kwale-sensors.json` | CC BY 4.0 |
+| © OpenStreetMap contributors | Straßen auf der Karte in `web/data/osm-area.json` | ODbL |
+| Archivo und Atkinson Hyperlegible Next (über Fontsource) | Schriften, lokal eingebunden | OFL |
 
-```sh
-npm test
-npm run typecheck
-# Mit laufender lokaler Vorschau; setzt ausschließlich die Demo-Daten zurück:
-npm run test:integration
-```
-
-Stand 21. Oktober 2026 (Tiefenprüfung Claude, Branch `claude/waterlink-p1-ui-review`): 62 Tests, Lint ohne Befund, CI-Datei in `.github/workflows/ci.yml`. Stand 11. Oktober 2026 (Codex-Review): 45 Tests, TypeScript-Prüfung, Produktionsbuild und lokaler API-Integrationstest bestanden. SMS-Prüfschritt, Offline-SMS und Meldungs-Direktlink wurden im Browser geprüft. Neue mobile Prüfung und Druckprüfung stehen noch aus. Aktueller Stand, offene Aufgaben und Protokoll aller Schritte stehen im [Arbeitsstand](docs/ZWISCHENSTAND.md).
+Für den Code selbst ist noch **keine Lizenz festgelegt** (siehe [Roadmap](docs/ROADMAP.md#4-offene-entscheidungen)).
 
 ## Bereitstellen
 
-Kostenlos auf Cloudflare Workers mit D1, im Ordner `web/`: `npx wrangler login` (einmalig), dann `npm run deploy:cloudflare`. Einzelheiten, Zugangscode und Grenzen in [Bereitstellung](docs/BEREITSTELLUNG.md).
+Kostenlos auf Cloudflare Workers mit D1: im Ordner `web/` einmal `npx wrangler login`, dann `npm run deploy:cloudflare`. Das Skript legt Datenbank und Zugangscode an. Einzelheiten, Grenzen des kostenlosen Tarifs und die Checkliste vor einem Pitch stehen in der [Bereitstellung](docs/BEREITSTELLUNG.md). Den Zugangscode (`web/.env.demo-access`) nie ins Repository, in Folien oder in Chats kopieren.
 
-## Dokumentation
+## Weiterarbeiten
 
-- [Übergabe: was seit dem 10. Oktober passiert ist](docs/UEBERGABE.md)
-- [Bereitstellung und Live-Demo](docs/BEREITSTELLUNG.md)
-- [Arbeitsstand: Ziel, Stand, offene Aufgaben, Protokoll](docs/ZWISCHENSTAND.md) – wird nach jedem Schritt aktualisiert
-- [Demo in drei Minuten](docs/DEMO.md)
-- [Technische Entscheidungen](docs/ARCHITEKTUR.md)
-- [Ursprüngliche Entscheidungsgrundlage](docs/KONZEPT.md) – enthält frühere Vorschläge; für die umgesetzte Architektur gilt das Architekturdokument.
+- **Was ist offen, was wäre möglich?** → [Roadmap](docs/ROADMAP.md)
+- **Wo steht was?** → [Dokumentation](docs/README.md)
+- **Letzter Stand der Prüfungen** → [Arbeitsstand](docs/ZWISCHENSTAND.md)
+- **Mit KI-Assistenz weiterarbeiten** → [CLAUDE.md](CLAUDE.md) und [Nächster Prompt](docs/NAECHSTER_PROMPT.md)
+- Oberflächentexte sind Englisch, Dokumente Deutsch. Simulierte und historische Daten werden immer als solche gekennzeichnet, und „funktioniert“ ist nie eine Aussage zur Trinkwasserqualität.

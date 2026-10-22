@@ -1,6 +1,6 @@
 # Übergabe: was seit dem 10. Oktober passiert ist
 
-> Frühere Übergabe von Claude. Codex arbeitet inzwischen auf codex/waterlink-review. Maßgeblich für die Fortsetzung: [aktueller Stand](ZWISCHENSTAND.md), [Review](REVIEW_CODEX.md), [nächster Prompt](NAECHSTER_PROMPT.md).
+> Frühere Übergabe von Claude. Codex arbeitet inzwischen auf codex/waterlink-review. Maßgeblich für die Fortsetzung: [aktueller Stand](../ZWISCHENSTAND.md), [Review](REVIEW_CODEX.md), [nächster Prompt](../NAECHSTER_PROMPT.md).
 
 Für Osman, geschrieben am 11. Oktober 2026. Reczec hat mit Claude auf einem zweiten Rechner weitergearbeitet. Kurzfassung: **neue englische Oberfläche auf eigenem Branch, SMS-Simulation, Pitch-Folien und eine laufende Live-Demo.** Nichts wurde in `main` oder `claude/waterlink-mvp` zusammengeführt; das soll erst passieren, wenn du zugestimmt hast.
 
@@ -10,13 +10,13 @@ Für Osman, geschrieben am 11. Oktober 2026. Reczec hat mit Claude auf einem zwe
 |---|---|
 | Neuer Stand (hier weiterarbeiten) | Branch `claude/waterlink-redesign` |
 | Alter Stand, unverändert bis auf die Busia-Daten | Branch `claude/waterlink-mvp` |
-| **Live-Demo** | https://waterlink-demo.waterlink.workers.dev (Details: [Bereitstellung](BEREITSTELLUNG.md)) |
+| **Live-Demo** | https://waterlink-demo.waterlink.workers.dev (Details: [Bereitstellung](../BEREITSTELLUNG.md)) |
 | Zugangscode für Änderungen in der Live-Demo | bekommst du von Reczec privat (liegt bei ihm in `web/.env.demo-access`, nicht im Repo) |
 | Pitch-Folien (Englisch, 11 Folien mit Sprechernotizen) | privates Claude-Artefakt „WaterLink Pitch“ von Reczec; er muss es dir über „Share“ freigeben |
-| Laufender Arbeitsstand, offene Aufgaben, Protokoll | [ZWISCHENSTAND.md](ZWISCHENSTAND.md) |
-| Ablauf der 3-Minuten-Demo | [DEMO.md](DEMO.md) |
-| Technik | [ARCHITEKTUR.md](ARCHITEKTUR.md) |
-| Produktgrundlagen und Gestaltungssystem | [`PRODUCT.md`](../PRODUCT.md), [`DESIGN.md`](../DESIGN.md) |
+| Laufender Arbeitsstand, offene Aufgaben, Protokoll | [ZWISCHENSTAND.md](../ZWISCHENSTAND.md) |
+| Ablauf der 3-Minuten-Demo | [DEMO.md](../DEMO.md) |
+| Technik | [ARCHITEKTUR.md](../ARCHITEKTUR.md) |
+| Produktgrundlagen und Gestaltungssystem | [`PRODUCT.md`](../../PRODUCT.md), [`DESIGN.md`](../../DESIGN.md) |
 
 ## Was sich geändert hat
 

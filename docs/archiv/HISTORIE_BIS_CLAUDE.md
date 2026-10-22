@@ -9,15 +9,15 @@ Lebendes Dokument: Es wird nach **jedem** Arbeitsschritt aktualisiert. Oben steh
 Bis zum Hackathon am **22. Oktober 2026** (10–22 Uhr, Track Social Impact):
 
 1. Eine private, bereitgestellte Demo, die auf zwei Geräten funktioniert: Arbeitsansicht und öffentliche Statustafel.
-2. Ein sicherer Drei-Minuten-Ablauf: Ausfall melden → Tafel zeigt Ausfall und Alternative → Techniker übernimmt und meldet Reparatur → Betreiberin bestätigt Funktion ([Demo-Skript](DEMO.md)).
+2. Ein sicherer Drei-Minuten-Ablauf: Ausfall melden → Tafel zeigt Ausfall und Alternative → Techniker übernimmt und meldet Reparatur → Betreiberin bestätigt Funktion ([Demo-Skript](../DEMO.md)).
 3. Eine einfache, schöne und gut lesbare Oberfläche.
-4. Ehrliche Antworten auf „Was ist echt, was fehlt?“ ([Weg zum Produkt](WEG-ZUM-PRODUKT.md)).
+4. Ehrliche Antworten auf „Was ist echt, was fehlt?“ ([Weg zum Produkt](../WEG-ZUM-PRODUKT.md)).
 
 ## Aktueller Stand
 
 **Fertig und geprüft**
 
-- **Live-Demo:** https://waterlink-demo.waterlink.workers.dev (Cloudflare, kostenlos). Ansehen offen, Ändern mit Demo-Zugangscode. Siehe [Bereitstellung](BEREITSTELLUNG.md); Überblick für Osman in der [Übergabe](UEBERGABE.md).
+- **Live-Demo:** https://waterlink-demo.waterlink.workers.dev (Cloudflare, kostenlos). Ansehen offen, Ändern mit Demo-Zugangscode. Siehe [Bereitstellung](../BEREITSTELLUNG.md); Überblick für Osman in der [Übergabe](UEBERGABE.md).
 - **Redesign (dieser Branch):** englische Oberfläche „gelber Kanister“ mit fünf Ansichten: Status für Haushalte, öffentliche Tafel, Handy-App für Betreiberin und Techniker, Koordination, Pitch-Bühne mit beiden Handys und Tafel nebeneinander. Karte aus WPdx-Koordinaten und OpenStreetMap-Straßen. Fachregeln unverändert, nur Texte übersetzt.
 - Kompletter manueller Ablauf: Meldung → Auftrag → Übernahme → Fortschritt und Blockierungen → Reparaturmeldung → ausdrückliche Funktionsprüfung. Betriebszustand und Auftragsstand sind getrennt. Rollen werden auf dem Server geprüft.
 - Öffentliche Statustafel (`?view=display`): große Zeilen, Status als Wort und Symbol, Bestätigungszeit, Alternative, deutlicher Hinweis bei fehlender Verbindung.
@@ -26,7 +26,7 @@ Bis zum Hackathon am **22. Oktober 2026** (10–22 Uhr, Track Social Impact):
 - Echte Orte: 60 Wasserstellen aus WPdx-Erhebungen in Busia (Marachi East), jetzt im Repo (`web/data/region.json`). A und B sind zwei Bohrlöcher, Erhebung 12/2023.
 - Echte Sensordaten als Wiedergabe: Handpumpe Tiwi – Mshikeni (Kwale, 2014) mit Ausfallerkennung. Daraus wird nur ein Hinweis zur Prüfung, nie ein Status.
 - Diktat der Störungsbeschreibung über die Spracherkennung des Browsers (optional).
-- Dokumente: [Konzept](KONZEPT.md), [Architektur](ARCHITEKTUR.md), [Demo-Skript](DEMO.md), [Weg zum Produkt](WEG-ZUM-PRODUKT.md).
+- Dokumente: [Konzept](../KONZEPT.md), [Architektur](../ARCHITEKTUR.md), [Demo-Skript](../DEMO.md), [Weg zum Produkt](../WEG-ZUM-PRODUKT.md).
 
 **Letzte Prüfungen (11.10.2026, Redesign-Branch)**
 
@@ -80,7 +80,7 @@ Priorität: **P1** = nötig für die Hackathon-Demo, **P2** = macht die Demo bes
 | 11 | P1 | Redesign oder alte Oberfläche? Reczec hat sich am 11.10. für das Redesign entschieden; die Arbeit geht auf `claude/waterlink-redesign` weiter. Zusammenführen erst, wenn Osman zugestimmt hat. `claude/waterlink-mvp` bleibt bis dahin unverändert. | Osman bestätigt | teilweise |
 | 12 | P2 | Bühne auf Beamer-Formaten testen. Geprüft bei 1920 × 1080 und 1280 × 720; am Veranstaltungsort noch einmal mit dem echten Beamer ansehen. | Nutzer am 22.10. | teilweise |
 | 13 | P2 | Zugangscode der Live-Demo privat an Osman weitergeben und die Pitch-Folien für ihn freigeben (Share). | Reczec | offen |
-| 10 | P3 | Partner vor Ort finden (County, NGO, Wartungsdienst, Smart-Handpump-Team in Oxford) und Gespräche führen, siehe [Weg zum Produkt](WEG-ZUM-PRODUKT.md). | Team | offen |
+| 10 | P3 | Partner vor Ort finden (County, NGO, Wartungsdienst, Smart-Handpump-Team in Oxford) und Gespräche führen, siehe [Weg zum Produkt](../WEG-ZUM-PRODUKT.md). | Team | offen |
 
 ## Bewusste Grenzen
 
@@ -97,7 +97,7 @@ Priorität: **P1** = nötig für die Hackathon-Demo, **P2** = macht die Demo bes
 - Neuer Anmeldeweg für selbst betriebene Bereitstellungen: Demo-Zugangscode statt Plattform-Headern (`web/lib/access.ts`, `/api/access`). Grund: Außerhalb von Sites könnte jeder die Header fälschen.
 - `npm run deploy:cloudflare` baut, legt D1-Datenbank und Tabellen an, lädt hoch und setzt den Code. Bereitgestellt auf Reczecs kostenlosem Cloudflare-Konto, Subdomain `waterlink.workers.dev`.
 - Geprüft: lokal auf dem Produktions-Build (gefälschte Header 401, falscher Code 401, richtiger Code 201, Freischalten im Browser), live (Seiten 200, 60 Stellen, Code-Modus, gefälschte Header 401). Integrationstest im Sites-Modus weiter bestanden.
-- Dokumentiert: [Bereitstellung](BEREITSTELLUNG.md), [Übergabe für Osman](UEBERGABE.md), README, Architektur, Demo-Skript, CLAUDE.md.
+- Dokumentiert: [Bereitstellung](../BEREITSTELLUNG.md), [Übergabe für Osman](UEBERGABE.md), README, Architektur, Demo-Skript, CLAUDE.md.
 - Bewusst offen: Freischalten mit dem Code auf der Live-Seite (Claude gibt keine Zugangsdaten auf öffentlichen Seiten ein).
 
 ### 11.10.2026, ca. 12:40 – SMS, Beamer, Pitch-Folien, Lücken geschlossen
@@ -138,7 +138,7 @@ Auf Wunsch des Nutzers wird dieses Dokument nach jedem Schritt aktualisiert: Zie
 - `web/scripts/import-kwale.mjs` lädt die Daten (festgelegt auf einen Commit) nach `web/data/kwale-sensors.json`. Standard: Tiwi – Mshikeni mit drei Nachbarn, Jahr 2014. Grund: Für diese Pumpe gibt es 2015 praktisch keine Daten.
 - `web/lib/sensor.ts`: Ein Hinweis entsteht erst nach zwei Wochen in Folge unter 10 % des üblichen Werts. Fehlende Werte gelten nie als Ausfall. Ausfallwochen zählen nicht in den Vergleichswert.
 - Demo-Szenario „sensor“: Wasserstelle A zeigt „Unklar · Sensorhinweis“, es entsteht kein Auftrag. Eine Meldung oder Prüfung vor Ort löst den Hinweis auf.
-- Neu: [Weg zum Produkt](WEG-ZUM-PRODUKT.md). Demo-Skript, Architektur und README ergänzt. 5 neue Tests (39).
+- Neu: [Weg zum Produkt](../WEG-ZUM-PRODUKT.md). Demo-Skript, Architektur und README ergänzt. 5 neue Tests (39).
 
 ### 10.10.2026, ca. 23:15 – Einfachere Oberfläche (`64d9df2`)
 
