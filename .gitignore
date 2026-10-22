@@ -17,3 +17,7 @@ coverage/
 .impeccable/config.local.json
 .impeccable/questions/
 .playwright-mcp/
+
+# Slides: built helper files
+docs/einreichung/folien/_gebaut-*.html
+docs/einreichung/folien/_vorschau/

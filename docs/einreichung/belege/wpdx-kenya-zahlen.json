@@ -1,0 +1,31 @@
+{
+  "source": "Water Point Data Exchange (WPdx), data.waterpointdata.org, Kenya, retrieved 22 Oct 2026; status corrected where a dataset's status_clean is constant (see web/scripts/wpdx-lib.mjs)",
+  "records": 39959,
+  "byYear": {
+    "2006": 1,
+    "2007": 1,
+    "2009": 10,
+    "2010": 58,
+    "2011": 447,
+    "2012": 6265,
+    "2013": 641,
+    "2014": 3683,
+    "2015": 1746,
+    "2016": 80,
+    "2017": 3,
+    "2018": 22,
+    "2019": 133,
+    "2020": 250,
+    "2021": 7576,
+    "2022": 210,
+    "2023": 13986,
+    "2024": 4847
+  },
+  "nonFunctionalPct": 21.3,
+  "functionalPct": 78.1,
+  "medianAgeYears": 5.7,
+  "olderThan3yPct": 66.8,
+  "olderThan5yPct": 52.1,
+  "within1yPct": 0,
+  "newest": "2024-11-30"
+}

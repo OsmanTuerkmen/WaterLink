@@ -49,7 +49,7 @@ Pump monitoring already exists. WaterLink covers what comes after: public inform
 
 ## Evidence on Hand
 
-- `web/data/region.json`: 60 real water points from Water Point Data Exchange surveys in Marachi East, Busia (CC BY 4.0). Survey status is historical, never current.
+- `web/data/region.json`: 42 places in Marachi East, Busia, from 60 real survey records of the Water Point Data Exchange (CC BY 4.0; repeated surveys of one place are merged). Survey status is historical, never current.
 - `web/data/kwale-sensors.json`: real weekly Smart Handpump volumes, Tiwi – Mshikeni, Kwale 2014 (openwashdata, CC BY 4.0), replayed as a sensor hint.
 - No photos, testimonials, field validation, partners or impact numbers exist. Do not invent them. People, confirmations, routes and opening hours are simulated.
 

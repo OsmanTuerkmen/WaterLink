@@ -21,6 +21,7 @@ Zuerst eine verlässlich funktionierende App: Haushalte sehen den letzten bestä
 - **Orte zusammengeführt:** Der Import führt Erhebungseinträge verschiedener Erhebungen im Umkreis von 50 m zu einem Ort zusammen: aus 60 Einträgen wurden 42 Orte, 16 mit weiteren Erhebungen in den Details. A, B und C bleiben getrennt. Die Live-Seite und der Ausprobier-Modus zeigen die 42 nach der Bereitstellung.
 - **Härtung:** Das Zugangs-Cookie wird mit einem eigenen langen Geheimnis signiert (nicht mehr mit dem kurzen Code); ein Browser mit höherer Revision als der Server übernimmt den Serverstand wieder; der API-Ablauf (`test:integration`) läuft als Teil von `npm run test:e2e` und damit in der CI; Entwicklungswerkzeuge aktualisiert (vite 8.3.5, Cloudflare-Plugin 1.64, wrangler 4.151, vinext 1.3.0): `npm audit` von 20 auf 15 Meldungen, in der Laufzeit weiter 0.
 - **Link-Vorschau und Ablauf im README:** Open-Graph-Angaben mit Vorschaubild (`/og.png`) für geteilte Links; das README zeigt den Ablauf als Animation (`docs/media/walkthrough.gif`, erzeugt mit `web/scripts/record-walkthrough.mjs`).
+- **Einreichung:** Folien als PDF (16 Seiten, mit Bildschirmfotos von drei UNICEF-Seiten und einer eigenen Rechnung auf den WPdx-Daten zu Kenia), One-Pager, Mailtext und Belege liegen in [`docs/einreichung/`](einreichung/README.md). Die Zahlen sind mit Quelle belegt, offene Annahmen stehen als „Open“ auf Folie 10; Notizen aus dem Coaching lagen nicht vor.
 - **Ausprobier-Modus (Sandbox):** Jeder kann den ganzen Ablauf ohne Zugangscode mit Übungsdaten durchspielen, nur auf dem eigenen Gerät (`/?view=stage&sandbox=1`, Knopf „Try it yourself“, Angebot im Anmeldefeld). Dieselben Regeln laufen im Browser, der Server sieht nichts.
 - **Tafel auf Kiswahili und QR-Code:** Umschalter unten auf der Tafel (`?lang=sw`), QR-Code zur SMS-Ansicht. Die Kiswahili-Texte wurden am 22.10. gegen veröffentlichte Kiswahili-Texte abgeglichen und danach an sechs Stellen verbessert ([Quellenprüfung](KISWAHILI-QUELLENPRUEFUNG.md)). **Sie sind weiter ein Entwurf ohne Prüfung durch Muttersprachler**, sieben Fragen sind offen (Prüfbogen).
 - **Sicherheitsmeldungen der Abhängigkeiten:** `npm audit --omit=dev` meldet nichts mehr (Next 16.4.2, React 19.3.1); 20 Meldungen in Entwicklungswerkzeugen bleiben (Roadmap, P3). Ereignisprotokoll auf 200 Einträge begrenzt.
@@ -55,6 +56,13 @@ Zuerst eine verlässlich funktionierende App: Haushalte sehen den letzten bestä
 | **Nicht geprüft** | | Physische Geräte, echter Screenreader, Bewegungsreduktion im echten Browser, Papierausdruck, Kiswahili durch Muttersprachler, Ablauf Melden → Reparieren → Bestätigen auf der Live-Seite mit dem Zugangscode, die CI zu den Commits dieser Einheit (nicht angesehen, das Repository ist privat). Anleitung dazu in [Menschen](MENSCHEN.md). |
 
 ## Protokoll
+
+### 22.10.2026, abends – Unterlagen für die Einreichung beim IdeaLAB
+
+- **Anlass:** Bewertet werden Problemlösung, Prototyp mit allen wichtigen Funktionen, Zahlen zu den Annahmen und das Gelernte aus dem Coaching. Verlangt: eine Mail mit allem, alle PDFs und die Prototyp-Dateien als Anhang, Hinweis zur IdeaLAB-Teilnahme, eine Folie mit Bildschirmfoto eines aktuellen UNICEF-Berichts.
+- **Gemacht:** 16 Folien und ein One-Pager als PDF (`docs/einreichung/`, aus HTML mit dem Chrome gedruckt), Bildschirmfotos der UNICEF-Seiten „Smart Pumps“ und des WHO/UNICEF-JMP-Berichts 2025 (mit gelber Markierung von uns) auf den Folien 3 und 4, Rechnung auf den 39.959 WPdx-Einträgen für Kenia (neuester Eintrag 30.11.2024, Median 5,7 Jahre), Mailtext mit dem Satz „we would potentially agree to take part in the IdeaLAB“.
+- **Geprüft statt vermutet:** Die Handyquote (48,6 % auf dem Land) und die Kwale-Zahl (27 auf unter 3 Tage) wurden an den Quellen nachgesehen, die erste stand bisher nur als „etwa die Hälfte“ in den Dokumenten.
+- **Nicht gemacht:** MyStartupStudio: die Plattform war im Chrome nicht angemeldet, ob die Schritte dort erledigt sind, konnte nicht geprüft werden. Coaching-Notizen für Folie 12 fehlen. Die Mail ist als Entwurf vorbereitet und nicht abgeschickt.
 
 ### 22.10.2026, nachts (später) – Link-Vorschau, doppelte Erhebungen, Härtung, Ablauf im README
 
