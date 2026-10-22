@@ -2,10 +2,10 @@
 // self-hosted demo: changes need a shared demo access code, reading needs nothing.
 //   npx wrangler login                     once, in the browser
 //   node scripts/deploy-cloudflare.mjs     build, database, migration, code, deploy
-// The access code is generated once and kept in the git-ignored file .env.demo-access.
+// The access code and the cookie secret are generated once and kept in the git-ignored file .env.demo-access.
 import { spawnSync } from "node:child_process";
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
-import { randomInt } from "node:crypto";
+import { appendFileSync, existsSync, readFileSync, writeFileSync } from "node:fs";
+import { randomBytes, randomInt } from "node:crypto";
 import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
@@ -72,10 +72,11 @@ let code = existsSync(new URL(`../${codeFile}`, import.meta.url))
 // Without a local copy, a worker that already has a code keeps it: a new random code would sign everybody out
 // and lock out whoever holds the old one (for example when deploying from another computer).
 const listed = run(["secret", "list", "--config", deployConfig], { quiet: true });
-const workerHasCode = (() => {
-  try { return JSON.parse(listed.slice(listed.indexOf("["), listed.lastIndexOf("]") + 1)).some((secret) => secret.name === "DEMO_ACCESS_CODE"); }
-  catch { return false; }
+const workerSecrets = (() => {
+  try { return JSON.parse(listed.slice(listed.indexOf("["), listed.lastIndexOf("]") + 1)).map((secret) => secret.name); }
+  catch { return []; }
 })();
+const workerHasCode = workerSecrets.includes("DEMO_ACCESS_CODE");
 const keepExisting = !code && workerHasCode;
 if (keepExisting) {
   console.log("No local code file, but the worker already has a code: keeping it.");
@@ -86,6 +87,23 @@ if (keepExisting) {
     writeFileSync(new URL(`../${codeFile}`, import.meta.url), `# Shared demo access code for the Cloudflare deployment. Do not commit.\nDEMO_ACCESS_CODE=${code}\n`);
   }
   run(["secret", "put", "DEMO_ACCESS_CODE", "--config", deployConfig], { input: `${code}\n`, quiet: true });
+}
+
+// The cookie is signed with its own long random secret, so a leaked cookie cannot be used to guess the short access code.
+step("Setting the cookie secret");
+const localFile = new URL(`../${codeFile}`, import.meta.url);
+let secret = existsSync(localFile) ? readFileSync(localFile, "utf8").match(/^WATERLINK_COOKIE_SECRET=(.+)$/m)?.[1]?.trim() : "";
+const keepSecret = !secret && workerSecrets.includes("WATERLINK_COOKIE_SECRET");
+if (keepSecret) {
+  console.log("No local copy, but the worker already has a cookie secret: keeping it.");
+} else {
+  if (!secret) {
+    secret = randomBytes(32).toString("hex");
+    const line = `WATERLINK_COOKIE_SECRET=${secret}\n`;
+    if (existsSync(localFile)) appendFileSync(localFile, line);
+    else writeFileSync(localFile, `# Local copies of the deployment secrets. Do not commit.\n${line}`);
+  }
+  run(["secret", "put", "WATERLINK_COOKIE_SECRET", "--config", deployConfig], { input: `${secret}\n`, quiet: true });
 }
 
 const url = out.match(/https:\/\/\S+\.workers\.dev/)?.[0];

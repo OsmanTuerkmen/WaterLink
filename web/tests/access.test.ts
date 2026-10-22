@@ -25,26 +25,26 @@ test("a redeemed code gives a cookie the server accepts until it expires", async
 });
 
 test("manipulated, foreign or old-format cookies are rejected", async () => {
-  const token = await issueAccessToken(CODE, NOW);
+  const token = await issueAccessToken({ code: CODE }, NOW);
   const [, expires, mac] = token.split(".");
   const later = `v2.${Number(expires) + DAY / 1000}.${mac}`;
-  assert.equal(await verifyAccessToken(CODE, later, NOW), false, "extending the expiry breaks the signature");
+  assert.equal(await verifyAccessToken({ code: CODE }, later, NOW), false, "extending the expiry breaks the signature");
   const flipped = `v2.${expires}.${mac.slice(0, -1)}${mac.endsWith("0") ? "1" : "0"}`;
-  assert.equal(await verifyAccessToken(CODE, flipped, NOW), false);
-  assert.equal(await verifyAccessToken(CODE, "f".repeat(64), NOW), false, "the former static cookie no longer works");
-  assert.equal(await verifyAccessToken(CODE, `v2.${Math.floor(NOW / 1000) + 400 * 86400}.${mac}`, NOW), false, "far-future expiry is refused");
+  assert.equal(await verifyAccessToken({ code: CODE }, flipped, NOW), false);
+  assert.equal(await verifyAccessToken({ code: CODE }, "f".repeat(64), NOW), false, "the former static cookie no longer works");
+  assert.equal(await verifyAccessToken({ code: CODE }, `v2.${Math.floor(NOW / 1000) + 400 * 86400}.${mac}`, NOW), false, "far-future expiry is refused");
   assert.equal(await signedIn(`other=1; ${ACCESS_COOKIE}=garbage`), null);
 });
 
 test("changing the access code signs everybody out", async () => {
-  const token = await issueAccessToken(CODE, NOW);
+  const token = await issueAccessToken({ code: CODE }, NOW);
   assert.equal(await signedIn(`${ACCESS_COOKIE}=${token}`, NOW, "another-test-code-1111"), null);
 });
 
 test("without a cookie or without a configured code nobody is signed in", async () => {
   assert.equal(await signedIn(null), null);
   assert.equal(await signedIn("theme=dark"), null);
-  const token = await issueAccessToken(CODE, NOW);
+  const token = await issueAccessToken({ code: CODE }, NOW);
   assert.equal(await signedIn(`${ACCESS_COOKIE}=${token}`, NOW, null), null);
   assert.equal(usableCode(undefined), null);
   assert.equal(usableCode(" short "), null);
@@ -107,4 +107,20 @@ test("raw IP addresses are not stored", async () => {
   const key = await clientKey("203.0.113.7");
   assert.ok(!key.includes("203.0.113.7"));
   assert.equal(key, await clientKey("203.0.113.7"));
+});
+
+test("with its own secret the cookie is signed by the secret, not by the short access code", async () => {
+  const SECRET = "test-only-cookie-secret-0123456789abcdef";
+  const withSecret = (cookieHeader: string | null, at = NOW, code: string | null = CODE, secret: string | null = SECRET) =>
+    resolveUserId({ mode: "code", platformUserId: null, cookieHeader, code, secret, nowMs: at });
+  const setCookie = await redeemCode(CODE, CODE, NOW, SECRET);
+  assert.ok(setCookie);
+  const cookie = cookieOf(setCookie);
+  assert.equal(await withSecret(cookie), ACCESS_USER);
+  // A cookie cannot be forged from the code alone, which is what an offline guess would have found.
+  const guessed = await issueAccessToken({ code: CODE }, NOW);
+  assert.equal(await withSecret(`${ACCESS_COOKIE}=${guessed}`), null, "signed with the code only: refused");
+  assert.equal(await withSecret(cookie, NOW, CODE, "another-secret-0123456789"), null, "another secret: refused");
+  assert.equal(await withSecret(cookie, NOW, "test-only-code-0001"), null, "a new access code signs everybody out");
+  assert.equal(await signedIn(cookie), null, "and the code alone does not verify it");
 });

@@ -25,6 +25,7 @@ export async function currentUserId(): Promise<string | null> {
     platformUserId: mode === "sites" ? (await getChatGPTUser())?.userId ?? null : null,
     cookieHeader: (await headers()).get("cookie"),
     code: usableCode(env.DEMO_ACCESS_CODE),
+    secret: usableCode(env.WATERLINK_COOKIE_SECRET),
     nowMs: Date.now(),
   });
 }
@@ -32,5 +33,5 @@ export async function currentUserId(): Promise<string | null> {
 /** Checks a typed code; returns the Set-Cookie value on success. Comparison ignores case and spaces. */
 export async function redeemAccessCode(typed: unknown): Promise<string | null> {
   if (authMode() !== "code") return null;
-  return redeemCode(usableCode(env.DEMO_ACCESS_CODE), typed, Date.now());
+  return redeemCode(usableCode(env.DEMO_ACCESS_CODE), typed, Date.now(), usableCode(env.WATERLINK_COOKIE_SECRET));
 }
