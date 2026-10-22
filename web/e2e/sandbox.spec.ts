@@ -88,6 +88,23 @@ test("the Try it yourself button starts the sandbox, and leaving it returns to t
   await expect(page.getByRole("button", { name: "Try it yourself" })).toBeVisible();
 });
 
+test("the sandbox also works on a device whose clock is five minutes behind the server", async ({ page }) => {
+  await page.clock.install({ time: new Date(Date.now() - 5 * 60_000) });
+  await page.clock.resume();
+  await page.goto("/");
+  await alive(page);
+  await page.getByRole("button", { name: "Try it yourself" }).click();
+  await page.getByRole("link", { name: "Field app" }).click();
+  await reportAWithoutWater(page);
+  await page.getByRole("button", { name: "Send report" }).click();
+  await expect(page.getByRole("heading", { name: "Report sent" })).toBeVisible();
+  await page.reload();
+  await alive(page);
+  await page.getByRole("link", { name: "Status" }).click();
+  // Not "unclear": the practice entries are not in this device's future.
+  await expect(page.getByText("Not working").first()).toBeVisible();
+});
+
 test("when an action needs a code, the sandbox is offered and the draft can be sent there", async ({ page }) => {
   await page.goto("/#field/operator");
   await alive(page);

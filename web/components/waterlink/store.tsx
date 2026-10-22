@@ -164,11 +164,12 @@ export function WaterLinkProvider({ children, initial = null, initialSandbox = f
     const first = setTimeout(() => {
       setNow(Date.now());
       if (!sandboxRef.current) { void refresh(); return; }
-      // Reloaded inside the sandbox: pick up where the practice left off.
-      try {
-        const saved = JSON.parse(sessionStorage.getItem(SANDBOX_STATE) || "null");
-        if (validState(saved)) { current.current = saved; setState(saved); }
-      } catch { /* the practice data start again */ }
+      // The sandbox keeps time by the device's own clock only: its timestamps and "now" must come from the same
+      // source, or a device whose clock differs from the server's would see its own entries "in the future".
+      offset.current = 0;
+      let saved: unknown = null;
+      try { saved = JSON.parse(sessionStorage.getItem(SANDBOX_STATE) || "null"); } catch { /* the practice data start again */ }
+      keepSandbox(validState(saved as State | null) ? (saved as State) : createSeedState(Date.now(), REGION));
     }, 0);
     // A hidden tab stops asking; it catches up as soon as it is shown again (see `visible`).
     const poll = setInterval(() => { if (!document.hidden) void refresh(); }, 3000);
@@ -185,7 +186,7 @@ export function WaterLinkProvider({ children, initial = null, initialSandbox = f
       window.removeEventListener("offline", offline);
       document.removeEventListener("visibilitychange", visible);
     };
-  }, [refresh]);
+  }, [refresh, keepSandbox]);
 
   const toggleOffline = useCallback(() => {
     simulated.current = !simulated.current;
@@ -198,7 +199,8 @@ export function WaterLinkProvider({ children, initial = null, initialSandbox = f
     sandboxRef.current = true;
     setSandbox(true);
     setConnection("online");
-    keepSandbox(createSeedState(Date.now() + offset.current, REGION));
+    offset.current = 0; // the device's own clock, see the effect above
+    keepSandbox(createSeedState(Date.now(), REGION));
     for (const role of ROLES) patch(role, { error: "", notice: "", signInNeeded: false });
     setSandboxParam(true);
   }, [keepSandbox, patch]);
