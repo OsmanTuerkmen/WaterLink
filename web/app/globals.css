@@ -273,6 +273,14 @@ h1, h2, .display { overflow-wrap: anywhere; font-family: var(--display); font-st
 .board-foot { display: grid; grid-template-columns: 1fr 1fr; gap: .6em 2em; padding: 1.2em 2em 1.6em; font-size: 1em; color: var(--ink-2); border-top: 1px solid var(--stone-3); }
 .board-foot b { color: var(--ink); }
 .board-source { grid-column: 1 / -1; font-size: .8em; color: var(--ink-3); }
+/* Language switch and the QR code to the SMS view; only on the full board, not in the stage's small copy. */
+.board-tools { grid-column: 1 / -1; display: flex; align-items: center; flex-wrap: wrap; gap: .8em 2.4em; margin-top: .4em; }
+.board-qr { display: flex; align-items: center; gap: .9em; max-width: 26em; }
+.board-qr svg { width: 6.2em; height: 6.2em; flex-shrink: 0; border-radius: .4em; box-shadow: inset 0 0 0 1.5px var(--line); }
+.board-qr p { font-size: .85em; font-weight: 700; color: var(--ink); }
+.board-lang { display: inline-flex; padding: 3px; border-radius: 999px; background: rgb(var(--shade-rgb) / .1); }
+.board-lang button { min-height: 44px; padding: 0 1.1em; border: 0; border-radius: 999px; background: transparent; font: 700 .9em/1 var(--display); color: var(--ink-2); }
+.board-lang button[aria-pressed="true"] { background: var(--ink); color: var(--can); }
 /* The one authored moment: a changed row fills like a can being poured. */
 .board-row::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; background: currentColor; }
 .board-row.is-changed::after { animation: pour 2.4s var(--ease) both; }
@@ -633,8 +641,8 @@ select, textarea, input[type="search"] { border-radius: 12px; background: var(--
   .status-intro h1 { font-size: 26pt; }
 }
 .nmap-drop { fill: var(--ink); }
-.board-fs { position: absolute; right: 2em; bottom: 1.2em; display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border: 0; border-radius: 999px; background: transparent; color: var(--ink-3); font: 700 0.8125rem/1 var(--display); opacity: .55; transition: opacity .2s; }
-.board-fs:hover, .board-fs:focus-visible { opacity: 1; background: var(--paper); }
+.board-fs { position: absolute; right: 2em; bottom: 1.2em; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border: 0; border-radius: 999px; background: transparent; color: var(--ink-2); font: 700 0.8125rem/1 var(--display); transition: background-color .2s; }
+.board-fs:hover, .board-fs:focus-visible { background: var(--paper); color: var(--ink); }
 .board-foot { position: relative; }
 :fullscreen .board-fs { display: none; }
 

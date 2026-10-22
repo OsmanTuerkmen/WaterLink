@@ -30,7 +30,6 @@ interface Store {
   unlock(code: string): Promise<string>;
 }
 
-const CACHE = "waterlink-snapshot-v2";
 const SESSION = (role: Role) => `waterlink-session-v2-${role}`;
 const ROLES: Role[] = ["operator", "technician", "coordinator"];
 const IDLE: RoleFeedback = { busy: false, error: "", notice: "", signInNeeded: false };
@@ -45,16 +44,6 @@ export function useWaterLink(): Store {
   return store;
 }
 
-/** The last copy this device saved. Nothing renders from it before the page has mounted, so reading it while creating the provider is safe. */
-function readSavedCopy(): { state: State; syncedAt: string | null; offset: number } | null {
-  try {
-    const saved = JSON.parse(localStorage.getItem(CACHE) || "null");
-    return saved && validState(saved.state)
-      ? { state: saved.state, syncedAt: saved.syncedAt ?? null, offset: Number.isFinite(saved.offset) ? saved.offset : 0 }
-      : null;
-  } catch { return null; }
-}
-
 function readSavedSessions(): Partial<Record<Role, Session>> {
   const restored: Partial<Record<Role, Session>> = {};
   try {
@@ -66,20 +55,23 @@ function readSavedSessions(): Partial<Record<Role, Session>> {
   return restored;
 }
 
-export function WaterLinkProvider({ children }: { children: ReactNode }) {
-  const [saved] = useState(readSavedCopy);
-  const [state, setState] = useState<State | null>(saved?.state ?? null);
-  const current = useRef<State | null>(saved?.state ?? null);
-  const [connection, setConnection] = useState<Connection>("loading");
-  const [lastSync, setLastSync] = useState<string | null>(saved?.syncedAt ?? null);
-  const [now, setNow] = useState(() => Date.now());
-  const offset = useRef(saved?.offset ?? 0);
+/**
+ * `initial` is the state the server read for the first HTML. Starting from it (clock included) makes the browser's first
+ * render identical to the server's; the first request then checks whether anything changed in the meantime.
+ */
+export function WaterLinkProvider({ children, initial = null }: { children: ReactNode; initial?: { state: State; serverNow: string } | null }) {
+  const [state, setState] = useState<State | null>(initial?.state ?? null);
+  const current = useRef<State | null>(initial?.state ?? null);
+  const [connection, setConnection] = useState<Connection>(initial ? "online" : "loading");
+  const [lastSync, setLastSync] = useState<string | null>(initial?.serverNow ?? null);
+  const [now, setNow] = useState(() => (initial ? Date.parse(initial.serverNow) : Date.now()));
+  const offset = useRef(0);
   const [sessions, setSessions] = useState<Partial<Record<Role, Session>>>(readSavedSessions);
   const sessionRef = useRef<Partial<Record<Role, Session>>>(sessions);
   const [feedback, setFeedback] = useState<Record<Role, RoleFeedback>>({ operator: IDLE, technician: IDLE, coordinator: IDLE });
   const [simulatedOffline, setSimulatedOffline] = useState(false);
   const [authMode, setAuthMode] = useState<"sites" | "code">("sites");
-  const simulated = useRef(false), fetching = useRef(false), writing = useRef(false), cachedAt = useRef(0);
+  const simulated = useRef(false), fetching = useRef(false), writing = useRef(false), syncedAtMs = useRef(0);
   const active = useRef<AbortController | null>(null);
   const requestIds = useRef(new Map<string, string>());
   const lastErrors = useRef<Partial<Record<Role, string>>>({});
@@ -95,27 +87,24 @@ export function WaterLinkProvider({ children }: { children: ReactNode }) {
     const syncedAt = new Date().toISOString();
     offset.current = Date.parse(data.serverNow) - Date.now();
     current.current = data.state;
-    cachedAt.current = Date.now();
+    syncedAtMs.current = Date.now();
     setState(data.state);
     setNow(Date.now() + offset.current);
     setLastSync(syncedAt);
     setConnection("online");
-    try { localStorage.setItem(CACHE, JSON.stringify({ state: data.state, syncedAt, offset: offset.current })); } catch { /* The cache is optional. */ }
   }, []);
 
-  /** Same revision as before: only the clock offset and the sync time move; the saved copy is refreshed once in a while. */
+  /** Same revision as before: only the clock offset and, once in a while, the sync time move. */
   const confirmUnchanged = useCallback((data: Unchanged) => {
     if (!current.current || current.current.revision !== data.revision || !Number.isFinite(Date.parse(data.serverNow))) throw new Error("Invalid server answer.");
     const nowMs = Date.now();
     offset.current = Date.parse(data.serverNow) - nowMs;
     setConnection("online");
     // Nothing on screen changed, so skip re-rendering every consumer: the clock has its own 15 s tick, and
-    // "last synced" is only shown to the minute. Update it, and the saved copy, every 30 s.
-    if (nowMs - cachedAt.current > 30_000) {
-      cachedAt.current = nowMs;
-      const syncedAt = new Date(nowMs).toISOString();
-      setLastSync(syncedAt);
-      try { localStorage.setItem(CACHE, JSON.stringify({ state: current.current, syncedAt, offset: offset.current })); } catch { /* The cache is optional. */ }
+    // "last synced" is only shown to the minute. Update it every 30 s.
+    if (nowMs - syncedAtMs.current > 30_000) {
+      syncedAtMs.current = nowMs;
+      setLastSync(new Date(nowMs).toISOString());
     }
   }, []);
 
@@ -144,7 +133,8 @@ export function WaterLinkProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     fetch("/api/access", { cache: "no-store" }).then((r) => r.json() as Promise<{ mode?: string }>).then((d) => { if (d?.mode === "code") setAuthMode("code"); }).catch(() => {});
-    const first = setTimeout(() => void refresh(), 0);
+    // Right after the page has loaded the clock jumps from the server's render time to the real one.
+    const first = setTimeout(() => { setNow(Date.now()); void refresh(); }, 0);
     // A hidden tab stops asking; it catches up as soon as it is shown again (see `visible`).
     const poll = setInterval(() => { if (!document.hidden) void refresh(); }, 3000);
     const tick = setInterval(() => setNow(Date.now() + offset.current), 15_000);

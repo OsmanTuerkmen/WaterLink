@@ -91,7 +91,7 @@ export function NeighbourhoodMap({ state, now, offline, extent = "near", selecte
 
   return (
     <figure className={`nmap ${className}`}>
-      <svg ref={svgRef} viewBox={`0 0 ${width.toFixed(0)} ${height.toFixed(0)}`} role="img" aria-label={label ?? "Map of the neighbourhood with the water points"} preserveAspectRatio="xMidYMid slice">
+      <svg ref={svgRef} viewBox={`0 0 ${width.toFixed(0)} ${height.toFixed(0)}`} role={onSelect ? "group" : "img"} aria-label={label ?? "Map of the neighbourhood with the water points"} preserveAspectRatio="xMidYMid slice">
         <rect width={width} height={height} className="nmap-ground" />
         {WAYS.filter((w) => w.kind === "water").map((w, i) => <path key={`w${i}`} d={path(w.line)} className="nmap-stream" />)}
         {WAYS.filter((w) => w.kind === "road").sort((a, b) => b.rank - a.rank).map((w, i) => (

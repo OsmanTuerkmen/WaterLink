@@ -21,7 +21,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <head>
+        {/* Without scripts nothing would ever refresh the server's snapshot, so ask the browser to load the page again. */}
+        <noscript><meta httpEquiv="refresh" content="60" /></noscript>
+      </head>
+      <body>
+        {children}
+        {/* If the scripts have not started after 30 s (weak connection), load the page again instead of leaving an aging snapshot on screen. */}
+        <script dangerouslySetInnerHTML={{ __html: "setTimeout(function(){if(!document.documentElement.dataset.hydrated)location.reload()},30000)" }} />
+      </body>
     </html>
   );
 }
