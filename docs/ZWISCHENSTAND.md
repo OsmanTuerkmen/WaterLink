@@ -37,6 +37,11 @@ Zuerst eine verlässlich funktionierende App: Haushalte sehen den letzten bestä
 
 ## Protokoll
 
+### 22.10.2026, mittags (später) – neuer Zugangscode
+
+- Der Code vom 11. Oktober war nicht mehr auffindbar (die Datei lag nur auf dem anderen Rechner). Neuer Code erzeugt (drei Wörter und vier Ziffern, Zufall aus `crypto.randomInt`), in `web/.env.demo-access` auf diesem Rechner gespeichert (von Git ausgeschlossen) und mit `npm run deploy:cloudflare` als Worker-Geheimnis gesetzt. Der Code wurde dabei nirgends ausgegeben.
+- Geprüft gegen die Live-Seite: Anmeldung mit dem neuen Code 200, Cookie `v2`, Sitzung als Betreiberin 201. Alle früheren Cookies und der alte Code sind ungültig; wer vorher freigeschaltet war, muss sich neu freischalten.
+
 ### 22.10.2026, mittags – Bereitstellung und veröffentlichte Historie
 
 - Die umgeschriebene Historie (31 Commits, Autoren nur `OsmanTuerkmen` und `Recezc`, keine Claude-Zeilen) ist per `--force-with-lease` auf `origin/main` veröffentlicht; auf GitHub gibt es nur noch den Branch `main`.
