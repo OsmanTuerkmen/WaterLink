@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   ACCESS_TTL_MS, STATUS_TTL_MS, DomainError, applyCommand, createSeedState,
-  MAX_EVENTS, MAX_TRACKED, findAlternative, getAlternatives, getPointDisplay, getPossibleDuplicate, isPointOpen, parseCoordinates,
+  MAX_EVENTS, MAX_TRACKED, findAlternative, getAlternatives, getPointDisplay, getPossibleDuplicate, isPointOpen, parseCoordinates, findNearbyPoint,
 } from "../lib/domain.ts";
 import { REGION } from "../lib/region.ts";
 import type { Actor, Command, State, WaterPoint } from "../lib/domain.ts";
@@ -306,6 +306,22 @@ test("an added water point can be placed on the map, but only near the meeting p
   rejects(() => transition(region, { ...add, lat: meeting.lat }, coordinator), 400);
   rejects(() => transition(region, { ...add, lat: 95, lon: 0 }, coordinator), 400);
   rejects(() => transition(region, { ...add, lat: NaN, lon: 1 }, coordinator), 400);
+});
+
+test("a position on top of a recorded water point comes with a hint, never with a block", () => {
+  const region = createSeedState(NOW, REGION!);
+  const recorded = region.points.find((p) => p.tracked === false && typeof p.lat === "number")!;
+  const add = { type: "add_point", name: "School well", location: "Near the school", source: "Borehole", walkingMinutes: 7 } as const;
+  const close = { lat: recorded.lat! + 0.0001, lon: recorded.lon! };
+  const hit = findNearbyPoint(region.points, close);
+  assert.ok(hit && hit.meters <= 20, "about 11 m from a recorded point");
+  assert.equal(findNearbyPoint(region.points, { lat: 0, lon: 0 }), null);
+  const added = transition(region, { ...add, ...close }, coordinator);
+  assert.match(added.events.at(-1)!.message, /lies about \d+ m away: please check that this is not the same one/);
+  assert.ok(added.points.some((p) => p.custom), "the point is added all the same");
+  const meeting = region.region!.meetingPoint;
+  const far = transition(region, { ...add, lat: meeting.lat + 0.09, lon: meeting.lon }, coordinator);
+  assert.doesNotMatch(far.events.at(-1)!.message, /lies about/);
 });
 
 test("coordinates are read as Google Maps copies them", () => {

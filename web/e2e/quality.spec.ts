@@ -51,6 +51,9 @@ test("accessibility: the forms for adding a water point and checking a route hav
   await page.getByRole("heading", { level: 1 }).first().waitFor();
   await page.getByRole("button", { name: "Add a water point" }).click();
   await page.getByRole("button", { name: "Check route and access" }).first().click();
+  await page.getByRole("button", { name: "Pick on the map" }).click();
+  await page.locator(".nmap svg").click({ position: { x: 60, y: 60 } });
+  await page.getByRole("button", { name: "Pick on the map" }).click();
   await page.waitForTimeout(500);
   const result = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
   const summary = result.violations.map((v) => `${v.id} (${v.impact}): ${v.nodes.length} element(s), e.g. ${v.nodes[0]?.target.join(" ")}`);

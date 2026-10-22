@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
 import { getPointDisplay, type State, type WaterPoint } from "@/lib/domain";
 import osm from "@/data/osm-area.json";
 import { isTracked, letter, toneOf } from "./format";
@@ -25,12 +25,14 @@ interface Props {
   onSelect?: (id: string) => void;
   /** Draws the walk from a point that is not working to its confirmed alternative. */
   route?: { from: string; to: string } | null;
+  /** A tap on the map chooses a position (adding a water point). `marker` is the position chosen so far. */
+  pick?: { active: boolean; onPick: (lat: number, lon: number) => void; marker: { lat: number; lon: number } | null } | null;
   className?: string;
   label?: string;
 }
 
 /** Neighbourhood map drawn from WPdx coordinates and OpenStreetMap roads. No tiles, works offline. */
-export function NeighbourhoodMap({ state, now, offline, extent = "near", selected, onSelect, route, className = "", label }: Props) {
+export function NeighbourhoodMap({ state, now, offline, extent = "near", selected, onSelect, route, pick, className = "", label }: Props) {
   const geo = useMemo(() => {
     const located = state.points.filter((p) => typeof p.lat === "number" && typeof p.lon === "number");
     const framed = extent === "near" ? located.filter(isTracked) : located;
@@ -46,7 +48,9 @@ export function NeighbourhoodMap({ state, now, offline, extent = "near", selecte
     const cx = ((Math.max(...lons) + minLon) / 2 - minLon) * UNIT * k, cy = ((Math.max(...lats) + minLat) / 2 - minLat) * UNIT;
     const x = (lon: number) => (lon - minLon) * UNIT * k - cx + width / 2;
     const y = (lat: number) => height / 2 - ((lat - minLat) * UNIT - cy);
-    return { x, y, width, height, located };
+    const lonAt = (px: number) => (px - width / 2 + cx) / (UNIT * k) + minLon;
+    const latAt = (py: number) => minLat + (cy + height / 2 - py) / UNIT;
+    return { x, y, width, height, located, lonAt, latAt };
   }, [state.points, extent]);
 
   // Pixels on screen per map unit. A small map (a phone) would shrink the tiles below a tappable size.
@@ -64,7 +68,7 @@ export function NeighbourhoodMap({ state, now, offline, extent = "near", selecte
   }, [frameW, frameH]);
 
   if (!geo) return null;
-  const { x, y, width, height, located } = geo;
+  const { x, y, width, height, located, lonAt, latAt } = geo;
   const scale = width / 900; // marker sizes stay readable at any extent
   const tracked = located.filter(isTracked);
   const others = located.filter((p) => !isTracked(p));
@@ -89,9 +93,19 @@ export function NeighbourhoodMap({ state, now, offline, extent = "near", selecte
   const from = route ? at(route.from) : null, to = route ? at(route.to) : null;
   const path = (line: [number, number][]) => line.map(([lon, lat], i) => `${i ? "L" : "M"}${x(lon).toFixed(1)} ${y(lat).toFixed(1)}`).join("");
 
+  // The tap is turned into map units first, because the picture is scaled and cropped to fill the frame.
+  function choose(e: MouseEvent<SVGSVGElement>) {
+    const ctm = svgRef.current?.getScreenCTM();
+    if (!pick?.active || !ctm) return;
+    const at = new DOMPoint(e.clientX, e.clientY).matrixTransform(ctm.inverse());
+    pick.onPick(latAt(at.y), lonAt(at.x));
+  }
+  const chosen = pick?.marker ? { px: x(pick.marker.lon), py: y(pick.marker.lat) } : null;
+
   return (
-    <figure className={`nmap ${className}`}>
-      <svg ref={svgRef} viewBox={`0 0 ${width.toFixed(0)} ${height.toFixed(0)}`} role={onSelect ? "group" : "img"} aria-label={label ?? "Map of the neighbourhood with the water points"} preserveAspectRatio="xMidYMid slice">
+    <figure className={`nmap ${pick?.active ? "nmap-picking" : ""} ${className}`}>
+      {/* A tap chooses a position only while picking; the keyboard way is the text field next to the button that starts picking. */}
+      <svg ref={svgRef} onClick={choose} viewBox={`0 0 ${width.toFixed(0)} ${height.toFixed(0)}`} role={onSelect ? "group" : "img"} aria-label={label ?? "Map of the neighbourhood with the water points"} preserveAspectRatio="xMidYMid slice">
         <rect width={width} height={height} className="nmap-ground" />
         {WAYS.filter((w) => w.kind === "water").map((w, i) => <path key={`w${i}`} d={path(w.line)} className="nmap-stream" />)}
         {WAYS.filter((w) => w.kind === "road").sort((a, b) => b.rank - a.rank).map((w, i) => (
@@ -126,6 +140,12 @@ export function NeighbourhoodMap({ state, now, offline, extent = "near", selecte
             <circle cx={px} cy={py} r={5 * scale} className="nmap-anchor" />
           </g>
         ))}
+        {chosen && (
+          <g className="nmap-pick" transform={`translate(${chosen.px} ${chosen.py}) scale(${scale})`}>
+            <circle r="14" /><path d="M-30 0h16M14 0h16M0-30v16M0 14v16" />
+            <title>Chosen position</title>
+          </g>
+        )}
         {markers.map(({ p, px, py, ox, oy }) => {
           const d = getPointDisplay(p, now, offline);
           // The badge sits on the corner facing away from the spot a fanned-out tile came from.

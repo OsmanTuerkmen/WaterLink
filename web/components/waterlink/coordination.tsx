@@ -1,7 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Activity, ArrowUpRight, Check, X, CircleHelp, Clock3, MapPin, Pause, Play, RefreshCw, TriangleAlert, Wifi, WifiOff, Wrench } from "lucide-react";
-import { getPointDisplay, type State } from "@/lib/domain";
+import { getPointDisplay, parseCoordinates, type State } from "@/lib/domain";
 import { alertEpisodes, readSensor, type SensorState } from "@/lib/sensor";
 import kwale from "@/data/kwale-sensors.json";
 import { useWaterLink } from "./store";
@@ -52,6 +52,11 @@ function Overview({ state, now, offline }: { state: State; now: number; offline:
   const { feedback, connection } = useWaterLink();
   const disabled = feedback("coordinator").busy || connection !== "online";
   const [selected, setSelected] = useState<string | null>(null);
+  // Adding a water point: the position is typed in the form or tapped on the map, so both share it.
+  const [position, setPosition] = useState(""), [picking, setPicking] = useState(false);
+  const mapRef = useRef<HTMLElement>(null), addRef = useRef<HTMLDivElement>(null);
+  const startPicking = (on: boolean) => { setPicking(on); if (on) mapRef.current?.scrollIntoView({ block: "nearest" }); };
+  const picked = (lat: number, lon: number) => { setPosition(`${lat.toFixed(5)}, ${lon.toFixed(5)}`); setPicking(false); addRef.current?.scrollIntoView({ block: "nearest" }); };
   const open = state.jobs.filter((j) => j.status !== "closed");
   const closed = state.jobs.filter((j) => j.status === "closed");
   const tracked = state.points.filter(isTracked);
@@ -59,9 +64,11 @@ function Overview({ state, now, offline }: { state: State; now: number; offline:
   const pick = selected ? state.points.find((p) => p.id === selected) : null;
   return (
     <div className="coord-overview">
-      <section className="coord-map">
+      <section className="coord-map" ref={mapRef}>
         <NeighbourhoodMap state={state} now={now} offline={offline} extent="all" selected={selected} onSelect={setSelected}
+          pick={{ active: picking, onPick: picked, marker: parseCoordinates(position) }}
           label="Map of all recorded water points in the region" />
+        {picking && <p className="coord-pick" role="status">Tap the map where the water point is.</p>}
         {pick && (
           <div className="coord-pick">
             <strong>{pick.name}</strong>
@@ -84,7 +91,7 @@ function Overview({ state, now, offline }: { state: State; now: number; offline:
             </li>
           ))}
         </ul>
-        <AddPoint state={state} disabled={disabled} />
+        <div className="add-anchor" ref={addRef}><AddPoint state={state} disabled={disabled} position={position} setPosition={setPosition} picking={picking} setPicking={startPicking} /></div>
         <h2>Open repairs</h2>
         {!open.length ? <p className="muted">No open repairs. New reports from operators appear here.</p> : (
           <table className="table">

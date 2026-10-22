@@ -261,6 +261,21 @@ export function parseCoordinates(input: string): { lat: number; lon: number } | 
   return Math.abs(lat) <= 90 && Math.abs(lon) <= 180 ? { lat, lon } : null;
 }
 
+/**
+ * The recorded water point closest to a position, if it is within `withinMeters`: a hint that a new entry may be a second
+ * record of the same place. Only a hint for people; nothing is blocked or merged.
+ */
+export function findNearbyPoint(points: WaterPoint[], position: { lat: number; lon: number }, withinMeters = 50): { point: WaterPoint; meters: number } | null {
+  let best: { point: WaterPoint; meters: number } | null = null;
+  for (const other of points) {
+    const km = distanceKm(position, other);
+    if (km === null) continue;
+    const meters = Math.round(km * 1000);
+    if (meters <= withinMeters && (!best || meters < best.meters)) best = { point: other, meters };
+  }
+  return best;
+}
+
 /** Rough walking estimate: straight line × 1.3 detour at 4.5 km/h. Labelled as an estimate in the UI. */
 export function estimateWalkingMinutes(km: number): number {
   return Math.max(1, Math.round((km * 1.3 / 4.5) * 60));
@@ -648,6 +663,7 @@ export function applyCommand(state: State, command: Command, actor: Actor, now: 
         }
         lat = Math.round(command.lat * 1e5) / 1e5; lon = Math.round(command.lon * 1e5) / 1e5;
       }
+      const near = lat === null || lon === null ? null : findNearbyPoint(next.points, { lat, lon });
       const inProgramme = (p: WaterPoint) => p.tracked ?? true;
       if (next.points.filter(inProgramme).length >= MAX_TRACKED) {
         throw new DomainError(`The demo looks after at most ${MAX_TRACKED} water points. Remove one first.`, 409);
@@ -663,7 +679,7 @@ export function applyCommand(state: State, command: Command, actor: Actor, now: 
       };
       const lastInProgramme = next.points.map(inProgramme).lastIndexOf(true);
       next.points.splice(lastInProgramme + 1, 0, added);
-      event("add", `Water point ${id.toUpperCase()} · ${name} (${command.source}, ${location}) added to the programme, about ${minutes} min from the meeting point${lat === null ? "" : ", marked on the map"}. Not confirmed yet; route and access are not checked yet.`, id, null);
+      event("add", `Water point ${id.toUpperCase()} · ${name} (${command.source}, ${location}) added to the programme, about ${minutes} min from the meeting point${lat === null ? "" : ", marked on the map"}. Not confirmed yet; route and access are not checked yet.${near ? ` A recorded water point (${near.point.name}) lies about ${near.meters} m away: please check that this is not the same one.` : ""}`, id, null);
       break;
     }
     case "remove_point": {

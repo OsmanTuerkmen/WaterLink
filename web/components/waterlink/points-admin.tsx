@@ -1,7 +1,7 @@
 "use client";
 import { useState, type FormEvent } from "react";
-import { Footprints, Plus, Trash2 } from "lucide-react";
-import { ACCESS_TTL_MS, MAX_POINT_RADIUS_KM, MAX_TRACKED, NEW_POINT_SOURCES, parseCoordinates, type State, type WaterPoint } from "@/lib/domain";
+import { Crosshair, Footprints, Plus, Trash2 } from "lucide-react";
+import { ACCESS_TTL_MS, MAX_POINT_RADIUS_KM, MAX_TRACKED, NEW_POINT_SOURCES, findNearbyPoint, parseCoordinates, type State, type WaterPoint } from "@/lib/domain";
 import { useWaterLink } from "./store";
 import { isTracked, stamp } from "./format";
 
@@ -22,6 +22,7 @@ export function PointAdmin({ point, state, now, disabled }: { point: WaterPoint;
   return (
     <div className="coord-point-extra">
       <p className={`route-state ${fresh ? "is-ok" : ""}`}><Footprints size={15} aria-hidden="true" />{summary}</p>
+      {point.custom && point.lat != null && <p className="muted">Position entered by coordination, not checked on the ground.</p>}
       <div className="route-actions">
         <button type="button" className="btn btn-quiet btn-sm" aria-expanded={open} onClick={() => setOpen(!open)}>{open ? "Close" : "Check route and access"}</button>
         {point.custom && (
@@ -85,17 +86,20 @@ function RouteForm({ point, disabled, onDone }: { point: WaterPoint; disabled: b
 }
 
 /** Registers another water point in the programme (a new village, a new well). It starts as not confirmed and unchecked. */
-export function AddPoint({ state, disabled }: { state: State; disabled: boolean }) {
+export function AddPoint({ state, disabled, position, setPosition, picking, setPicking }: {
+  state: State; disabled: boolean; position: string; setPosition: (value: string) => void; picking: boolean; setPicking: (on: boolean) => void;
+}) {
   const { act } = useWaterLink();
   const [open, setOpen] = useState(false);
-  const [name, setName] = useState(""), [location, setLocation] = useState(""), [source, setSource] = useState<string>(NEW_POINT_SOURCES[0]), [minutes, setMinutes] = useState("10"), [position, setPosition] = useState("");
+  const [name, setName] = useState(""), [location, setLocation] = useState(""), [source, setSource] = useState<string>(NEW_POINT_SOURCES[0]), [minutes, setMinutes] = useState("10");
   const coords = parseCoordinates(position);
+  const nearby = coords ? findNearbyPoint(state.points, coords) : null;
   const full = state.points.filter(isTracked).length >= MAX_TRACKED;
   const valid = name.trim().length >= 3 && location.trim().length >= 2 && inRange(minutes, 1, 180) && (!position.trim() || coords !== null);
   async function add(e: FormEvent) {
     e.preventDefault();
     if (await act("coordinator", { type: "add_point", name: name.trim(), location: location.trim(), source, walkingMinutes: Number(minutes), ...(coords ?? {}) })) {
-      setName(""); setLocation(""); setPosition(""); setOpen(false);
+      setName(""); setLocation(""); setPosition(""); setPicking(false); setOpen(false);
     }
   }
   return (
@@ -117,10 +121,16 @@ export function AddPoint({ state, disabled }: { state: State; disabled: boolean 
               aria-invalid={Boolean(position.trim()) && coords === null} aria-describedby="position-help" />
             <small id="position-help">{position.trim() && coords === null ? "Latitude, then longitude, for example 0.4601, 34.1115." : `In Google Maps press and hold on the spot, then tap the numbers to copy them. Within ${MAX_POINT_RADIUS_KM} km of the meeting point.`}</small>
           </label>
+          <div className="route-actions">
+            <button type="button" className="btn btn-quiet btn-sm" aria-pressed={picking} onClick={() => setPicking(!picking)}>
+              <Crosshair size={15} aria-hidden="true" />{picking ? "Stop picking" : "Pick on the map"}
+            </button>
+          </div>
+          {nearby && <p className="muted" role="status">A recorded water point, {nearby.point.name}, is about {nearby.meters} m from this position. Check that it is not the same one.</p>}
           <p className="muted">A new water point starts as not confirmed. An operator confirms it with an on-site test, and coordination checks route and access before it can be named as an alternative.</p>
           <div className="route-actions">
             <button className="btn btn-primary" type="submit" disabled={disabled || !valid}>Add to the programme</button>
-            <button className="btn btn-quiet" type="button" onClick={() => setOpen(false)}>Cancel</button>
+            <button className="btn btn-quiet" type="button" onClick={() => { setOpen(false); setPosition(""); setPicking(false); }}>Cancel</button>
           </div>
         </form>
       )}

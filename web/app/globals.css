@@ -238,6 +238,10 @@ h1, h2, .display { overflow-wrap: anywhere; font-family: var(--display); font-st
 .nmap-marker.selected .nmap-tile { stroke: var(--cap); stroke-width: 7px; }
 .nmap-marker:focus-visible { outline: none; } .nmap-marker:focus-visible .nmap-tile { stroke: var(--cap); }
 .nmap-leader { stroke: var(--ink-2); fill: none; }
+.nmap-picking { outline: 3px solid var(--cap); outline-offset: -3px; }
+.nmap-picking svg, .nmap-picking .nmap-marker, .nmap-picking .nmap-recorded { cursor: crosshair; }
+.nmap-pick circle { fill: var(--cap); fill-opacity: .4; stroke: var(--ink); stroke-width: 3; vector-effect: non-scaling-stroke; }
+.nmap-pick path { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linecap: round; vector-effect: non-scaling-stroke; }
 .nmap-anchor { fill: var(--ink-2); }
 
 /* Public board */
@@ -402,7 +406,8 @@ select, textarea, input[type="search"] { border-radius: 12px; background: var(--
 .tabs a { padding: 9px 16px; border-radius: 999px; text-decoration: none; font: 700 0.9375rem/1 var(--display); color: var(--ink-2); }
 .tabs a[aria-current="page"] { background: var(--ink); color: var(--can); }
 .coord-overview { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(320px, 1fr); gap: 24px; align-items: start; }
-.coord-map { position: sticky; top: 90px; }
+.coord-map { position: sticky; top: 90px; scroll-margin-top: 140px; }
+.add-anchor { scroll-margin-top: 140px; }
 .coord-pick { margin-top: 10px; padding: 12px 14px; border-radius: 12px; background: var(--paper); box-shadow: var(--lift); }
 .coord-pick strong { display: block; font-size: 1.0625rem; }
 .coord-pick span { font-size: 0.9375rem; color: var(--ink-2); }

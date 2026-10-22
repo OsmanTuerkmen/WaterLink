@@ -174,6 +174,29 @@ test("coordination adds a water point and checks its route; only then is it name
   await expect(row).toHaveCount(0);
 });
 
+test("a tap on the map chooses the position of a new water point", async ({ page }) => {
+  await page.goto("/?sandbox=1#coordination/overview");
+  await alive(page);
+  const tiles = page.locator(".nmap-marker");
+  const before = await tiles.count();
+  await page.getByRole("button", { name: "Add a water point" }).click();
+  await page.getByLabel("Name").fill("School well");
+  await page.getByLabel("Where is it?").fill("Near the school");
+  await page.getByLabel(/Walking time from the meeting point, estimated/).fill("8");
+
+  await page.getByRole("button", { name: "Pick on the map" }).click();
+  await expect(page.getByText("Tap the map where the water point is.")).toBeVisible();
+  await page.locator(".nmap svg").click({ position: { x: 60, y: 60 } });
+  await expect(page.getByLabel(/Position on the map/)).toHaveValue(/^-?\d+\.\d{5}, -?\d+\.\d{5}$/);
+  await expect(page.getByText("Tap the map where the water point is.")).toHaveCount(0);
+  await expect(page.locator(".nmap-pick")).toHaveCount(1);
+
+  await page.getByRole("button", { name: "Add to the programme" }).click();
+  await expect(tiles).toHaveCount(before + 1);
+  await expect(page.locator(".nmap-pick")).toHaveCount(0);
+  await expect(page.locator(".coord-points li").filter({ hasText: "School well" })).toContainText("Position entered by coordination, not checked on the ground.");
+});
+
 test("an added water point with a position shows up on the map, and a position far away is refused", async ({ page }) => {
   await page.goto("/?sandbox=1#coordination/overview");
   await alive(page);
