@@ -69,13 +69,25 @@ const out = run(["deploy", "--config", deployConfig]);
 step("Setting the demo access code");
 let code = existsSync(new URL(`../${codeFile}`, import.meta.url))
   ? readFileSync(new URL(`../${codeFile}`, import.meta.url), "utf8").match(/^DEMO_ACCESS_CODE=(.+)$/m)?.[1]?.trim() : "";
-if (!code) {
-  const words = ["pump", "river", "borehole", "jerrycan", "rain", "well", "tap", "spring", "bucket", "valley", "maji", "kisima"];
-  code = `${words[randomInt(words.length)]}-${words[randomInt(words.length)]}-${randomInt(1000, 10000)}`;
-  writeFileSync(new URL(`../${codeFile}`, import.meta.url), `# Shared demo access code for the Cloudflare deployment. Do not commit.\nDEMO_ACCESS_CODE=${code}\n`);
+// Without a local copy, a worker that already has a code keeps it: a new random code would sign everybody out
+// and lock out whoever holds the old one (for example when deploying from another computer).
+const listed = run(["secret", "list", "--config", deployConfig], { quiet: true });
+const workerHasCode = (() => {
+  try { return JSON.parse(listed.slice(listed.indexOf("["), listed.lastIndexOf("]") + 1)).some((secret) => secret.name === "DEMO_ACCESS_CODE"); }
+  catch { return false; }
+})();
+const keepExisting = !code && workerHasCode;
+if (keepExisting) {
+  console.log("No local code file, but the worker already has a code: keeping it.");
+} else {
+  if (!code) {
+    const words = ["pump", "river", "borehole", "jerrycan", "rain", "well", "tap", "spring", "bucket", "valley", "maji", "kisima"];
+    code = `${words[randomInt(words.length)]}-${words[randomInt(words.length)]}-${randomInt(1000, 10000)}`;
+    writeFileSync(new URL(`../${codeFile}`, import.meta.url), `# Shared demo access code for the Cloudflare deployment. Do not commit.\nDEMO_ACCESS_CODE=${code}\n`);
+  }
+  run(["secret", "put", "DEMO_ACCESS_CODE", "--config", deployConfig], { input: `${code}\n`, quiet: true });
 }
-run(["secret", "put", "DEMO_ACCESS_CODE", "--config", deployConfig], { input: `${code}\n`, quiet: true });
 
 const url = out.match(/https:\/\/\S+\.workers\.dev/)?.[0];
 console.log(`\nDone. WaterLink runs at ${url ?? "(see the deploy output above)"}`);
-console.log(`The access code for changes is in web/${codeFile}.`);
+console.log(keepExisting ? "The access code for changes is unchanged." : `The access code for changes is in web/${codeFile}.`);
