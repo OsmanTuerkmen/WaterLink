@@ -17,7 +17,7 @@ Die App ist fertig, soweit Code reicht. Was jetzt bleibt, braucht Menschen, Ger�
 - [ ] **Der Jury den Ausprobier-Link geben, nicht den Zugangscode:** `https://waterlink-demo.waterlink.workers.dev/?view=stage&sandbox=1`. Dort läuft die ganze Geschichte (Meldung → Übernahme → Reparatur → Test) mit Übungsdaten im eigenen Browser, ohne Code. Der Zugangscode bleibt im Team.
 - [ ] **Letzte Probe auf der Live-Seite**, nicht auf dem eigenen Rechner: Startseite lädt, Ausprobier-Link öffnet, Tafel (`/?view=display`) zeigt Wasserstellen, QR-Code ist sichtbar. Mit einem Handy im mobilen Netz, nicht im WLAN des Teams.
 - [ ] **Die Grenzen im Einreichungstext nennen** (ein Satz genügt): Personen, Bestätigungen und Wege sind simuliert; Orte stammen aus WPdx; „funktioniert“ sagt nichts über die Wasserqualität; kein Pilotpartner. Das schützt vor Fragen, die man nicht beantworten kann, und es stimmt.
-- [ ] **Optional ein Video von 60 bis 90 Sekunden** (Bildschirmaufnahme der Bühne, Ablauf aus der [Demo](DEMO.md)), falls die Einreichung eines erlaubt. Wer nicht live vorführt, ist damit am besten vertreten.
+- [x] **Ablauf als Animation:** liegt im README (`docs/media/walkthrough.gif`, acht Bilder von der Meldung bis zur SMS). Ein richtiges Video mit Ton von 60 bis 90 Sekunden ist optional, falls die Einreichung eines erlaubt.
 - [ ] **Frist und Formular:** Abgabeschluss und Pflichtfelder aus der Ausschreibung hier eintragen: ______ (steht nicht im Repository).
 
 ## 2. Fünf Menschen probieren es ohne Erklärung aus
