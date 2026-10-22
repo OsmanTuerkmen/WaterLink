@@ -1,11 +1,17 @@
 import AxeBuilder from "@axe-core/playwright";
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 import { VIEWS } from "./helpers";
+
+/** Waits until the scripts have started: before that the page is only the server's snapshot (and its tap targets are not final). */
+async function settled(page: Page) {
+  await page.locator("html[data-hydrated]").waitFor({ state: "attached" });
+  await page.getByRole("heading", { level: 1 }).first().waitFor();
+}
 
 for (const view of VIEWS) {
   test(`accessibility: no WCAG A/AA violation found by axe on ${view}`, async ({ page }) => {
     await page.goto(view);
-    await page.getByRole("heading", { level: 1 }).first().waitFor();
+    await settled(page);
     // Let the map, fonts and polling settle so axe sees the finished page.
     await page.waitForTimeout(800);
     const result = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
@@ -20,7 +26,7 @@ test.describe("phone width", () => {
   for (const view of VIEWS.filter((v) => !v.includes("view=stage"))) {
     test(`no sideways scrolling and no touch target under 44 px on ${view}`, async ({ page }) => {
       await page.goto(view);
-      await page.getByRole("heading", { level: 1 }).first().waitFor();
+      await settled(page);
       await page.waitForTimeout(800);
       const result = await page.evaluate(() => {
         const small = [...document.querySelectorAll<HTMLElement>("a, button, input, select, textarea, [role=button], [tabindex]:not([tabindex='-1'])")]
@@ -39,7 +45,7 @@ test.describe("phone width", () => {
 
 test("the status sheet prints on one A4 page", async ({ page }) => {
   await page.goto("/#status");
-  await page.getByRole("heading", { level: 1 }).first().waitFor();
+  await settled(page);
   await page.emulateMedia({ media: "print" });
   const pdf = await page.pdf({ format: "A4", preferCSSPageSize: true });
   const pages = (pdf.toString("latin1").match(/\/Type\s*\/Page(?![a-z])/g) ?? []).length;
@@ -48,7 +54,7 @@ test("the status sheet prints on one A4 page", async ({ page }) => {
 
 test("accessibility: the forms for adding a water point and checking a route have no WCAG A/AA violation", async ({ page }) => {
   await page.goto("/?sandbox=1#coordination/overview");
-  await page.getByRole("heading", { level: 1 }).first().waitFor();
+  await settled(page);
   await page.getByRole("button", { name: "Add a water point" }).click();
   await page.getByRole("button", { name: "Check route and access" }).first().click();
   await page.getByRole("button", { name: "Pick on the map" }).click();
