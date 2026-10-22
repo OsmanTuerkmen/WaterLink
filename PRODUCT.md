@@ -36,7 +36,7 @@ Pump monitoring already exists. WaterLink covers what comes after: public inform
 - Implemented and tested: report → job → claim → progress/blockers → repair report → explicit on-site function test; status and job state separate; server-side role checks; history; revision conflict protection.
 - Uncertainty rules: a confirmation is valid 12 hours (demo parameter); stale, conflicting, offline and sensor-hint states never show as working.
 - Alternatives only when freshly confirmed working, route/access verified and open on arrival.
-- Stack: React 19 + TypeScript on Vinext (Cloudflare Worker), D1 storage, Tailwind 4 + shadcn components. Business rules in `web/lib/domain.ts` stay; the redesign replaces the frontend.
+- Stack: React 19 + TypeScript on Vinext (Cloudflare Worker), D1 storage, Tailwind 4. Business rules in `web/lib/domain.ts` stay; the redesign replaces the frontend.
 - **All UI text in English** (user decision, 11 Oct 2026). Swahili is not decided.
 - Not connected: SMS, live sensors, AI service, payments, real user accounts.
 
