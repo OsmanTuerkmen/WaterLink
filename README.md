@@ -100,13 +100,14 @@ Alle im Ordner `web/`:
 | `npm run dev` | Entwicklungsserver mit Neuladen (Port 5173) |
 | `npm run build` | Produktions-Build |
 | `npm start` | Gebauten Stand lokal über Wrangler starten (ohne simulierte Anmeldung) |
-| `npm test` | 78 Unit-Tests (Fachregeln, Speicher, Sitzungen, Zugang, SMS, Sensor, Region, Sprachtexte, QR-Code, Ausprobier-Modus) |
+| `npm test` | 81 Unit-Tests (Fachregeln, Speicher, Sitzungen, Zugang, SMS, Sensor, Region, Sprachtexte, QR-Code, Ausprobier-Modus) |
 | `npm run typecheck` | TypeScript-Prüfung |
 | `npm run lint` | Code-Stil und Fehlerprüfung |
-| `npm run test:e2e` | 32 Browser-Tests mit dem installierten Chrome (startet selbst einen lokalen Server auf Port 5199): der ganze Ablauf Meldung → Reparatur → Test auf zwei Fenstern, Offline-Verhalten, Seite ohne JavaScript, Sprachumschalter, Ausprobier-Modus, Barrierefreiheit (axe) auf allen Ansichten, Handybreite und Druckblatt |
+| `npm run test:e2e` | 33 Browser-Tests mit dem installierten Chrome (startet selbst einen lokalen Server auf Port 5199): der ganze Ablauf Meldung → Reparatur → Test auf zwei Fenstern, Offline-Verhalten, Seite ohne JavaScript, Sprachumschalter, Ausprobier-Modus, Barrierefreiheit (axe) auf allen Ansichten, Handybreite und Druckblatt |
 | `npm run test:integration` | API-Ablauf gegen einen **lokalen** `npm run dev`-Server (`WATERLINK_BASE_URL=http://127.0.0.1:5173`); setzt nur die Demo-Daten zurück |
 | `npm run test:access` | Zugangscode-Modus gegen einen lokalen Server, siehe Kopf von `scripts/check-access.mjs`. Nie gegen die Live-Seite. |
 | `npm run data:wpdx -- --list` | Counties aus der Water Point Data Exchange auflisten; `-- --county Busia` lädt eine Nachbarschaft nach `data/region.json` |
+| `npm run export:sw` | Prüfbogen für die Kiswahili-Übersetzung neu erzeugen (`docs/KISWAHILI-PRUEFBOGEN.md`) |
 | `npm run data:osm` | Straßen und Orte für die Karte aus OpenStreetMap laden (`data/osm-area.json`) |
 | `npm run deploy:cloudflare` | Kostenlos auf Cloudflare bereitstellen, siehe [Bereitstellung](docs/BEREITSTELLUNG.md) |
 
@@ -155,6 +156,7 @@ Kostenlos auf Cloudflare Workers mit D1: im Ordner `web/` einmal `npx wrangler l
 ## Weiterarbeiten
 
 - **Was ist offen, was wäre möglich?** → [Roadmap](docs/ROADMAP.md)
+- **Was können nur Menschen tun (Einreichung, Tests mit Menschen, Übersetzung, Partner)?** → [Menschen](docs/MENSCHEN.md)
 - **Wo steht was?** → [Dokumentation](docs/README.md)
 - **Letzter Stand der Prüfungen** → [Arbeitsstand](docs/ZWISCHENSTAND.md)
 - **Mit KI-Assistenz weiterarbeiten** → [CLAUDE.md](CLAUDE.md) und [Nächster Prompt](docs/NAECHSTER_PROMPT.md)

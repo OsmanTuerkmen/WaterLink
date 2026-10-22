@@ -19,6 +19,8 @@ Alles in diesem Ordner ist auf Deutsch. Den Einstieg ins Projekt (was es ist, wi
 | [Gestaltung](../DESIGN.md) | Farben, Schrift, Bausteine, Regeln für die Oberfläche (Englisch) |
 | [Bereitstellung](BEREITSTELLUNG.md) | Live-Demo, Zugangscode, Cloudflare, eigene Bereitstellung, Checkliste vor dem Pitch |
 | [Roadmap](ROADMAP.md) | **Offene Aufgaben, mögliche Erweiterungen, bewusste Grenzen, offene Entscheidungen** |
+| [Was nur Menschen tun können](MENSCHEN.md) | Einreichung, Fünf-Personen-Test, Kiswahili prüfen, echte Geräte und Screenreader, Partner ansprechen: Anleitung, Listen, Vorlage |
+| [Prüfbogen Kiswahili](KISWAHILI-PRUEFBOGEN.md) | Alle Tafeltexte Englisch/Kiswahili für eine Muttersprachlerin oder einen Muttersprachler (erzeugt mit `npm run export:sw`) |
 | [Arbeitsstand](ZWISCHENSTAND.md) | Was zuletzt geprüft wurde und in welchem Zustand das Repository ist |
 | [Nächster Prompt](NAECHSTER_PROMPT.md) | Fertiger Einstieg für eine KI-Assistenz (Claude oder Codex), die weiterarbeitet |
 
@@ -27,4 +29,4 @@ Alles in diesem Ordner ist auf Deutsch. Den Einstieg ins Projekt (was es ist, wi
 Berichte früherer Arbeitsschritte, nur zum Nachlesen: [Ordner `archiv/`](archiv/)
 
 - [Branch-Geschichte](archiv/BRANCH-GESCHICHTE.md): welche Branches es gab und was sie enthielten
-- [Historie bis Claude](archiv/HISTORIE_BIS_CLAUDE.md), [Review von Codex](archiv/REVIEW_CODEX.md), [Übergabe an Osman](archiv/UEBERGABE.md), [Protokoll bis 21.10.2026](archiv/PROTOKOLL-bis-21-10-2026.md)
+- [Historie bis Claude](archiv/HISTORIE_BIS_CLAUDE.md), [Review von Codex](archiv/REVIEW_CODEX.md), [Übergabe an Osman](archiv/UEBERGABE.md), [Protokoll bis 21.10.2026](archiv/PROTOKOLL-bis-21-10-2026.md), [Protokoll bis 22.10.2026 nachmittags](archiv/PROTOKOLL-22-10-2026-bis-nachmittags.md)

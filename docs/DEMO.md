@@ -1,7 +1,7 @@
 <!-- Priorität laut Osman: erst funktionierende App; dieses Skript erst zum Schluss ausarbeiten. -->
 # WaterLink in drei Minuten
 
-Alle Personen, Meldungen, Bestätigungen und Wegangaben sind simuliert. Die Orte stammen aus WPdx-Erhebungen in Busia; deren Status ist historisch. Straßen auf der Karte: © OpenStreetMap-Mitwirkende. Der Prototyp wurde nicht in Kenia validiert. „Working“ beschreibt den Betrieb, nicht die Trinkwasserqualität. Die Oberfläche ist auf Englisch (Branch `claude/waterlink-redesign`).
+Alle Personen, Meldungen, Bestätigungen und Wegangaben sind simuliert. Die Orte stammen aus WPdx-Erhebungen in Busia; deren Status ist historisch. Straßen auf der Karte: © OpenStreetMap-Mitwirkende. Der Prototyp wurde nicht in Kenia validiert. „Working“ beschreibt den Betrieb, nicht die Trinkwasserqualität. Die Oberfläche ist auf Englisch.
 
 ## Vorbereitung
 
@@ -23,13 +23,13 @@ Das Band oben auf der Bühne zeigt die vier Schritte und hebt automatisch den n�
 | 2:05–2:35 | Amina: bei A **Test and confirm** → **Works** → Notiz, „I tested it on site“ → **Confirm result**. | „Erst der Test vor Ort macht A wieder grün und schließt den Auftrag.“ |
 | 2:35–3:00 | In einem zweiten Fenster unter **Coordination → Demo tools** „Let A's confirmation expire“ oder die Verbindungssimulation zeigen. | „Alte Informationen bleiben nicht grün. Wir zeigen Unsicherheit offen.“ |
 
-**Optionaler Zusatz (ca. 20 s), SMS:** Auf dem SMS-Handy als „Household“ **STATUS** und dann **A** tippen. Aussage: „Wer kein Smartphone hat, schreibt STATUS und bekommt dieselbe Antwort in einer SMS.“ Als „Amina“ funktioniert auch `DOWN A …` und `OK A …` nach denselben Regeln. Im Codex-Review-Branch verlangt OK eine Beschreibung und eine ausdrückliche Bestätigung des Vor-Ort-Tests vor dem Senden; offline liefert STATUS keine aktuelle Zusicherung.
+**Optionaler Zusatz (ca. 20 s), SMS:** Auf dem SMS-Handy als „Household“ **STATUS** und dann **A** tippen. Aussage: „Wer kein Smartphone hat, schreibt STATUS und bekommt dieselbe Antwort in einer SMS.“ Als „Amina“ funktioniert auch `DOWN A …` und `OK A …` nach denselben Regeln. OK verlangt eine Beschreibung und eine ausdrückliche Bestätigung des Vor-Ort-Tests vor dem Senden; offline liefert STATUS keine aktuelle Zusicherung.
 
 **Optionaler Zusatz (ca. 30 s), echte Sensordaten:** Unter **Coordination → Demo tools** die Wiedergabe „Tiwi – Mshikeni, Kwale“ abspielen. Ab Woche 13/2014 fällt die Fördermenge auf null, ab der zweiten Woche erscheint der Sensorhinweis. Aussage: „Das sind echte Daten einer Pumpe in Kenia. Ein Sensor kann einen Ausfall vermuten, aber nicht bestätigen. WaterLink macht daraus ‚Prüfung nötig‘.“ Optional **Send this hint to water point A** und die Tafel zeigen.
 
 **Für alle, die nicht dabei sind:** Den Ablauf kann jede Person selbst nachspielen, ohne Code: `/?view=stage&sandbox=1` (Ausprobier-Modus, nur auf dem eigenen Gerät). Für eine Vorführung vor Publikum bleibt das gemeinsame Demo mit Code und mehreren Fenstern die bessere Wahl.
 
-**Optionaler Zusatz (ca. 45 s), eigene Wasserstelle und Wegprüfung:** Unter **Coordination → Overview** **Add a water point** (zum Beispiel „School well“, 2 Minuten), danach als Amina auf der Feld-App „Test and confirm“. Meldet man jetzt A als ausgefallen, nennt WaterLink weiter B, **nicht** die neue Stelle: Ihr Weg ist noch nicht geprüft. Erst nach **Check route and access** (Koordination, Häkchen „I walked the route …“) wird sie als nähere Alternative genannt; **Access is closed or blocked** nimmt sie sofort wieder heraus. Aussage: „Eine Empfehlung braucht einen geprüften Weg, nicht nur einen Punkt auf der Karte.“
+**Optionaler Zusatz (ca. 45 s), eigene Wasserstelle und Wegprüfung:** Unter **Coordination → Overview** **Add a water point** (zum Beispiel „School well“, 2 Minuten; mit der Position `0.3640, 34.3330` erscheint sie auch auf der Karte), danach als Amina auf der Feld-App „Test and confirm“. Meldet man jetzt A als ausgefallen, nennt WaterLink weiter B, **nicht** die neue Stelle: Ihr Weg ist noch nicht geprüft. Erst nach **Check route and access** (Koordination, Häkchen „I walked the route …“) wird sie als nähere Alternative genannt; **Access is closed or blocked** nimmt sie sofort wieder heraus. Aussage: „Eine Empfehlung braucht einen geprüften Weg, nicht nur einen Punkt auf der Karte.“
 
 **Optionaler Zusatz (ca. 15 s), Kiswahili und QR-Code:** Auf der Tafel unten **Kiswahili** wählen: Titel, Status und Hinweise wechseln die Sprache (`/?view=display&lang=sw` ist als Lesezeichen möglich). Daneben der **QR-Code**: Wer ihn mit dem Handy scannt, landet in der SMS-Ansicht. Aussage: „Für Menschen, die die Tafel verstehen wollen und ein Telefon haben.“ Die Übersetzung ist ein Entwurf; nicht als geprüft darstellen.
 
@@ -42,7 +42,7 @@ Die Verbindungssimulation ist ein ausdrücklich markierter UI-Test in einem Fens
 - Software schafft kein Reparaturbudget, keine Ersatzteile und kein Personal.
 - Kein Live-Sensor, kein SMS-Versand, kein KI-Dienst. Die Sensorwiedergabe nutzt echte, aber historische Daten von 2014.
 - Die Rollen dienen einer privaten Demonstration. Vor einem Feldpilot sind echte, zu Wasserstellen zugeordnete Konten nötig.
-- Konkrete Pilotregion, lokale Sprache (Swahili ist nicht umgesetzt) und Wege-/Zugangsprüfung stehen aus. Gehzeiten sind aus der Luftlinie geschätzt.
+- Konkrete Pilotregion und lokale Sprachen stehen aus; Kiswahili gibt es nur auf der Tafel und als ungeprüften Entwurf. Die Prüfung von Weg und Zugang gibt es, der Besuch dabei ist aber simuliert. Gehzeiten sind aus der Luftlinie geschätzt, bis jemand den Weg geprüft hat.
 
 ## Ersatz bei Stromausfall einer späteren Feldanzeige
 
