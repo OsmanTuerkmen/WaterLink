@@ -6,7 +6,7 @@
 **Anhänge:**
 1. `WaterLink_Pitch.pdf` (16 Seiten, Folien)
 2. `WaterLink_OnePager.pdf` (eine Seite)
-3. `WaterLink_Prototype_Code.zip` (vollständiger Quellcode des Prototyps, Stand der Abgabe)
+3. `WaterLink_Prototype_Code.zip` (vollständiger Quellcode des Prototyps, Stand der Abgabe). Die Skripte (`.mjs`, `.mts`) tragen eine zusätzliche Endung `.txt`, die Shell-Skripte fehlen: Gmail sperrt sonst den Anhang („aus Sicherheitsgründen gesperrt“). Dieselben Dateien liegen im Repository
 4. `WaterLink_Walkthrough.gif` (Ablauf in acht Bildern)
 5. `WaterLink_UNICEF_Belege.zip` (die Bildschirmfotos der UNICEF-Seiten, markiert und unmarkiert, und die WPdx-Zahlen)
 

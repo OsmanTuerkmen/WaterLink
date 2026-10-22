@@ -18,6 +18,10 @@ Alles, was für die Abgabe beim IdeaLAB gebraucht wird. Die Kriterien der Bewert
 - **Die Zahl „48,6 % der Menschen auf dem Land haben ein Handy“** steht in der Veröffentlichung der Communications Authority of Kenya vom 12.08.2025 (Kenya Housing Survey 2023/24).
 - **Kwale/Kitui, 27 Tage auf unter 3 Tage:** WASREB 2014 laut REF-2021-Fallstudie und SDSN TReNDS (anderes Projekt, nicht unseres).
 
+## Der Entwurf in Gmail
+
+Die Mail liegt als **Entwurf** in Gmail (An: idealab@wu.ac.at, mit den fünf Anhängen, nicht abgeschickt). Gmail hat die erste Version der Code-ZIP gesperrt; die jetzige enthält die Skripte mit zusätzlicher Endung `.txt` und ohne Shell-Skripte. Vor dem Abschicken prüfen: ob MyStartupStudio eine andere Empfängeradresse verlangt und ob der GitHub-Link dann schon öffentlich ist (sonst bleibt der Satz „tell us and we will give you access“ richtig).
+
 ## Was bewusst nicht drinsteht
 
 Keine Wirkungszahlen, keine Zeugnisse, keine Aussagen eines Pilotpartners: Es gibt keine. Offene Annahmen (Betreiber bestätigen oft genug, Zahlungsbereitschaft) stehen auf Folie 10 als „Open“.
