@@ -11,7 +11,7 @@
 | `/#sms` | Simulierte SMS für Tastenhandys |
 | `/#coordination/demo` | Demo-Werkzeuge, Zurücksetzen, Sensor-Wiedergabe |
 
-**Stand der Live-Seite:** bereitgestellt am 11. Oktober 2026 aus dem Redesign-Stand (Commit `e95d100`). Alles, was danach in `main` hinzukam (signierter Zugang mit Ablauf, frische Demo nach 4 Stunden, Oberflächen-Korrekturen), ist dort noch **nicht** enthalten. Aktualisieren: [Roadmap](ROADMAP.md), erste Zeile.
+**Stand der Live-Seite:** am 22. Oktober 2026 aus dem Stand von `main` neu bereitgestellt (Cloudflare-Konto von Reczec, Worker `waterlink-demo`). Der Zugangscode blieb dabei unverändert. Geprüft nach dem Bereitstellen: Seite lädt (200), Modus „code“, A und B sind frisch bestätigt (die Demo hat sich selbst neu angesetzt), `?since=` antwortet mit „unchanged“, gefälschte Anmelde-Header geben 401.
 
 ## Wer darf was
 

@@ -4,7 +4,7 @@
 
 > **In short (English):** WaterLink tells households in rural Kenya whether their water point works *today* and where to go instead, and it tracks every outage from the first report to a repair that only counts once an operator has tested it on site. Old "green" statuses expire after 12 hours and turn into "unclear", never into a false promise. It is a hackathon prototype: the places are real survey data, the people, confirmations and routes are simulated and labelled as such. "Working" means water can be drawn, never that it is safe to drink.
 
-**Live-Demo:** https://waterlink-demo.waterlink.workers.dev · Pitch-Bühne: [`/?view=stage`](https://waterlink-demo.waterlink.workers.dev/?view=stage) · Ansehen ist offen, Ändern nur mit Demo-Zugangscode ([Bereitstellung](docs/BEREITSTELLUNG.md)). Die Live-Seite läuft noch auf dem Stand vom 11. Oktober; der aktuelle Stand ist dieses Repository.
+**Live-Demo:** https://waterlink-demo.waterlink.workers.dev · Pitch-Bühne: [`/?view=stage`](https://waterlink-demo.waterlink.workers.dev/?view=stage) · Ansehen ist offen, Ändern nur mit Demo-Zugangscode ([Bereitstellung](docs/BEREITSTELLUNG.md)). Die Live-Seite wurde am 22. Oktober 2026 mit dem Stand dieses Repositorys bereitgestellt.
 
 ## Worum geht es?
 

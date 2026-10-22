@@ -8,8 +8,6 @@ Kennzeichnung wie im Konzept: **belegt** (Quelle oder Messung), **Annahme** (ung
 
 | Prio | Aufgabe | Fertig, wenn … |
 |---|---|---|
-| P1 | **Live-Seite aktualisieren.** Sie läuft noch auf dem Stand vom 11. Oktober (ohne signierten Zugang mit Ablauf, ohne frische Demo, ohne die Oberflächen-Korrekturen). Bereitstellen geht nur mit Reczecs Cloudflare-Konto: `npm run deploy:cloudflare` im Ordner `web/`, siehe [Bereitstellung](BEREITSTELLUNG.md). | Die Live-Seite zeigt A und B als bestätigt, das Freischalten funktioniert (alle müssen sich einmal neu freischalten), gefälschte Header geben 401. **Kein** `npm run test:access` gegen die Live-Seite. |
-| P1 | **Ersten CI-Lauf auf GitHub prüfen.** Die Datei `.github/workflows/ci.yml` (Node 22 und 24) ist neu; `npm run build` ist auf Ubuntu noch nie gelaufen. | Alle vier Schritte (Tests, Typprüfung, Lint, Build) sind in beiden Node-Versionen grün. |
 | P2 | **Gegenprobe auf echten Geräten und auf Papier.** Bisher nur Browser-Emulation (375 px mit Touch) und ein PDF des Druckblatts. | Ein echtes Handy, ein zweiter Rechner und ein Papierausdruck zeigen dasselbe wie die Emulation. |
 | P2 | **Screenreader und reduzierte Bewegung im echten Browser prüfen.** Das CSS ist gelesen und gemessen, aber nicht mit einem Screenreader oder der Systemeinstellung „Bewegung reduzieren“ ausprobiert. | Ablauf Meldung → Bestätigung ist mit Screenreader bedienbar; die Tafel zeigt „Zeile geändert“ ohne Bewegung. |
 | P2 | **WPdx-Daten prüfen.** 60 Datensätze sind nicht automatisch 60 verschiedene, erreichbare Wasserstellen. Mehrfacherfassungen und widersprüchliche Quellenangaben sind nicht untersucht. | Datensätze und eindeutige Standorte sind dokumentiert getrennt; weiterhin keine Aussage über den aktuellen Zustand. |

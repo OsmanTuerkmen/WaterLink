@@ -10,9 +10,9 @@ Du arbeitest als kritischer Produkt- und Technikpartner an WaterLink. Sprich mit
 
 **Lies zuerst:** `README.md`, `docs/README.md` (Wegweiser), `docs/ZWISCHENSTAND.md`, `docs/ROADMAP.md` und `docs/ARCHITEKTUR.md`. Frühere Berichte stehen in `docs/archiv/`.
 
-**Stand:** React/TypeScript auf Vinext (Cloudflare Worker) mit D1. Englische Oberfläche „gelber Kanister“: Haushaltsstatus, öffentliche Tafel, Handy-Feld-App für Betreiberin und Techniker, Koordination, simulierte SMS, Pitch-Bühne. Die Orte sind echte WPdx-Erhebungen aus Busia; Bestätigungen, Personen, Wege und Öffnungszeiten sind simuliert; die Sensorwiedergabe nutzt Kwale-Daten von 2014 und beweist keinen aktuellen Ausfall. 62 Tests, Typprüfung, Lint und Build bestehen. Die Live-Seite läuft noch auf dem Stand vom 11. Oktober und enthält die neueren Änderungen nicht.
+**Stand:** React/TypeScript auf Vinext (Cloudflare Worker) mit D1. Englische Oberfläche „gelber Kanister“: Haushaltsstatus, öffentliche Tafel, Handy-Feld-App für Betreiberin und Techniker, Koordination, simulierte SMS, Pitch-Bühne. Die Orte sind echte WPdx-Erhebungen aus Busia; Bestätigungen, Personen, Wege und Öffnungszeiten sind simuliert; die Sensorwiedergabe nutzt Kwale-Daten von 2014 und beweist keinen aktuellen Ausfall. 62 Tests, Typprüfung, Lint und Build bestehen. Die Live-Seite wurde am 22. Oktober 2026 mit diesem Stand bereitgestellt.
 
-**Nächste sinnvolle Schritte** (Einzelheiten in `docs/ROADMAP.md`): ersten CI-Lauf auf GitHub prüfen; ungenutzten Code und Abhängigkeiten entfernen; mit Reczecs Cloudflare-Konto bereitstellen (nur nach Absprache); physische Geräte und Papierdruck prüfen; WPdx-Mehrfacherfassungen und SMS-Segmentzählung klären.
+**Nächste sinnvolle Schritte** (Einzelheiten in `docs/ROADMAP.md`): physische Geräte, Screenreader und Papierdruck prüfen; WPdx-Mehrfacherfassungen und SMS-Segmentzählung klären.
 
 **Regeln, die nie fallen:**
 - Ein Auftrag gilt erst nach dem ausdrücklichen Funktionstest der Betreiberin als abgeschlossen („Working“). „Repariert“ allein ändert den Betriebszustand nicht.
