@@ -12,7 +12,7 @@
 | `/#sms` | Simulierte SMS für Tastenhandys |
 | `/#coordination/demo` | Demo-Werkzeuge, Zurücksetzen, Sensor-Wiedergabe |
 
-**Stand der Live-Seite:** am 22. Oktober 2026 aus dem Stand von `main` neu bereitgestellt (Cloudflare-Konto von Reczec, Worker `waterlink-demo`). Der Zugangscode blieb dabei unverändert. Geprüft nach dem Bereitstellen: Seite lädt (200), Modus „code“, A und B sind frisch bestätigt (die Demo hat sich selbst neu angesetzt), `?since=` antwortet mit „unchanged“, gefälschte Anmelde-Header geben 401.
+**Stand der Live-Seite:** am 22. Oktober 2026 abends aus dem Stand `f63ba56` von `main` neu bereitgestellt (Cloudflare-Konto von Reczec, Worker `waterlink-demo`). Der Zugangscode blieb dabei unverändert; neu hinzu kam das Cookie-Geheimnis (wer eingeloggt war, wurde einmal abgemeldet). Geprüft nach dem Bereitstellen: Seite lädt (200), Modus „code“, A und B sind frisch bestätigt (die Demo hat sich selbst neu angesetzt), `?since=` antwortet mit „unchanged“, gefälschte Anmelde-Header geben 401.
 
 ## Wer darf was
 
