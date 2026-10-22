@@ -136,7 +136,7 @@ Die Fachregeln in `web/lib/domain.ts` hängen nicht vom Webframework ab und sind
 | © OpenStreetMap contributors | Straßen auf der Karte in `web/data/osm-area.json` | ODbL |
 | Archivo und Atkinson Hyperlegible Next (über Fontsource) | Schriften, lokal eingebunden | OFL |
 
-Für den Code selbst ist noch **keine Lizenz festgelegt** (siehe [Roadmap](docs/ROADMAP.md#4-offene-entscheidungen)).
+Der Code steht unter der [MIT-Lizenz](LICENSE). Die Daten behalten ihre eigenen Lizenzen aus der Tabelle; Dateien in `web/build/` tragen ihre eigene Lizenz (`sites-vite-plugin.LICENSE`).
 
 ## Bereitstellen
 
