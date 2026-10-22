@@ -58,3 +58,8 @@ next-env.d.ts
 
 # Local Cloudflare variables (may hold a demo access code)
 .dev.vars*
+
+# browser tests
+/playwright-report/
+/test-results/
+/blob-report/
